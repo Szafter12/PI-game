@@ -1,1 +1,1 @@
-# AGH-survivors
+# Gierka bedzie dobra 
