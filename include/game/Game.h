@@ -18,11 +18,14 @@ Wrapper class
 
 class Game final {
     // Variables:
+    sf::ContextSettings settings;
     // Window
     sf::RenderWindow* window {};
+
     // Game logic
     // Game objects
     // Resources
+
     // Private functions:
     void initVariables();
     void initWindow();
@@ -30,11 +33,13 @@ public:
     // Constructor / Destructor
     Game ();
     ~Game ();
+
     // Accessors
-    bool running() const;
+    void run() const;
+
     // Functions
     void pollEvents() const;
-    void update() const;
+    void update(float dt) const;
     void render() const;
 };
 

@@ -8,13 +8,8 @@ int main()
     // Init game engine
     const Game game;
 
-    // Game loop
-    while (game.running()) {
-        // Update
-        game.update();
-        // Render
-        game.render();
-    }
+    // Start game
+    game.run();
 
     return 0;
 }
