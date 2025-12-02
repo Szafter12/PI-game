@@ -1,21 +1,20 @@
-#include <SFML/Graphics.hpp>
+#include "../include/game/Game.h"
 
 int main()
 {
-    auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "Gierka PI");
-    window.setFramerateLimit(144);
+    // Init srand seed
+    srand(static_cast<unsigned>(time(nullptr)));
 
-    while (window.isOpen())
-    {
-        while (const std::optional event = window.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-            {
-                window.close();
-            }
-        }
+    // Init game engine
+    const Game game;
 
-        window.clear();
-        window.display();
+    // Game loop
+    while (game.running()) {
+        // Update
+        game.update();
+        // Render
+        game.render();
     }
+
+    return 0;
 }
