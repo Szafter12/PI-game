@@ -18,6 +18,7 @@ void Game::initVariables() {
        - Initialize all game variables
    */
     this->window = nullptr;
+    this->obiekt.setPosition({0,0});
 }
 void Game::initWindow() {
     /*
@@ -31,7 +32,7 @@ void Game::initWindow() {
 }
 
 // Functions
-void Game::run() const {
+void Game::run() {
     /*
        @return void
        - Starting game loop
@@ -59,7 +60,7 @@ void Game::pollEvents() const {
     }
 }
 
-void Game::update(float dt) const {
+void Game::update(float dt) {
     /*
         @return void
         - update game elements
@@ -67,9 +68,14 @@ void Game::update(float dt) const {
     */
 
     this->pollEvents();
+    this->player.update(*this->window);
+
+    this->view.setCenter({player.position.x+16, player.position.y+16});
+    this->window->setView(view);
+
 }
 
-void Game::render() const {
+void Game::render() {
     /*
         @return void
         - clear old frame
@@ -80,6 +86,9 @@ void Game::render() const {
 
     this->window->clear();
     // Draw game objects
+    this->window->draw(obiekt);
+    this->player.draw(*this->window);
+
     this->window->display();
 }
 

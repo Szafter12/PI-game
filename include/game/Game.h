@@ -8,6 +8,8 @@
 #include <ctime>
 #include <cstdlib>
 
+#include "Player.h"
+
 #ifndef GAME_PI_GAME_H
 #define GAME_PI_GAME_H
 
@@ -24,6 +26,14 @@ class Game final {
 
     // Game logic
     // Game objects
+
+    ////////////////////////////////Zmienne testowe
+public:
+    Player player = Player({800,600});
+    sf::Texture texture = sf::Texture("../../assets/images/map.png");
+    sf::Sprite obiekt = sf::Sprite(texture);
+    sf::View view = sf::View({player.position.x+16, player.position.y+16}, {400.f, 300.f});
+    //////////////////////////////////
     // Resources
 
     // Private functions:
@@ -35,12 +45,12 @@ public:
     ~Game ();
 
     // Accessors
-    void run() const;
+    void run();
 
     // Functions
     void pollEvents() const;
-    void update(float dt) const;
-    void render() const;
+    void update(float dt);
+    void render();
 };
 
 #endif //GAME_PI_GAME_H

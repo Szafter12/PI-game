@@ -5,7 +5,7 @@
 
 class Player {
     public:
-    sf::Texture texture[8] = {sf::Texture("../../Grafika/HeroBase.png")};
+    sf::Texture texture[8] = {sf::Texture("../../assets/images/HeroBase.png")};
     sf::Sprite sprite = sf::Sprite(texture[0]);
     sf::Vector2f position;
 
@@ -16,14 +16,14 @@ class Player {
         sprite.setPosition(position);
     }
     Player(sf::Vector2f position) {
-        texture[0].loadFromFile("../../Grafika/HeroIdleUp.png");
-        texture[1].loadFromFile("../../Grafika/HeroIdleUpR.png");
-        texture[2].loadFromFile("../../Grafika/HeroIdleR.png");
-        texture[3].loadFromFile("../../Grafika/HeroIdleDownR.png");
-        texture[4].loadFromFile("../../Grafika/HeroBase.png");
-        texture[5].loadFromFile("../../Grafika/HeroIdleDownL.png");
-        texture[6].loadFromFile("../../Grafika/HeroIdleL.png");
-        texture[7].loadFromFile("../../Grafika/HeroIdleUpL.png");
+        texture[0].loadFromFile("../../assets/images/HeroIdleUp.png");
+        texture[1].loadFromFile("../../assets/images/HeroIdleUpR.png");
+        texture[2].loadFromFile("../../assets/images/HeroIdleR.png");
+        texture[3].loadFromFile("../../assets/images/HeroIdleDownR.png");
+        texture[4].loadFromFile("../../assets/images/HeroBase.png");
+        texture[5].loadFromFile("../../assets/images/HeroIdleDownL.png");
+        texture[6].loadFromFile("../../assets/images/HeroIdleL.png");
+        texture[7].loadFromFile("../../assets/images/HeroIdleUpL.png");
         this->position = position;
         sprite.setTexture(texture[0]);
         sprite.setPosition(position);
