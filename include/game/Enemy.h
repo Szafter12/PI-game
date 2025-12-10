@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <cmath>
+#include <iostream>
 
 #ifndef GAME_PI_ENEMY_H
 #define GAME_PI_ENEMY_H
@@ -26,6 +27,7 @@ class Enemy {
         sf::Sprite sprite;
         sf::Vector2f position;
         float rotation;
+        float scale = 2.f;
 
         float speed;
         int maxHp;

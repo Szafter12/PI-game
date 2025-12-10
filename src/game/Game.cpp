@@ -22,7 +22,7 @@ Game::Game()
     if (!enemyTexture->loadFromFile("../../assets/images/Orc-Walk.png")) {
         throw std::runtime_error("Failed to load texture");
     }
-    enemy = std::make_unique<Enemy>(EnemyType::Basic, sf::Vector2f(500.f, 100.f), enemyTexture);
+    enemy = std::make_unique<Enemy>(EnemyType::Basic, sf::Vector2f(100.f, 100.f), enemyTexture);
 }
 
 Game::~Game() {
@@ -47,6 +47,24 @@ void Game::initWindow() {
     this->settings.antiAliasingLevel = 8;
     this->window = new sf::RenderWindow (sf::VideoMode({640,480}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
     this->window->setFramerateLimit(60);
+}
+
+// Test funtion to change fake player position
+void Game::updateRectPos(float dt) {
+    float y = rectangle.getPosition().y;
+    float x = this->rectangle.getPosition().x;
+    y += velocityY * dt;
+    x -= 40.f * dt;
+    // jeśli dotknie krawędzi okna → zmiana kierunku
+    if(y <= 0.f) {
+        y = 0.f;
+        this->velocityY = std::abs(this->velocityY); // w dół
+    } else if(y >= window->getSize().y - this->rectangle.getSize().y) {
+        y = window->getSize().y - this->rectangle.getSize().y;
+        this->velocityY = -std::abs(this->velocityY); // w górę
+    }
+
+    this->rectangle.setPosition(sf::Vector2f(x, y));
 }
 
 // Functions
@@ -87,6 +105,7 @@ void Game::update(float dt) {
 
     this->pollEvents();
     // test player position
+    updateRectPos(dt);
     sf::Vector2f playerPosition = this->rectangle.getPosition();
 
     enemy->update(dt, playerPosition);

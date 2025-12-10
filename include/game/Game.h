@@ -27,11 +27,13 @@ class Game final {
     // Game objects
     std::unique_ptr<Enemy> enemy;
     sf::RectangleShape rectangle;
+    float velocityY = 60.f;
     // Resources
 
     // Private functions:
     void initVariables();
     void initWindow();
+    void updateRectPos(float dt);
 public:
     // Constructor / Destructor
     Game ();
