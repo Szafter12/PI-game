@@ -5,6 +5,24 @@ Game::Game()
 {
     this->initVariables();
     this->initWindow();
+
+    // ***INITIALIZE FAKE PLAYER TEXTURE FOR TESTING***
+    sf::Vector2u screenSize = this->window->getSize();
+    sf::Vector2f screenCenter;
+    screenCenter.x = screenSize.x / 2.f;
+    screenCenter.y = screenSize.y / 2.f;
+    this->rectangle.setSize({20.f, 80.f});
+    this->rectangle.setOrigin(sf::Vector2f(10.f, 40.f));
+    this->rectangle.setPosition(sf::Vector2f(screenCenter.x, screenCenter.y));
+    this->rectangle.setFillColor(sf::Color::White);
+    // ***INITIALIZE FAKE PLAYER TEXTURE FOR TESTING***
+
+    // Test enemy init
+    auto enemyTexture = std::make_shared<sf::Texture>();
+    if (!enemyTexture->loadFromFile("../../assets/images/Orc-Walk.png")) {
+        throw std::runtime_error("Failed to load texture");
+    }
+    enemy = std::make_unique<Enemy>(EnemyType::Basic, sf::Vector2f(500.f, 100.f), enemyTexture);
 }
 
 Game::~Game() {
@@ -19,6 +37,7 @@ void Game::initVariables() {
    */
     this->window = nullptr;
 }
+
 void Game::initWindow() {
     /*
        @return void
@@ -31,7 +50,7 @@ void Game::initWindow() {
 }
 
 // Functions
-void Game::run() const {
+void Game::run() {
     /*
        @return void
        - Starting game loop
@@ -46,7 +65,7 @@ void Game::run() const {
     }
 }
 
-void Game::pollEvents() const {
+void Game::pollEvents() {
     /*
         @return void
         - Waiting for some events such as close window
@@ -59,7 +78,7 @@ void Game::pollEvents() const {
     }
 }
 
-void Game::update(float dt) const {
+void Game::update(float dt) {
     /*
         @return void
         - update game elements
@@ -67,9 +86,13 @@ void Game::update(float dt) const {
     */
 
     this->pollEvents();
+    // test player position
+    sf::Vector2f playerPosition = this->rectangle.getPosition();
+
+    enemy->update(dt, playerPosition);
 }
 
-void Game::render() const {
+void Game::render() {
     /*
         @return void
         - clear old frame
@@ -80,6 +103,10 @@ void Game::render() const {
 
     this->window->clear();
     // Draw game objects
+    if (enemy) {
+        enemy->render(this->window);
+    }
+    this->window->draw(this->rectangle);
     this->window->display();
 }
 

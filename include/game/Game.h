@@ -7,6 +7,7 @@
 #include <vector>
 #include <ctime>
 #include <cstdlib>
+#include "Enemy.h"
 
 #ifndef GAME_PI_GAME_H
 #define GAME_PI_GAME_H
@@ -24,6 +25,8 @@ class Game final {
 
     // Game logic
     // Game objects
+    std::unique_ptr<Enemy> enemy;
+    sf::RectangleShape rectangle;
     // Resources
 
     // Private functions:
@@ -35,12 +38,12 @@ public:
     ~Game ();
 
     // Accessors
-    void run() const;
+    void run();
 
     // Functions
-    void pollEvents() const;
-    void update(float dt) const;
-    void render() const;
+    void pollEvents();
+    void update(float dt);
+    void render();
 };
 
 #endif //GAME_PI_GAME_H

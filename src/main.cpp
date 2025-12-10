@@ -6,7 +6,7 @@ int main()
     srand(static_cast<unsigned>(time(nullptr)));
 
     // Init game engine
-    const Game game;
+    Game game;
 
     // Start game
     game.run();
