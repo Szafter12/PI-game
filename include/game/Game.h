@@ -20,19 +20,31 @@ Wrapper class
 class Game final {
     // Variables:
     sf::ContextSettings settings;
+
     // Window
     sf::RenderWindow* window {};
+    sf::Vector2u screenSize {};
 
     // Game logic
+    int maxEnemies {};
+    float spawnInterval {};
+    float spawnTimer;
+
     // Game objects
-    std::unique_ptr<Enemy> enemy;
-    sf::RectangleShape rectangle;
-    float velocityY = 60.f;
+    std::vector<sf::Vector2f> spawnPositions;
+    std::shared_ptr<sf::Texture> enemyTexture;
+    std::vector<std::unique_ptr<Enemy>> enemies;
+
     // Resources
+
+    // Test player rectangle
+    sf::RectangleShape rectangle;
+    float velocityY = {};
 
     // Private functions:
     void initVariables();
     void initWindow();
+    void initEnemies();
     void updateRectPos(float dt);
 public:
     // Constructor / Destructor
@@ -42,10 +54,14 @@ public:
     // Accessors
     void run();
 
-    // Functions
+    // Core Methods
     void pollEvents();
     void update(float dt);
     void render();
+
+    // Objects Methods
+    void spawnEnemy();
+    void updateEnemies(float dt, sf::Vector2f playerPosition);
 };
 
 #endif //GAME_PI_GAME_H

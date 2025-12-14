@@ -6,7 +6,7 @@ Enemy::Enemy(EnemyType type, sf::Vector2f position_, std::shared_ptr<sf::Texture
         case EnemyType::Basic:
             maxHp = 100;
             hp = maxHp;
-            speed = 15.0f;
+            speed = 50.0f;
             rotation = 0.f;
             break;
     }
@@ -56,6 +56,7 @@ void Enemy::updatePosition(float dt, sf::Vector2f playerPosition) {
 
 void Enemy::updateAnimation(float dt) {
     frameTime += dt;
+
     if(frameTime >= frameDuration) {
         frameTime = 0.f;
         frame++;
