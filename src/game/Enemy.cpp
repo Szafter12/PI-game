@@ -2,14 +2,17 @@
 
 Enemy::Enemy(EnemyType type, sf::Vector2f position_, std::shared_ptr<sf::Texture> texture_)
     : position(position_), rotation(0.f), texture(std::move(texture_)), sprite(*texture) {
+    // Switch between enemies types
     switch (type) {
         case EnemyType::Basic:
-            maxHp = 100;
-            hp = maxHp;
-            speed = 50.0f;
-            rotation = 0.f;
+            this->maxHp = 100;
+            this->hp = this->maxHp;
+            this->speed = 50.0f;
+            this->rotation = 0.f;
             break;
     }
+
+    // Set sprite basic settings
     sprite.setOrigin(sf::Vector2f(50.f,50.f));
     sprite.setPosition(position);
     sprite.setTextureRect(sf::IntRect({0, 0}, {100, 100}));
@@ -27,6 +30,11 @@ void Enemy::render(sf::RenderTarget* target) {
 }
 
 void Enemy::updatePosition(float dt, sf::Vector2f playerPosition) {
+    /*
+        @return void
+        - update enemy position based on where player is
+    */
+
     // Calculating vector from Enemy to Player
     sf::Vector2f playerVectorDirection = playerPosition - this->position;
 
@@ -55,14 +63,18 @@ void Enemy::updatePosition(float dt, sf::Vector2f playerPosition) {
 }
 
 void Enemy::updateAnimation(float dt) {
-    frameTime += dt;
+    /*
+        @return void
+        - update enemy frame on spritesheet to add animations
+    */
+    this->frameTime += dt;
 
-    if(frameTime >= frameDuration) {
-        frameTime = 0.f;
-        frame++;
+    if(this->frameTime >= this->frameDuration) {
+        this->frameTime = 0.f;
+        this->frame++;
 
         int maxFrames = 8;
-        if(frame >= maxFrames) frame = 0;
-        sprite.setTextureRect(sf::IntRect({frame * 100, 0}, {100,100}));
+        if(this->frame >= maxFrames) this->frame = 0;
+        this->sprite.setTextureRect(sf::IntRect({frame * 100, 0}, {100,100}));
     }
 }

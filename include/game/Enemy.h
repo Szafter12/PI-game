@@ -46,10 +46,9 @@ class Enemy {
         // Constructor/Destructor
         Enemy(EnemyType type, sf::Vector2f position_, std::shared_ptr<sf::Texture> texture_);
 
-        // Functions
+        // Core Methods
         void update(float dt, sf::Vector2f playerPosition);
         void render(sf::RenderTarget* target);
-
 };
 
 
