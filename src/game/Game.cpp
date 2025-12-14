@@ -138,7 +138,7 @@ void Game::render() {
 // ******************* Core Methods End *******************
 
 // ******************* Other Methods Start *******************
-void Game::updateRectPos(float dt) {
+void Game::updateRectPos(const float dt) {
     /*
         @return void
         Temporary function to update position of fake player entity
@@ -184,7 +184,7 @@ void Game::spawnEnemy() {
     );
 }
 
-void Game::updateEnemies(float dt, sf::Vector2f playerPosition) {
+void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
     /*
         @return void
         - Add timer to spawning enemy with time interval
@@ -193,8 +193,8 @@ void Game::updateEnemies(float dt, sf::Vector2f playerPosition) {
 
     if (this->spawnTimer >= this->spawnInterval)
     {
-        spawnEnemy();
-        spawnTimer = 0.f;
+        this->spawnEnemy();
+        this->spawnTimer = 0.f;
     }
 
     for (auto const &enemy : enemies)
