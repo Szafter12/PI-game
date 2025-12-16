@@ -2,30 +2,25 @@
 #define GAME_PI_PLAYER_H
 #include <iostream>
 
+#include "Animation.h"
+
 
 class Player {
     public:
-    sf::Texture texture[8] = {sf::Texture("../../assets/images/HeroBase.png")};
-    sf::Sprite sprite = sf::Sprite(texture[0]);
+    sf::Texture texture = {sf::Texture("../../assets/images/Player.png")};
+    sf::Sprite sprite = sf::Sprite(texture);
     sf::Vector2f position;
 
     Player(const char* texturePath,sf::Vector2f position) {
-        if (!texture[0].loadFromFile(texturePath)) std::cout<<"Error loading texture"<<std::endl;
+        if (!texture.loadFromFile(texturePath)) std::cout<<"Error loading texture"<<std::endl;
         this->position = position;
-        sprite.setTexture(texture[0]);
+        sprite.setTexture(texture);
         sprite.setPosition(position);
     }
     Player(sf::Vector2f position) {
-        texture[0].loadFromFile("../../assets/images/HeroIdleUp.png");
-        texture[1].loadFromFile("../../assets/images/HeroIdleUpR.png");
-        texture[2].loadFromFile("../../assets/images/HeroIdleR.png");
-        texture[3].loadFromFile("../../assets/images/HeroIdleDownR.png");
-        texture[4].loadFromFile("../../assets/images/HeroBase.png");
-        texture[5].loadFromFile("../../assets/images/HeroIdleDownL.png");
-        texture[6].loadFromFile("../../assets/images/HeroIdleL.png");
-        texture[7].loadFromFile("../../assets/images/HeroIdleUpL.png");
+        //texture.loadFromFile("../../assets/images/Player.png");
         this->position = position;
-        sprite.setTexture(texture[0]);
+        sprite.setTexture(texture);
         sprite.setPosition(position);
     }
 
