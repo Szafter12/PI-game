@@ -37,19 +37,18 @@ class Game final {
     std::shared_ptr<sf::Texture> enemyTexture;
     std::vector<std::unique_ptr<Enemy>> enemies;
 
-
     ////////////////////////////////Zmienne testowe
-public:
     Player player = Player({800,600});
     sf::Texture texture = sf::Texture("../../assets/images/map.png");
     sf::Sprite obiekt = sf::Sprite(texture);
     sf::View view = sf::View({player.position.x+16, player.position.y+16}, {400.f, 300.f});
     //////////////////////////////////
+
     // Resources
 
     // Test player rectangle
-    sf::RectangleShape rectangle;
-    float velocityY = {};
+    //sf::RectangleShape rectangle;
+    //float velocityY = {};
 
     // Private functions:
     void initVariables();

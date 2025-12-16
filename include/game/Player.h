@@ -2,7 +2,6 @@
 #define GAME_PI_PLAYER_H
 #include <iostream>
 
-
 class Player {
     public:
     sf::Texture texture[8] = {sf::Texture("../../assets/images/HeroBase.png")};
@@ -15,6 +14,7 @@ class Player {
         sprite.setTexture(texture[0]);
         sprite.setPosition(position);
     }
+
     Player(sf::Vector2f position) {
         texture[0].loadFromFile("../../assets/images/HeroIdleUp.png");
         texture[1].loadFromFile("../../assets/images/HeroIdleUpR.png");

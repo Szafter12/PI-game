@@ -12,7 +12,6 @@ void Game::initVariables() {
     // objects variables
     this->maxEnemies = 10;
     this->spawnInterval = 1.5f;
-    this->velocityY = 20.f;
     this->obiekt.setPosition({0,0});
 }
 
@@ -22,6 +21,7 @@ void Game::initWindow() {
        - Initialize starting window
        - Adding default options
    */
+
     this->settings.antiAliasingLevel = 8;
     this->window = new sf::RenderWindow (sf::VideoMode({640,480}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
     this->window->setFramerateLimit(60);
@@ -52,16 +52,6 @@ Game::Game()
     this->initVariables();
     this->initWindow();
     this->initEnemies();
-
-    // ***INITIALIZE FAKE PLAYER TEXTURE FOR TESTING***
-    sf::Vector2f screenCenter;
-    screenCenter.x = this->screenSize.x / 2.f;
-    screenCenter.y = this->screenSize.y / 2.f;
-    this->rectangle.setSize({20.f, 80.f});
-    this->rectangle.setOrigin(sf::Vector2f(10.f, 40.f));
-    this->rectangle.setPosition(sf::Vector2f(screenCenter.x, screenCenter.y));
-    this->rectangle.setFillColor(sf::Color::White);
-    // ***INITIALIZE FAKE PLAYER TEXTURE FOR TESTING***
 }
 
 Game::~Game() {
@@ -107,11 +97,9 @@ void Game::update(float dt) {
 
     this->pollEvents();
 
-    // test player position
-    updateRectPos(dt);
-
     // Update enemies
-    sf::Vector2f playerPosition = this->rectangle.getPosition();
+    sf::Vector2f playerPosition = this->player.position;
+
     updateEnemies(dt, playerPosition);
     this->player.update(*this->window);
 
@@ -136,9 +124,6 @@ void Game::render() {
         enemy->render(this->window);
     }
 
-    // Draw test player entity
-    this->window->draw(this->rectangle);
-
     this->window->draw(obiekt);
     this->player.draw(*this->window);
 
@@ -147,27 +132,6 @@ void Game::render() {
 // ******************* Core Methods End *******************
 
 // ******************* Other Methods Start *******************
-void Game::updateRectPos(const float dt) {
-    /*
-        @return void
-        Temporary function to update position of fake player entity
-    */
-
-    float y = rectangle.getPosition().y;
-    float x = this->rectangle.getPosition().x;
-    y += velocityY * dt;
-    x -= 20.f * dt;
-    // if hit the edge -> change direction
-    if(y <= 0.f) {
-        y = 0.f;
-        this->velocityY = std::abs(this->velocityY); // down
-    } else if(y >= window->getSize().y - this->rectangle.getSize().y) {
-        y = window->getSize().y - this->rectangle.getSize().y;
-        this->velocityY = -std::abs(this->velocityY); // up
-    }
-
-    this->rectangle.setPosition(sf::Vector2f(x, y));
-}
 
 void Game::spawnEnemy() {
     /*
