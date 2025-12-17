@@ -33,7 +33,7 @@ class Enemy {
         std::shared_ptr<sf::Texture> texture;
         sf::Sprite sprite;
         sf::Vector2f position {};
-        float scale {2.f};
+        float scale {};
         EnemyDirection direction = EnemyDirection::Down;
         EnemyDirection lastDirection = direction;
         sf::RectangleShape hitBox;
@@ -58,11 +58,11 @@ class Enemy {
 
         // Core Methods
         void update(float dt, sf::Vector2f playerPosition);
-        void render(sf::RenderTarget* target);
+        void render(sf::RenderTarget* target) const;
 
         // Other Methods
         sf::FloatRect getBounds() const;
-        void initHitBox();
+        void initHitBoxOutline();
 };
 
 

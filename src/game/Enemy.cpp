@@ -1,7 +1,7 @@
 #include "../../include/game/Enemy.h"
 
 Enemy::Enemy(EnemyType type, sf::Vector2f position_, std::shared_ptr<sf::Texture> texture_)
-    : position(position_), texture(std::move(texture_)), sprite(*texture) {
+    : texture(std::move(texture_)), sprite(*texture), position(position_) {
     // Switch between enemies types
     switch (type) {
         case EnemyType::Basic:
@@ -12,17 +12,18 @@ Enemy::Enemy(EnemyType type, sf::Vector2f position_, std::shared_ptr<sf::Texture
     }
 
     // Set sprite basic settings
-    sprite.setPosition(position);
-    sprite.setTextureRect(sf::IntRect({0,0},{192/4,192/4}));
+    this->sprite.setPosition(this->position);
+    this->sprite.setTextureRect(sf::IntRect({0,0},{192/4,192/4}));
+    this->scale = 2.f;
 }
 
 void Enemy::update(float dt, sf::Vector2f playerPosition) {
     updatePosition(dt, playerPosition);
     updateAnimation(dt);
-    this->initHitBox();
+    this->initHitBoxOutline();
 }
 
-void Enemy::render(sf::RenderTarget* target) {
+void Enemy::render(sf::RenderTarget* target) const {
     target->draw(this->sprite);
 
     // Draw hitBox
@@ -89,7 +90,7 @@ void Enemy::updateAnimation(float dt) {
 
         if(this->frame >= this->maxFrames) this->frame = 0;
 
-        int row = static_cast<int>(this->direction);
+        const int row = static_cast<int>(this->direction);
 
         int frameWidth  = 192 / 4;
         int frameHeight = 192 / 4;
@@ -98,8 +99,7 @@ void Enemy::updateAnimation(float dt) {
             sf::IntRect({
                 frame * frameWidth,
                 row * frameHeight,
-                },
-                {
+                },{
                 frameWidth,
                 frameHeight
                 }
@@ -110,8 +110,7 @@ void Enemy::updateAnimation(float dt) {
 
 sf::FloatRect Enemy::getBounds() const
 {
-    sf::FloatRect bounds;
-    bounds = sprite.getGlobalBounds();
+    sf::FloatRect bounds = sprite.getGlobalBounds();
     bounds.size.x = bounds.size.x / 3;
     bounds.size.y = bounds.size.y / 3;
     bounds.position.x = bounds.position.x + bounds.size.x;
@@ -119,7 +118,7 @@ sf::FloatRect Enemy::getBounds() const
     return bounds;
 }
 
-void Enemy::initHitBox() {
+void Enemy::initHitBoxOutline() {
     sf::FloatRect bounds = this->getBounds();
 
     this->hitBox.setPosition(sf::Vector2f(bounds.position.x, bounds.position.y));
