@@ -1,32 +1,32 @@
 #include "../../include/game/Enemy.h"
 
 Enemy::Enemy(EnemyType type, sf::Vector2f position_, std::shared_ptr<sf::Texture> texture_)
-    : position(position_), rotation(0.f), texture(std::move(texture_)), sprite(*texture) {
+    : position(position_), texture(std::move(texture_)), sprite(*texture) {
     // Switch between enemies types
     switch (type) {
         case EnemyType::Basic:
             this->maxHp = 100;
             this->hp = this->maxHp;
             this->speed = 50.0f;
-            this->rotation = 0.f;
             break;
     }
 
     // Set sprite basic settings
-    sprite.setOrigin(sf::Vector2f(50.f,50.f));
     sprite.setPosition(position);
-    sprite.setTextureRect(sf::IntRect({0, 0}, {100, 100}));
-    sprite.scale(sf::Vector2f(scale, scale));
-    sprite.setRotation(sf::degrees(this->rotation));
+    sprite.setTextureRect(sf::IntRect({0,0},{192/4,192/4}));
 }
 
 void Enemy::update(float dt, sf::Vector2f playerPosition) {
-    updateAnimation(dt);
     updatePosition(dt, playerPosition);
+    updateAnimation(dt);
+    this->initHitBox();
 }
 
 void Enemy::render(sf::RenderTarget* target) {
-    target->draw(sprite);
+    target->draw(this->sprite);
+
+    // Draw hitBox
+    target->draw(this->hitBox);
 }
 
 void Enemy::updatePosition(float dt, sf::Vector2f playerPosition) {
@@ -54,12 +54,20 @@ void Enemy::updatePosition(float dt, sf::Vector2f playerPosition) {
     this->position.y += velocity.y * dt;
 
     // if sprite change angle more than 90 degress
-    if (degrees > 90) this->sprite.setScale(sf::Vector2f(scale, -scale));
+    if (degrees >= -45 && degrees < 45)
+        direction = EnemyDirection::Right;
+    else if (degrees >= 45 && degrees < 135)
+        direction = EnemyDirection::Down;
+    else if (degrees < -45 && degrees >= -135)
+        direction = EnemyDirection::Up;
+    else
+        direction = EnemyDirection::Left;
 
-    // Setting new position and rotate sprite
-    this->rotation = degrees;
-    this->sprite.setRotation(sf::degrees(this->rotation));
+    // Setting new position
     this->sprite.setPosition(this->position);
+    sf::FloatRect bounds = this->sprite.getLocalBounds();
+    this->sprite.setOrigin(sf::Vector2f(bounds.size.x / 2.f, bounds.size.y / 2.f));
+    this->sprite.setScale(sf::Vector2f(this->scale, this->scale));
 }
 
 void Enemy::updateAnimation(float dt) {
@@ -67,14 +75,56 @@ void Enemy::updateAnimation(float dt) {
         @return void
         - update enemy frame on spritesheet to add animations
     */
-    this->frameTime += dt;
 
+    if (direction != lastDirection) {
+        frame = 0;
+        frameTime = 0.f;
+        lastDirection = direction;
+    }
+
+    this->frameTime += dt;
     if(this->frameTime >= this->frameDuration) {
         this->frameTime = 0.f;
         this->frame++;
 
-        int maxFrames = 8;
-        if(this->frame >= maxFrames) this->frame = 0;
-        this->sprite.setTextureRect(sf::IntRect({frame * 100, 0}, {100,100}));
+        if(this->frame >= this->maxFrames) this->frame = 0;
+
+        int row = static_cast<int>(this->direction);
+
+        int frameWidth  = 192 / 4;
+        int frameHeight = 192 / 4;
+
+        sprite.setTextureRect(
+            sf::IntRect({
+                frame * frameWidth,
+                row * frameHeight,
+                },
+                {
+                frameWidth,
+                frameHeight
+                }
+            )
+        );
     }
+}
+
+sf::FloatRect Enemy::getBounds() const
+{
+    sf::FloatRect bounds;
+    bounds = sprite.getGlobalBounds();
+    bounds.size.x = bounds.size.x / 3;
+    bounds.size.y = bounds.size.y / 3;
+    bounds.position.x = bounds.position.x + bounds.size.x;
+    bounds.position.y = bounds.position.y + bounds.size.y;
+    return bounds;
+}
+
+void Enemy::initHitBox() {
+    sf::FloatRect bounds = this->getBounds();
+
+    this->hitBox.setPosition(sf::Vector2f(bounds.position.x, bounds.position.y));
+    this->hitBox.setSize(sf::Vector2f(bounds.size.x, bounds.size.y));
+    this->hitBox.setFillColor(sf::Color::Transparent);
+    this->hitBox.setOutlineColor(sf::Color::Red);
+    this->hitBox.setOutlineThickness(1.f);
 }

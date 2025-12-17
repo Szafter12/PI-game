@@ -44,17 +44,10 @@ class Game final {
     sf::View view = sf::View({player.position.x+16, player.position.y+16}, {400.f, 300.f});
     //////////////////////////////////
 
-    // Resources
-
-    // Test player rectangle
-    //sf::RectangleShape rectangle;
-    //float velocityY = {};
-
     // Private functions:
     void initVariables();
     void initWindow();
     void initEnemies();
-    void updateRectPos(float dt);
 public:
     // Constructor / Destructor
     Game ();

@@ -20,23 +20,33 @@ enum class EnemyState {
     Attack
 };
 
+enum class EnemyDirection {
+    Down = 0,
+    Up = 1,
+    Left = 2,
+    Right = 3,
+};
+
 class Enemy {
     private:
         // Private properties
         std::shared_ptr<sf::Texture> texture;
         sf::Sprite sprite;
-        sf::Vector2f position;
-        float rotation;
-        float scale = 2.f;
+        sf::Vector2f position {};
+        float scale {2.f};
+        EnemyDirection direction = EnemyDirection::Down;
+        EnemyDirection lastDirection = direction;
+        sf::RectangleShape hitBox;
 
-        float speed;
-        int maxHp;
-        int hp;
+        float speed {};
+        int maxHp {};
+        int hp {};
 
-        EnemyState state = EnemyState::Idle;
-        int frame = 0;
-        float frameTime = 0.f;
-        float frameDuration = 0.1f;
+        EnemyState state = EnemyState::Run;
+        int frame {0};
+        int maxFrames {4};
+        float frameTime {0.f};
+        float frameDuration = {0.1f};
 
         // Private methods
         void updateAnimation(float dt);
@@ -49,6 +59,10 @@ class Enemy {
         // Core Methods
         void update(float dt, sf::Vector2f playerPosition);
         void render(sf::RenderTarget* target);
+
+        // Other Methods
+        sf::FloatRect getBounds() const;
+        void initHitBox();
 };
 
 

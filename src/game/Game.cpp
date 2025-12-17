@@ -38,7 +38,7 @@ void Game::initEnemies()
     };
 
     this->enemyTexture = std::make_shared<sf::Texture>();
-    if (!enemyTexture->loadFromFile("../../assets/images/Orc-Walk.png"))
+    if (!enemyTexture->loadFromFile("../../assets/images/test_enemy.png"))
         throw std::runtime_error("Failed to load texture");
 
     this->spawnTimer = 0.f;
