@@ -12,7 +12,9 @@ void Game::initVariables() {
     // objects variables
     this->maxEnemies = 10;
     this->spawnInterval = 1.5f;
-    this->obiekt.setPosition({0,0});
+
+    player.position = {screenSize.x / 2.f, screenSize.y / 2.f};
+    view = sf::View({player.position.x, player.position.y}, {400.f, 300.f});
 }
 
 void Game::initWindow() {
@@ -124,7 +126,6 @@ void Game::render() {
         enemy->render(this->window);
     }
 
-    this->window->draw(obiekt);
     this->player.draw(*this->window);
 
     this->window->display();

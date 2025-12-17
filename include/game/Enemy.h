@@ -15,7 +15,6 @@ enum class EnemyType {
 };
 
 enum class EnemyState {
-    Idle,
     Run,
     Attack
 };
