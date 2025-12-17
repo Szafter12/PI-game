@@ -41,6 +41,7 @@ class Enemy {
         float speed {};
         int maxHp {};
         int hp {};
+        sf::Vector2f velocity;
 
         EnemyState state = EnemyState::Run;
         int frame {0};
@@ -63,6 +64,9 @@ class Enemy {
         // Other Methods
         sf::FloatRect getBounds() const;
         void initHitBoxOutline();
+
+        void checkCollisionWithOtherEnemies(Enemy &other, float dt);
+        sf::Vector2f getPosition() const;
 };
 
 

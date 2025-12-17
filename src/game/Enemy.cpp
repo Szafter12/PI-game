@@ -27,7 +27,7 @@ void Enemy::render(sf::RenderTarget* target) const {
     target->draw(this->sprite);
 
     // Draw hitBox
-    target->draw(this->hitBox);
+    //target->draw(this->hitBox);
 }
 
 void Enemy::updatePosition(float dt, sf::Vector2f playerPosition) {
@@ -48,9 +48,8 @@ void Enemy::updatePosition(float dt, sf::Vector2f playerPosition) {
     float degrees = radians * 180.f / PI;
 
     // Calculating sprite velocity and position
-    sf::Vector2f velocity;
-    velocity.x = playerVectorDirection.x * this->speed;
-    velocity.y = playerVectorDirection.y * this->speed;
+    this->velocity.x = playerVectorDirection.x * this->speed;
+    this->velocity.y = playerVectorDirection.y * this->speed;
     this->position.x += velocity.x * dt;
     this->position.y += velocity.y * dt;
 
@@ -126,4 +125,28 @@ void Enemy::initHitBoxOutline() {
     this->hitBox.setFillColor(sf::Color::Transparent);
     this->hitBox.setOutlineColor(sf::Color::Red);
     this->hitBox.setOutlineThickness(1.f);
+}
+
+sf::Vector2f Enemy::getPosition() const {
+    return this->position;
+}
+
+void Enemy::checkCollisionWithOtherEnemies(Enemy &other, float dt) {
+    const sf::FloatRect a = this->getBounds();
+    const sf::FloatRect b = other.getBounds();
+
+    if (!a.findIntersection(b)) return;
+
+    sf::Vector2f delta = other.position - position;
+    float dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+    if (dist == 0.f) return;
+
+    sf::Vector2f normal = delta / dist;
+
+    float push = this->speed * dt;
+    this->position -= normal * push;
+    other.position += normal * push;
+
+    sprite.setPosition(position);
+    other.sprite.setPosition(other.position);
 }

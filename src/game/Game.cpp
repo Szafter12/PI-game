@@ -100,7 +100,7 @@ void Game::update(float dt) {
     // Update enemies
     sf::Vector2f playerPosition = this->player.position;
 
-    updateEnemies(dt, playerPosition);
+    this->updateEnemies(dt, playerPosition);
     this->player.update(*this->window);
 
     this->view.setCenter({player.position.x+16, player.position.y+16});
@@ -172,5 +172,11 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
 
     for (auto const &enemy : enemies)
         enemy->update(dt, playerPosition);
+
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        for (size_t j = i + 1; j < enemies.size(); ++j) {
+            enemies[i]->checkCollisionWithOtherEnemies(*enemies[j], dt);
+        }
+    }
 }
 // ******************* Other Methods End *******************
