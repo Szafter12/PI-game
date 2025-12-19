@@ -4,6 +4,7 @@
 #include <memory>
 #include <cmath>
 #include <iostream>
+#include "Player.h"
 
 #ifndef GAME_PI_ENEMY_H
 #define GAME_PI_ENEMY_H
@@ -29,10 +30,13 @@ enum class EnemyDirection {
 class Enemy {
     private:
         // Private properties
-        std::shared_ptr<sf::Texture> texture;
+        sf::Texture textureRun = {sf::Texture("../../assets/images/test_enemy.png")};
+        sf::Texture textureAttack = {sf::Texture("../../assets/images/enemy_attack.png")};
+
         sf::Sprite sprite;
         sf::Vector2f position {};
         float scale {};
+
         EnemyDirection direction = EnemyDirection::Down;
         EnemyDirection lastDirection = direction;
         sf::RectangleShape hitBox;
@@ -44,7 +48,6 @@ class Enemy {
 
         EnemyState state = EnemyState::Run;
         int frame {0};
-        int maxFrames {4};
         float frameTime {0.f};
         float frameDuration = {0.1f};
 
@@ -54,7 +57,7 @@ class Enemy {
 
     public:
         // Constructor/Destructor
-        Enemy(EnemyType type, sf::Vector2f position_, std::shared_ptr<sf::Texture> texture_);
+        Enemy(EnemyType type, sf::Vector2f position_);
 
         // Core Methods
         void update(float dt, sf::Vector2f playerPosition);
@@ -66,6 +69,9 @@ class Enemy {
 
         void checkCollisionWithOtherEnemies(Enemy &other, float dt);
         sf::Vector2f getPosition() const;
+        void collideWithPlayer (Player &player, float dt);
+        void attackPlayer();
+        void enemyRun();
 };
 
 

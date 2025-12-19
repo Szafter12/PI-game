@@ -39,10 +39,6 @@ void Game::initEnemies()
         {screenSize.x / 2.f, static_cast<float>(screenSize.y)}
     };
 
-    this->enemyTexture = std::make_shared<sf::Texture>();
-    if (!enemyTexture->loadFromFile("../../assets/images/test_enemy.png"))
-        throw std::runtime_error("Failed to load texture");
-
     this->spawnTimer = 0.f;
     this->spawnInterval = 1.5f;
 }
@@ -102,12 +98,16 @@ void Game::update(float dt) {
     // Update enemies
     sf::Vector2f playerPosition = this->player.position;
 
+
     this->updateEnemies(dt, playerPosition);
     this->player.update(*this->window);
 
+    for (auto &enemy: this->enemies) {
+        enemy->collideWithPlayer(player, dt);
+    }
+
     this->view.setCenter({player.position.x+16, player.position.y+16});
     this->window->setView(view);
-
 }
 
 void Game::render() {
@@ -152,9 +152,7 @@ void Game::spawnEnemy() {
     this->enemies.push_back(
         std::make_unique<Enemy>(
             EnemyType::Basic,
-            this->spawnPositions[randPosIdx] + offset,
-            this->enemyTexture
-        )
+            this->spawnPositions[randPosIdx] + offset)
     );
 }
 

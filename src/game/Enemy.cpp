@@ -1,7 +1,8 @@
 #include "../../include/game/Enemy.h"
+#include "../../include/game/Player.h"
 
-Enemy::Enemy(EnemyType type, sf::Vector2f position_, std::shared_ptr<sf::Texture> texture_)
-    : texture(std::move(texture_)), sprite(*texture), position(position_) {
+Enemy::Enemy(EnemyType type, sf::Vector2f position_)
+    : sprite(this->textureRun), position(position_) {
     // Switch between enemies types
     switch (type) {
         case EnemyType::Basic:
@@ -27,7 +28,7 @@ void Enemy::render(sf::RenderTarget* target) const {
     target->draw(this->sprite);
 
     // Draw hitBox
-    //target->draw(this->hitBox);
+    target->draw(this->hitBox);
 }
 
 void Enemy::updatePosition(float dt, sf::Vector2f playerPosition) {
@@ -77,22 +78,33 @@ void Enemy::updateAnimation(float dt) {
     */
 
     if (direction != lastDirection) {
-        frame = 0;
-        frameTime = 0.f;
-        lastDirection = direction;
+        this->frame = 0;
+        this->frameTime = 0.f;
+        this->lastDirection = this->direction;
     }
 
     this->frameTime += dt;
     if(this->frameTime >= this->frameDuration) {
         this->frameTime = 0.f;
         this->frame++;
+        int maxFrame {};
 
-        if(this->frame >= this->maxFrames) this->frame = 0;
+        int frameWidth {};
+        int frameHeight {};
+
+        if (this->state == EnemyState::Run) {
+            maxFrame = 4;
+            frameWidth  = 192 / maxFrame;
+            frameHeight = 192 / 4;
+        } else if (this->state == EnemyState::Attack) {
+            maxFrame = 2;
+            frameWidth  = 96 / maxFrame;
+            frameHeight = 192 / 4;
+        }
+
+        if(this->frame >= maxFrame) this->frame = 0;
 
         const int row = static_cast<int>(this->direction);
-
-        int frameWidth  = 192 / 4;
-        int frameHeight = 192 / 4;
 
         sprite.setTextureRect(
             sf::IntRect({
@@ -150,3 +162,47 @@ void Enemy::checkCollisionWithOtherEnemies(Enemy &other, float dt) {
     sprite.setPosition(position);
     other.sprite.setPosition(other.position);
 }
+
+void Enemy::collideWithPlayer (Player &player, float dt) {
+    sf::FloatRect playerBounds = player.getBounds();
+
+    if (!playerBounds.findIntersection(this->getBounds())) {
+        if (this->state != EnemyState::Run) {
+            this->state = EnemyState::Run;
+            this->enemyRun();
+        }
+        return;
+    }
+
+    if (this->state != EnemyState::Attack) {
+        this->state = EnemyState::Attack;
+        this->attackPlayer();
+    }
+    this->state = EnemyState::Attack;
+    this->attackPlayer();
+
+    sf::Vector2f delta = player.position - this->position;
+    float dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+    if (dist == 0.f) return;
+
+    sf::Vector2f normal = delta / dist;
+
+    float push = this->speed * dt;
+    this->position -= normal * push;
+    player.position += normal * push;
+
+    this->sprite.setPosition(this->position);
+    player.sprite.setPosition(player.position);
+}
+
+void Enemy::attackPlayer() {
+    this->lastDirection = this->direction;
+    this->sprite.setTexture(this->textureAttack);
+}
+
+void Enemy::enemyRun() {
+    this->lastDirection = this->direction;
+    this->sprite.setTexture(this->textureRun);
+}
+
+

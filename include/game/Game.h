@@ -34,7 +34,6 @@ class Game final {
 
     // Game objects
     std::vector<sf::Vector2f> spawnPositions;
-    std::shared_ptr<sf::Texture> enemyTexture;
     std::vector<std::unique_ptr<Enemy>> enemies;
 
     ////////////////////////////////Zmienne testowe
