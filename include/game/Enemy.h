@@ -28,49 +28,60 @@ enum class EnemyDirection {
 };
 
 class Enemy {
-    private:
-        // Private properties
-        sf::Texture textureRun = {sf::Texture("../../assets/images/test_enemy.png")};
-        sf::Texture textureAttack = {sf::Texture("../../assets/images/enemy_attack.png")};
+private:
+    // Private properties
 
-        sf::Sprite sprite;
-        sf::Vector2f position {};
-        float scale {};
+    // Texture and sprite
+    sf::Texture textureRun = {sf::Texture("../../assets/images/test_enemy.png")};
+    sf::Texture textureAttack = {sf::Texture("../../assets/images/enemy_attack.png")};
+    sf::Sprite sprite;
 
-        EnemyDirection direction = EnemyDirection::Down;
-        EnemyDirection lastDirection = direction;
-        sf::RectangleShape hitBox;
+    // Position
+    sf::Vector2f position{};
+    float scale{};
+    EnemyDirection direction = EnemyDirection::Down;
+    EnemyDirection lastDirection = direction;
+    sf::RectangleShape hitBox;
 
-        float speed {};
-        int maxHp {};
-        int hp {};
-        sf::Vector2f velocity;
+    // stats
+    float speed{};
+    int maxHp{};
+    int hp{};
+    sf::Vector2f velocity;
 
-        EnemyState state = EnemyState::Run;
-        int frame {0};
-        float frameTime {0.f};
-        float frameDuration = {0.1f};
+    // animations
+    EnemyState state = EnemyState::Run;
+    int frame{0};
+    float frameTime{0.f};
+    float frameDuration = {0.1f};
+    float frameDurationAttack = {0.2f};
+    bool isAttacking = false;
 
-        // Private methods
-        void updateAnimation(float dt);
-        void updatePosition(float dt, sf::Vector2f playerPosition);
+    // Private methods
+    void updateAnimation(float dt);
+    void updatePosition(float dt, sf::Vector2f playerPosition);
+    void enemyChangeTexture();
+    void initHitBoxOutline();
+    void startAttack();
+    void setState(EnemyState newState);
 
-    public:
-        // Constructor/Destructor
-        Enemy(EnemyType type, sf::Vector2f position_);
+public:
+    // Constructor/Destructor
+    Enemy(EnemyType type, sf::Vector2f position_);
 
-        // Core Methods
-        void update(float dt, sf::Vector2f playerPosition);
-        void render(sf::RenderTarget* target) const;
+    // Core Methods
+    void update(float dt, sf::Vector2f playerPosition);
 
-        // Other Methods
-        sf::FloatRect getBounds() const;
-        void initHitBoxOutline();
+    void render(sf::RenderTarget *target) const;
 
-        void checkCollisionWithOtherEnemies(Enemy &other, float dt);
-        sf::Vector2f getPosition() const;
-        void collideWithPlayer (Player &player, float dt);
-        void enemyChangeTexture();
+    // Other Methods
+    sf::FloatRect getBounds() const;
+
+    void checkCollisionWithOtherEnemies(Enemy &other, float dt);
+
+    sf::Vector2f getPosition() const;
+
+    void collideWithPlayer(Player &player, float dt);
 };
 
 
