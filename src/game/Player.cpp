@@ -1,17 +1,18 @@
 #include "../../include/game/Player.h"
 
 Player::Player(sf::Vector2f position) {
-    texture[0].loadFromFile("../../assets/images/HeroIdleUp.png");
-    texture[1].loadFromFile("../../assets/images/HeroIdleUpR.png");
-    texture[2].loadFromFile("../../assets/images/HeroIdleR.png");
-    texture[3].loadFromFile("../../assets/images/HeroIdleDownR.png");
-    texture[4].loadFromFile("../../assets/images/HeroBase.png");
-    texture[5].loadFromFile("../../assets/images/HeroIdleDownL.png");
-    texture[6].loadFromFile("../../assets/images/HeroIdleL.png");
-    texture[7].loadFromFile("../../assets/images/HeroIdleUpL.png");
+    this->texture[0].loadFromFile("../../assets/images/HeroIdleUp.png");
+    this->texture[1].loadFromFile("../../assets/images/HeroIdleUpR.png");
+    this->texture[2].loadFromFile("../../assets/images/HeroIdleR.png");
+    this->texture[3].loadFromFile("../../assets/images/HeroIdleDownR.png");
+    this->texture[4].loadFromFile("../../assets/images/HeroBase.png");
+    this->texture[5].loadFromFile("../../assets/images/HeroIdleDownL.png");
+    this->texture[6].loadFromFile("../../assets/images/HeroIdleL.png");
+    this->texture[7].loadFromFile("../../assets/images/HeroIdleUpL.png");
     this->position = position;
-    sprite.setTexture(texture[0]);
-    sprite.setPosition(position);
+    this->sprite.setTexture(this->texture[0]);
+    this->sprite.setPosition(this->position);
+    this->sprite.setOrigin(sf::Vector2f(32.f/2.f, 32.f/2.f));
 }
 
 void Player::update(sf::RenderWindow &window) {

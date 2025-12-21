@@ -22,6 +22,7 @@ void Enemy::update(float dt, sf::Vector2f playerPosition) {
     updatePosition(dt, playerPosition);
     updateAnimation(dt);
     this->initHitBoxOutline();
+    this->enemyChangeTexture();
 }
 
 void Enemy::render(sf::RenderTarget* target) const {
@@ -55,7 +56,7 @@ void Enemy::updatePosition(float dt, sf::Vector2f playerPosition) {
     this->position.y += velocity.y * dt;
 
     // if sprite change angle more than 90 degress
-    if (degrees >= -45 && degrees < 45)
+    if (degrees >= -45 && degrees <= 45)
         direction = EnemyDirection::Right;
     else if (degrees >= 45 && degrees < 135)
         direction = EnemyDirection::Down;
@@ -99,7 +100,7 @@ void Enemy::updateAnimation(float dt) {
         } else if (this->state == EnemyState::Attack) {
             maxFrame = 2;
             frameWidth  = 96 / maxFrame;
-            frameHeight = 192 / 4;
+            frameHeight = 576 / 12;
         }
 
         if(this->frame >= maxFrame) this->frame = 0;
@@ -169,17 +170,15 @@ void Enemy::collideWithPlayer (Player &player, float dt) {
     if (!playerBounds.findIntersection(this->getBounds())) {
         if (this->state != EnemyState::Run) {
             this->state = EnemyState::Run;
-            this->enemyRun();
+            this->enemyChangeTexture();
         }
         return;
     }
 
     if (this->state != EnemyState::Attack) {
         this->state = EnemyState::Attack;
-        this->attackPlayer();
+        this->enemyChangeTexture();
     }
-    this->state = EnemyState::Attack;
-    this->attackPlayer();
 
     sf::Vector2f delta = player.position - this->position;
     float dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
@@ -195,14 +194,15 @@ void Enemy::collideWithPlayer (Player &player, float dt) {
     player.sprite.setPosition(player.position);
 }
 
-void Enemy::attackPlayer() {
-    this->lastDirection = this->direction;
-    this->sprite.setTexture(this->textureAttack);
-}
-
-void Enemy::enemyRun() {
-    this->lastDirection = this->direction;
-    this->sprite.setTexture(this->textureRun);
+void Enemy::enemyChangeTexture() {
+    switch (this->state) {
+        case EnemyState::Run:
+            this->sprite.setTexture(this->textureRun);
+            break;
+        case EnemyState::Attack:
+            this->sprite.setTexture(this->textureAttack);
+            break;
+    }
 }
 
 

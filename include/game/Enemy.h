@@ -70,8 +70,7 @@ class Enemy {
         void checkCollisionWithOtherEnemies(Enemy &other, float dt);
         sf::Vector2f getPosition() const;
         void collideWithPlayer (Player &player, float dt);
-        void attackPlayer();
-        void enemyRun();
+        void enemyChangeTexture();
 };
 
 
