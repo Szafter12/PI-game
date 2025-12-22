@@ -31,23 +31,15 @@ class Enemy {
 private:
     // Private properties
 
-    // Texture and sprite
+    // Texture
     sf::Texture textureRun = {sf::Texture("../../assets/images/test_enemy.png")};
     sf::Texture textureAttack = {sf::Texture("../../assets/images/enemy_attack.png")};
-    sf::Sprite sprite;
 
     // Position
-    sf::Vector2f position{};
     float scale{};
     EnemyDirection direction = EnemyDirection::Down;
     EnemyDirection lastDirection = direction;
     sf::RectangleShape hitBox;
-
-    // stats
-    float speed{};
-    int maxHp{};
-    int hp{};
-    sf::Vector2f velocity;
 
     // animations
     EnemyState state = EnemyState::Run;
@@ -64,23 +56,34 @@ private:
     void initHitBoxOutline();
     void startAttack();
     void setState(EnemyState newState);
+    void resetAnimation();
 
 public:
+    // Public properties
+
+    // stats
+    float speed {};
+    sf::Vector2f position{};
+    int maxHp {};
+    int hp {};
+    int armor {};
+    int ad {};
+    sf::Vector2f velocity;
+
+    // Sprite
+    sf::Sprite sprite;
+
     // Constructor/Destructor
     Enemy(EnemyType type, sf::Vector2f position_);
 
     // Core Methods
     void update(float dt, sf::Vector2f playerPosition);
-
     void render(sf::RenderTarget *target) const;
 
     // Other Methods
     sf::FloatRect getBounds() const;
-
     void checkCollisionWithOtherEnemies(Enemy &other, float dt);
-
     sf::Vector2f getPosition() const;
-
     void collideWithPlayer(Player &player, float dt);
 };
 

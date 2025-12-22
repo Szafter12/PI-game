@@ -55,7 +55,7 @@ void Player::update(sf::RenderWindow &window) {
 
 void Player::draw(sf::RenderWindow &window) {
     window.draw(sprite);
-    window.draw(hitBox);
+    // window.draw(hitBox);
 }
 
 sf::FloatRect Player::getBounds() const
