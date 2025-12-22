@@ -26,7 +26,9 @@ FetchContent_MakeAvailable(SFML)
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 
 # Making executable
-add_executable(Game_PI ${SOURCES})
+add_executable(Game_PI ${SOURCES}
+        src/game/map.cpp
+        include/game/map.h)
 
 # Add directiores with headers
 target_include_directories(Game_PI PRIVATE include)
