@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef GAME_PI_PLAYER_H
 #define GAME_PI_PLAYER_H
 

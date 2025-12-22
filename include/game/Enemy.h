@@ -16,6 +16,7 @@ enum class EnemyType {
 };
 
 enum class EnemyState {
+    Idle,
     Run,
     Attack
 };
@@ -86,6 +87,4 @@ public:
     sf::Vector2f getPosition() const;
     void collideWithPlayer(Player &player, float dt);
 };
-
-
 #endif //GAME_PI_ENEMY_H

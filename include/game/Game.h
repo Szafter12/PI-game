@@ -10,6 +10,7 @@
 #include "Enemy.h"
 
 #include "Player.h"
+#include "Bullet.h"
 
 #ifndef GAME_PI_GAME_H
 #define GAME_PI_GAME_H
@@ -34,6 +35,7 @@ class Game final {
 
     // Game objects
     std::vector<sf::Vector2f> spawnPositions;
+    std::shared_ptr<sf::Texture> enemyTexture;
     std::vector<std::unique_ptr<Enemy>> enemies;
 
     ////////////////////////////////Zmienne testowe
@@ -41,10 +43,17 @@ class Game final {
     sf::View view {};
     //////////////////////////////////
 
+    // Bullets
+    std::vector<std::unique_ptr<Bullet>> bullets;
+
+
     // Private functions:
     void initVariables();
     void initWindow();
     void initEnemies();
+    void updateRectPos(float dt);
+    void updateBullets(float dt);
+
 public:
     // Constructor / Destructor
     Game ();
