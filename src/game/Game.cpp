@@ -12,8 +12,9 @@ void Game::initVariables() {
     // objects variables
     this->maxEnemies = 10;
     this->spawnInterval = 1.5f;
-    this->obiekt.setPosition({0,0});
 
+    this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
+    this->view = sf::View({this->player.position.x, this->player.position.y}, {400.f, 300.f});
 }
 
 void Game::initWindow() {
@@ -37,10 +38,6 @@ void Game::initEnemies()
         {static_cast<float>(screenSize.x), screenSize.y / 2.f},
         {screenSize.x / 2.f, static_cast<float>(screenSize.y)}
     };
-
-    this->enemyTexture = std::make_shared<sf::Texture>();
-    if (!enemyTexture->loadFromFile("../../assets/images/Orc-Walk.png"))
-        throw std::runtime_error("Failed to load texture");
 
     this->spawnTimer = 0.f;
     this->spawnInterval = 1.5f;
@@ -96,23 +93,23 @@ void Game::update(float dt) {
         - frames per seconds time
     */
 
-
     this->pollEvents();
 
     // Update enemies
     sf::Vector2f playerPosition = this->player.position;
 
+    this->updateEnemies(dt, playerPosition);
     // Update bullets
     this->updateBullets(dt);
-
     updateEnemies(dt, playerPosition);
     this->player.update(*this->window);
 
-    this->view.setCenter({player.position.x+16, player.position.y+16});
+    for (auto &enemy: this->enemies) {
+        enemy->collideWithPlayer(player, dt);
+    }
+
+    this->view.setCenter({player.position.x, player.position.y});
     this->window->setView(view);
-
-
-
 }
 
 void Game::render() {
@@ -130,14 +127,10 @@ void Game::render() {
     for (auto const &enemy : enemies) {
         enemy->render(this->window);
     }
-
-    this->window->draw(obiekt);
     for (auto const &bullet : bullets) {
         bullet->render(*this->window);
     }
     this->player.draw(*this->window);
-
-
 
     this->window->display();
 }
@@ -163,9 +156,7 @@ void Game::spawnEnemy() {
     this->enemies.push_back(
         std::make_unique<Enemy>(
             EnemyType::Basic,
-            this->spawnPositions[randPosIdx] + offset,
-            this->enemyTexture
-        )
+            this->spawnPositions[randPosIdx] + offset)
     );
 }
 
@@ -184,6 +175,12 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
 
     for (auto const &enemy : enemies)
         enemy->update(dt, playerPosition);
+
+    for (size_t i = 0; i < enemies.size(); ++i) {
+        for (size_t j = i + 1; j < enemies.size(); ++j) {
+            enemies[i]->checkCollisionWithOtherEnemies(*enemies[j], dt);
+        }
+    }
 }
 
 void Game::updateBullets(float dt) {
@@ -216,7 +213,7 @@ void Game::updateBullets(float dt) {
         auto bullet_bounds = this->bullets[i]->getGlobalBounds();
 
         for (int j = 0; j < this->enemies.size(); j++) {
-            if (bullet_bounds.findIntersection(this->enemies[j]->getGlobalBounds())) {
+            if (bullet_bounds.findIntersection(this->enemies[j]->getBounds())) {
                 this->enemies.erase(this->enemies.begin() + j);
                 hit = true;
                 break;

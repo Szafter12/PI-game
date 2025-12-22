@@ -8,6 +8,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "Enemy.h"
+
 #include "Player.h"
 #include "Bullet.h"
 
@@ -37,23 +38,10 @@ class Game final {
     std::shared_ptr<sf::Texture> enemyTexture;
     std::vector<std::unique_ptr<Enemy>> enemies;
 
-
-
-
-
     ////////////////////////////////Zmienne testowe
-    Player player = Player({800,600});
-    sf::Texture texture = sf::Texture("../../assets/images/map.png");
-    sf::Sprite obiekt = sf::Sprite(texture);
-    sf::View view = sf::View({player.position.x+16, player.position.y+16}, {400.f, 300.f});
+    Player player = Player({0,0});
+    sf::View view {};
     //////////////////////////////////
-
-    // Resources
-
-    // Test player rectangle
-    //sf::RectangleShape rectangle;
-    //float velocityY = {};
-
 
     // Bullets
     std::vector<std::unique_ptr<Bullet>> bullets;
@@ -73,7 +61,6 @@ public:
 
     // Accessors
     void run();
-
 
     // Core Methods
     void pollEvents();
