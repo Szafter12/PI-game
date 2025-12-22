@@ -10,6 +10,8 @@ class Player {
     private:
     sf::RectangleShape hitBox;
 
+    void getAttack();
+
     public:
     sf::Texture texture[8] = {sf::Texture("../../assets/images/HeroBase.png")};
     sf::Sprite sprite = sf::Sprite(texture[0]);

@@ -95,9 +95,7 @@ void Game::update(float dt) {
 
     this->pollEvents();
 
-    // Update enemies
     sf::Vector2f playerPosition = this->player.position;
-
 
     this->updateEnemies(dt, playerPosition);
     this->player.update(*this->window);
@@ -106,7 +104,7 @@ void Game::update(float dt) {
         enemy->collideWithPlayer(player, dt);
     }
 
-    this->view.setCenter({player.position.x+16, player.position.y+16});
+    this->view.setCenter({player.position.x, player.position.y});
     this->window->setView(view);
 }
 
@@ -125,7 +123,6 @@ void Game::render() {
     for (auto const &enemy : enemies) {
         enemy->render(this->window);
     }
-
     this->player.draw(*this->window);
 
     this->window->display();

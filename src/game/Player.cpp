@@ -50,7 +50,7 @@ void Player::update(sf::RenderWindow &window) {
         else sprite.setTexture(texture[3]);
     }
 
-    this->initHitBoxOutline();
+    // this->initHitBoxOutline();
 }
 
 void Player::draw(sf::RenderWindow &window) {
@@ -72,4 +72,8 @@ void Player::initHitBoxOutline() {
     this->hitBox.setFillColor(sf::Color::Transparent);
     this->hitBox.setOutlineColor(sf::Color::Red);
     this->hitBox.setOutlineThickness(1.f);
+}
+
+void Player::getAttack() {
+
 }
