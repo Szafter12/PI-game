@@ -13,6 +13,7 @@ void Game::initVariables() {
     this->maxEnemies = 10;
     this->spawnInterval = 1.5f;
     this->obiekt.setPosition({0,0});
+
 }
 
 void Game::initWindow() {
@@ -95,16 +96,22 @@ void Game::update(float dt) {
         - frames per seconds time
     */
 
+
     this->pollEvents();
 
     // Update enemies
     sf::Vector2f playerPosition = this->player.position;
+
+    // Update bullets
+    this->updateBullets(dt);
 
     updateEnemies(dt, playerPosition);
     this->player.update(*this->window);
 
     this->view.setCenter({player.position.x+16, player.position.y+16});
     this->window->setView(view);
+
+
 
 }
 
@@ -125,7 +132,12 @@ void Game::render() {
     }
 
     this->window->draw(obiekt);
+    for (auto const &bullet : bullets) {
+        bullet->render(*this->window);
+    }
     this->player.draw(*this->window);
+
+
 
     this->window->display();
 }
@@ -173,4 +185,54 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
     for (auto const &enemy : enemies)
         enemy->update(dt, playerPosition);
 }
+
+void Game::updateBullets(float dt) {
+
+    static float shoot_timer = 0.f;
+    shoot_timer += dt;
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) && shoot_timer > 0.3f) {
+        shoot_timer = 0.f;
+
+        // Mouse position
+        sf::Vector2f mouse_position = this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window));
+
+        this->bullets.push_back(std::make_unique<Bullet>(
+            this->player.position,
+            mouse_position
+            ));
+    }
+
+    for (int i = 0; i < this->bullets.size(); i++) {
+        this->bullets[i]->update(dt);
+
+        if (this->bullets[i]->isDead()) {
+            this->bullets.erase(this->bullets.begin() + i);
+            i--;
+            continue;
+        }
+
+        bool hit = false;
+        auto bullet_bounds = this->bullets[i]->getGlobalBounds();
+
+        for (int j = 0; j < this->enemies.size(); j++) {
+            if (bullet_bounds.findIntersection(this->enemies[j]->getGlobalBounds())) {
+                this->enemies.erase(this->enemies.begin() + j);
+                hit = true;
+                break;
+            }
+        }
+
+        if (hit) {
+            this->bullets.erase(this->bullets.begin() + i);
+            i--;
+        }
+    }
+}
+
+
+
+
+
+
 // ******************* Other Methods End *******************

@@ -49,6 +49,18 @@ class Enemy {
         // Core Methods
         void update(float dt, sf::Vector2f playerPosition);
         void render(sf::RenderTarget* target);
+
+        //Enemy hitbox
+        auto getGlobalBounds() const {
+            float width = 50.f;
+            float height = 50.f;
+
+            return sf::FloatRect({this->position.x - (width / 2.f), this->position.y - (height / 2.f)}, {width, height});
+        }
+
+        sf::Vector2f getPosition() const {
+            return this->position;
+        }
 };
 
 

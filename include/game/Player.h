@@ -68,6 +68,20 @@ class Player {
     void draw(sf::RenderWindow &window) {
         window.draw(sprite);
     }
+
+    //hitbox
+    auto getGlobalBounds() const {
+        float width = 30.f;
+        float height = 30.f;
+        return sf::FloatRect({this->position.x - (width / 2.f), this->position.y - (height / 2.f)}, {width, height});
+    }
+
+    void move(sf::Vector2f offset)
+    {
+        this->sprite.move(offset);
+        this->position += offset;
+    }
+    //
 };
 
 #endif //GAME_PI_PLAYER_H
