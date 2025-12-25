@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Weapons.h"
+
 
 class Player {
     private:
@@ -14,7 +16,8 @@ class Player {
     sf::Texture texture[8] = {sf::Texture("../../assets/images/HeroBase.png")};
     sf::Sprite sprite = sf::Sprite(texture[0]);
     sf::Vector2f position {};
-
+    int ad {};
+    WeaponType weapon {WeaponType::BasicGun};
     Player(sf::Vector2f position);
 
     void update(sf::RenderWindow &window);

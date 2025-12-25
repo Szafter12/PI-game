@@ -1,13 +1,11 @@
-#pragma once
-
-#include <SFML/Graphics.hpp>
-#include <memory>
-#include <cmath>
-#include <iostream>
-#include "Player.h"
-
 #ifndef GAME_PI_ENEMY_H
 #define GAME_PI_ENEMY_H
+
+class Player;
+class Collider;
+class DamageCalculator;
+#include <SFML/Graphics.hpp>
+#include "Weapons.h"
 
 inline constexpr double PI = 3.14159265359;
 
@@ -46,8 +44,8 @@ private:
     EnemyState state = EnemyState::Run;
     int frame{0};
     float frameTime{0.f};
-    float frameDuration = {0.1f};
-    float frameDurationAttack = {0.2f};
+    float frameDuration = {0.2f};
+    float frameDurationAttack = {0.3f};
     bool isAttacking = false;
 
     // Private methods
@@ -86,5 +84,7 @@ public:
     void checkCollisionWithOtherEnemies(Enemy &other, float dt);
     sf::Vector2f getPosition() const;
     void collideWithPlayer(Player &player, float dt);
+    bool is_alive() const;
+    void getAttack(int ad, Weapons weapon);
 };
 #endif //GAME_PI_ENEMY_H

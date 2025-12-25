@@ -1,9 +1,16 @@
 #include "../../include/game/Enemy.h"
 #include "../../include/game/Player.h"
 #include "../../include/utils/Collider.h"
+#include "../../include/utils/DamageCalculator.h"
+#include "../../include/game/Weapons.h"
+
+#include <memory>
+#include <cmath>
+#include <iostream>
+#include <SFML/Graphics.hpp>
 
 Enemy::Enemy(EnemyType type, sf::Vector2f position_)
-    : sprite(this->textureRun), position(position_) {
+    : position(position_), sprite(this->textureRun) {
     // Switch between enemies types
     switch (type) {
         case EnemyType::Basic:
@@ -179,6 +186,14 @@ void Enemy::collideWithPlayer (Player &player, float dt) {
     Collider::calculatePosition(player, *this, dt);
 }
 
+bool Enemy::is_alive() const {
+    return this->hp > 0;
+}
+
+void Enemy::getAttack(int ad, Weapons weapon) {
+    this->hp -= DamageCalculator::calculateFlatDamage(ad, weapon);
+}
+
 void Enemy::startAttack() {
     if (isAttacking) return;
 
@@ -199,6 +214,10 @@ void Enemy::enemyChangeTexture() {
         case EnemyState::Attack:
             sprite.setTexture(textureAttack, true);
             sprite.setTextureRect(sf::IntRect({0,0},{96/2,576/12}));
+            break;
+        default:
+            sprite.setTexture(textureRun, true);
+            sprite.setTextureRect(sf::IntRect({0,0},{192/4,192/4}));
             break;
     }
 }

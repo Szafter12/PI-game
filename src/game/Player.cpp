@@ -13,6 +13,7 @@ Player::Player(sf::Vector2f position) {
     this->sprite.setTexture(this->texture[0]);
     this->sprite.setPosition(this->position);
     this->sprite.setOrigin(sf::Vector2f(32.f/2.f, 32.f/2.f));
+    this->ad = 20;
 }
 
 void Player::update(sf::RenderWindow &window) {

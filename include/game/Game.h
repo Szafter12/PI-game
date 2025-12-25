@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_PI_GAME_H
+#define GAME_PI_GAME_H
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -11,9 +12,6 @@
 
 #include "Player.h"
 #include "Bullet.h"
-
-#ifndef GAME_PI_GAME_H
-#define GAME_PI_GAME_H
 
 /*
 Class that acts as the game engine

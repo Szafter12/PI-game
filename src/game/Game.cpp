@@ -209,20 +209,20 @@ void Game::updateBullets(float dt) {
             continue;
         }
 
-        bool hit = false;
         auto bullet_bounds = this->bullets[i]->getGlobalBounds();
 
         for (int j = 0; j < this->enemies.size(); j++) {
             if (bullet_bounds.findIntersection(this->enemies[j]->getBounds())) {
-                this->enemies.erase(this->enemies.begin() + j);
-                hit = true;
+                if (enemies[j]->is_alive()) {
+                    enemies[j]->getAttack(player.ad, Weapons(player.weapon));
+                } else {
+                    this->enemies.erase(this->enemies.begin() + j);
+                }
+
+                this->bullets.erase(this->bullets.begin() + i);
+                i--;
                 break;
             }
-        }
-
-        if (hit) {
-            this->bullets.erase(this->bullets.begin() + i);
-            i--;
         }
     }
 }
