@@ -29,7 +29,7 @@ class Game final {
     // Game logic
     int maxEnemies {};
     float spawnInterval {};
-    float spawnTimer;
+    float spawnTimer {0.f};
 
     // Game objects
     std::vector<sf::Vector2f> spawnPositions;
@@ -48,8 +48,6 @@ class Game final {
     // Private functions:
     void initVariables();
     void initWindow();
-    void initEnemies();
-    void updateRectPos(float dt);
     void updateBullets(float dt);
 
 public:
@@ -66,7 +64,7 @@ public:
     void render();
 
     // Objects Methods
-    void spawnEnemy();
+    void spawnEnemy(const sf::Vector2f playerPos);
     void updateEnemies(float dt, sf::Vector2f playerPosition);
 };
 

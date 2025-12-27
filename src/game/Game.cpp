@@ -10,8 +10,8 @@ void Game::initVariables() {
     this->window = nullptr;
 
     // objects variables
-    this->maxEnemies = 10;
-    this->spawnInterval = 1.5f;
+    this->maxEnemies = 100;
+    this->spawnInterval = 1.f;
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
     this->view = sf::View({this->player.position.x, this->player.position.y}, {400.f, 300.f});
@@ -29,19 +29,6 @@ void Game::initWindow() {
     this->window->setFramerateLimit(60);
     this->screenSize = this->window->getSize();
 }
-
-void Game::initEnemies()
-{
-    this->spawnPositions = {
-        {0.f, screenSize.y / 2.f},
-        {screenSize.x / 2.f, 0.f},
-        {static_cast<float>(screenSize.x), screenSize.y / 2.f},
-        {screenSize.x / 2.f, static_cast<float>(screenSize.y)}
-    };
-
-    this->spawnTimer = 0.f;
-    this->spawnInterval = 1.5f;
-}
 // ******************* Initialization Methods End *******************
 
 // ******************* Constructor/Destructor Start *******************
@@ -49,7 +36,6 @@ Game::Game()
 {
     this->initVariables();
     this->initWindow();
-    this->initEnemies();
 }
 
 Game::~Game() {
@@ -97,11 +83,9 @@ void Game::update(float dt) {
 
     // Update enemies
     sf::Vector2f playerPosition = this->player.position;
-
     this->updateEnemies(dt, playerPosition);
     // Update bullets
     this->updateBullets(dt);
-    updateEnemies(dt, playerPosition);
     this->player.update(*this->window);
 
     for (auto &enemy: this->enemies) {
@@ -138,19 +122,28 @@ void Game::render() {
 
 // ******************* Other Methods Start *******************
 
-void Game::spawnEnemy() {
+void Game::spawnEnemy(const sf::Vector2f playerPos) {
     /*
         @return void
         - Spawn signle enemy on rand spawn location if max enemy > current enemy count
     */
 
+    this->spawnPositions = {
+        {playerPos.x - (screenSize.x / 2.f), playerPos.y / 2.f},
+        {playerPos.x / 2.f, playerPos.y - (screenSize.y / 2.f)},
+        {playerPos.x + (static_cast<float>(screenSize.x) / 2), playerPos.y / 2.f},
+        {playerPos.x / 2.f, playerPos.y + (static_cast<float>(screenSize.y) / 2)}
+    };
+
+
     if (this->enemies.size() >= this->maxEnemies) return;
 
     int randPosIdx = rand() % this->spawnPositions.size();
+    std::cout << "X: " << spawnPositions[randPosIdx].x << " Y: " << spawnPositions[randPosIdx].y << std::endl;
 
     sf::Vector2f offset{
-        static_cast<float>((rand() % 200) - 80),
-        static_cast<float>((rand() % 200) - 80)
+        static_cast<float>((rand() % 50) - 10),
+        static_cast<float>((rand() % 50) - 10)
     };
 
     this->enemies.push_back(
@@ -169,7 +162,7 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
 
     if (this->spawnTimer >= this->spawnInterval)
     {
-        this->spawnEnemy();
+        this->spawnEnemy(playerPosition);
         this->spawnTimer = 0.f;
     }
 
