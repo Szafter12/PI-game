@@ -5,7 +5,7 @@
 
 class DamageCalculator {
     public:
-        static int calculateFlatDamage(int ad, Weapons weapon);
+        static int calculateFlatDamage(int ad, Weapons weapon, int armor);
 };
 
 
