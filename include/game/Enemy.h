@@ -56,6 +56,7 @@ private:
     void startAttack();
     void setState(EnemyState newState);
     void resetAnimation();
+    void drawHpBar();
 
 public:
     // Public properties
@@ -63,8 +64,9 @@ public:
     // stats
     float speed {};
     sf::Vector2f position{};
-    int maxHp {};
-    int hp {};
+    float maxHp {};
+    float hp {};
+    sf::RectangleShape hpBar {};
     int armor {};
     int ad {};
     sf::Vector2f velocity;

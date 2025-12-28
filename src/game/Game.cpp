@@ -10,7 +10,7 @@ void Game::initVariables() {
     this->window = nullptr;
 
     // objects variables
-    this->maxEnemies = 100;
+    this->maxEnemies = 1;
     this->spawnInterval = 1.f;
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
@@ -84,6 +84,7 @@ void Game::update(float dt) {
     // Update enemies
     sf::Vector2f playerPosition = this->player.position;
     this->updateEnemies(dt, playerPosition);
+
     // Update bullets
     this->updateBullets(dt);
     this->player.update(*this->window);
@@ -145,7 +146,6 @@ void Game::spawnEnemy(const sf::Vector2f playerPos) {
     if (this->enemies.size() >= this->maxEnemies) return;
 
     int randPosIdx = rand() % this->spawnPositions.size();
-    std::cout << "X: " << spawnPositions[randPosIdx].x << " Y: " << spawnPositions[randPosIdx].y << std::endl;
 
     sf::Vector2f offset{
         static_cast<float>((rand() % 50) - 10),
@@ -174,6 +174,10 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
 
     for (auto const &enemy : enemies)
         enemy->update(dt, playerPosition);
+
+    for (int i = 0 ; i < this->enemies.size(); i++) {
+        if (!enemies[i]->is_alive()) enemies.erase(enemies.begin() + i);
+    }
 
     for (size_t i = 0; i < enemies.size(); ++i) {
         for (size_t j = i + 1; j < enemies.size(); ++j) {
@@ -212,11 +216,7 @@ void Game::updateBullets(float dt) {
 
         for (int j = 0; j < this->enemies.size(); j++) {
             if (bullet_bounds.findIntersection(this->enemies[j]->getBounds())) {
-                if (enemies[j]->is_alive()) {
-                    enemies[j]->getAttack(player.ad, Weapons(player.weapon));
-                } else {
-                    this->enemies.erase(this->enemies.begin() + j);
-                }
+                enemies[j]->getAttack(player.ad, Weapons(player.weapon));
 
                 this->bullets.erase(this->bullets.begin() + i);
                 i--;

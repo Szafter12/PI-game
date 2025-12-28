@@ -14,7 +14,7 @@ Enemy::Enemy(EnemyType type, sf::Vector2f position_)
     // Switch between enemies types
     switch (type) {
         case EnemyType::Basic:
-            this->maxHp = 100;
+            this->maxHp = 120;
             this->hp = this->maxHp;
             this->speed = 50.0f;
             this->ad = 20;
@@ -33,12 +33,13 @@ void Enemy::update(float dt, sf::Vector2f playerPosition) {
         updatePosition(dt, playerPosition);
     }
     // this->initHitBoxOutline();
+    if (this->maxHp != this->hp) this->drawHpBar();
     this->updateAnimation(dt);
 }
 
 void Enemy::render(sf::RenderTarget* target) const {
     target->draw(this->sprite);
-
+    target->draw(this->hpBar);
     // Draw hitBox
     // target->draw(this->hitBox);
 }
@@ -190,7 +191,7 @@ bool Enemy::is_alive() const {
     return this->hp > 0;
 }
 
-void Enemy::getAttack(int ad, Weapons weapon) {
+void Enemy::getAttack(const int ad, const Weapons weapon) {
     this->hp -= DamageCalculator::calculateFlatDamage(ad, weapon);
 }
 
@@ -225,6 +226,23 @@ void Enemy::enemyChangeTexture() {
 void Enemy::resetAnimation() {
     this->frame = 0;
     this->frameTime = 0.f;
+}
+
+void Enemy::drawHpBar() {
+    constexpr float fullBar = 30;
+    float hpRatio = this->hp / this->maxHp;
+    this->hpBar.setSize(sf::Vector2f(fullBar * hpRatio, 2.f));
+
+    if (hpRatio > 0.75) {
+        this->hpBar.setFillColor(sf::Color::Green);
+    } else if (hpRatio > 0.30) {
+        this->hpBar.setFillColor(sf::Color::Yellow);
+    } else {
+        this->hpBar.setFillColor(sf::Color::Red);
+    }
+
+    this->hpBar.setOrigin(sf::Vector2f(this->hpBar.getSize().x / 2.f, this->hpBar.getSize().y / 2.f));
+    this->hpBar.setPosition(sf::Vector2f(this->position.x, this->position.y - 20.f));
 }
 
 void Enemy::setState(EnemyState newState) {
