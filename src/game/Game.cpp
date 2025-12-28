@@ -129,12 +129,18 @@ void Game::spawnEnemy(const sf::Vector2f playerPos) {
     */
 
     this->spawnPositions = {
-        {playerPos.x - (screenSize.x / 2.f), playerPos.y / 2.f},
-        {playerPos.x / 2.f, playerPos.y - (screenSize.y / 2.f)},
-        {playerPos.x + (static_cast<float>(screenSize.x) / 2), playerPos.y / 2.f},
-        {playerPos.x / 2.f, playerPos.y + (static_cast<float>(screenSize.y) / 2)}
-    };
+        // left
+        { playerPos.x - screenSize.x / 2.f, playerPos.y },
 
+        // up
+        { playerPos.x, playerPos.y - screenSize.y / 2.f },
+
+        // right
+        { playerPos.x + screenSize.x / 2.f, playerPos.y },
+
+        // down
+        { playerPos.x, playerPos.y + screenSize.y / 2.f }
+    };
 
     if (this->enemies.size() >= this->maxEnemies) return;
 
