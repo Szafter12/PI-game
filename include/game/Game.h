@@ -31,6 +31,8 @@ class Game final {
     float spawnInterval {};
     TileMap hills;
     TileMap ground;
+    TileMap water;
+    TileMap border;
     float spawnTimer {0.f};
 
     // Game objects

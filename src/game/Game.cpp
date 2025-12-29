@@ -10,7 +10,7 @@ void Game::initVariables() {
     this->window = nullptr;
 
     // objects variables
-    this->maxEnemies = 100;
+    this->maxEnemies = 0;
     this->spawnInterval = 1.f;
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
@@ -18,6 +18,10 @@ void Game::initVariables() {
 
     hills.loadFromJsonLayer("../../assets/map/map.json", "Hills", "../../assets/map/spritesheet.png");
     ground.loadFromJsonLayer("../../assets/map/map.json", "Ground", "../../assets/map/spritesheet.png");
+    water.loadFromJsonLayer("../../assets/map/map.json", "Water", "../../assets/map/spritesheet.png");
+    border.loadFromJsonLayer("../../assets/map/map.json", "Border", "../../assets/map/spritesheet.png");
+
+
 }
 
 void Game::initWindow() {
@@ -27,7 +31,6 @@ void Game::initWindow() {
        - Adding default options
    */
 
-    this->settings.antiAliasingLevel = 8;
     this->window = new sf::RenderWindow (sf::VideoMode({640,480}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
     this->window->setFramerateLimit(60);
     this->screenSize = this->window->getSize();
@@ -110,8 +113,10 @@ void Game::render() {
     */
 
     this->window->clear();
-  this->window->draw(this->ground);
-  this->window->draw(this->hills);
+    this->window->draw(this->water);
+    this->window->draw(this->border);
+    this->window->draw(this->ground);
+    this->window->draw(this->hills);
     // Draw game objects
     for (auto const &enemy : enemies) {
         enemy->render(this->window);

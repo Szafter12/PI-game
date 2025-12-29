@@ -6,6 +6,7 @@ Player::Player(sf::Vector2f position) {
     this->sprite.setPosition(this->position);
     this->sprite.setOrigin(sf::Vector2f(32.f/2.f, 32.f/2.f));
     this->ad = 20;
+    this->sprite.setScale(sf::Vector2f(0.5, 0.5));
 }
 
 void Player::update(sf::RenderWindow &window) {
