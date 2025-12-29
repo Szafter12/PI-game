@@ -1,15 +1,8 @@
-//
-// Created by Mateusz Nosal on 21/12/2025.
-//
-
-#pragma once
-#include <SFML/Graphics.hpp>
-#include <cmath>
-
-
 #ifndef GAME_PI_BULLET_H
 #define GAME_PI_BULLET_H
 
+#include <SFML/Graphics.hpp>
+#include <cmath>
 
 class Bullet {
 private:

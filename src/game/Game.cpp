@@ -11,7 +11,7 @@ void Game::initVariables() {
 
     // objects variables
     this->maxEnemies = 1;
-    this->spawnInterval = 1.5f;
+    this->spawnInterval = 1.f;
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
     this->view = sf::View({this->player.position.x, this->player.position.y}, {400.f, 300.f});
@@ -31,20 +31,6 @@ void Game::initWindow() {
     this->window = new sf::RenderWindow (sf::VideoMode({640,480}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
     this->window->setFramerateLimit(60);
     this->screenSize = this->window->getSize();
-
-}
-
-void Game::initEnemies()
-{
-    this->spawnPositions = {
-        {0.f, screenSize.y / 2.f},
-        {screenSize.x / 2.f, 0.f},
-        {static_cast<float>(screenSize.x), screenSize.y / 2.f},
-        {screenSize.x / 2.f, static_cast<float>(screenSize.y)}
-    };
-
-    this->spawnTimer = 0.f;
-    this->spawnInterval = 1.5f;
 }
 // ******************* Initialization Methods End *******************
 
@@ -53,7 +39,6 @@ Game::Game()
 {
     this->initVariables();
     this->initWindow();
-    this->initEnemies();
 }
 
 Game::~Game() {
@@ -101,11 +86,10 @@ void Game::update(float dt) {
 
     // Update enemies
     sf::Vector2f playerPosition = this->player.position;
-
     this->updateEnemies(dt, playerPosition);
+
     // Update bullets
     this->updateBullets(dt);
-    updateEnemies(dt, playerPosition);
     this->player.update(*this->window);
 
     for (auto &enemy: this->enemies) {
@@ -143,19 +127,33 @@ void Game::render() {
 
 // ******************* Other Methods Start *******************
 
-void Game::spawnEnemy() {
+void Game::spawnEnemy(const sf::Vector2f playerPos) {
     /*
         @return void
         - Spawn signle enemy on rand spawn location if max enemy > current enemy count
     */
+
+    this->spawnPositions = {
+        // left
+        { playerPos.x - screenSize.x / 2.f, playerPos.y },
+
+        // up
+        { playerPos.x, playerPos.y - screenSize.y / 2.f },
+
+        // right
+        { playerPos.x + screenSize.x / 2.f, playerPos.y },
+
+        // down
+        { playerPos.x, playerPos.y + screenSize.y / 2.f }
+    };
 
     if (this->enemies.size() >= this->maxEnemies) return;
 
     int randPosIdx = rand() % this->spawnPositions.size();
 
     sf::Vector2f offset{
-        static_cast<float>((rand() % 200) - 80),
-        static_cast<float>((rand() % 200) - 80)
+        static_cast<float>((rand() % 50) - 10),
+        static_cast<float>((rand() % 50) - 10)
     };
 
     this->enemies.push_back(
@@ -174,12 +172,16 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
 
     if (this->spawnTimer >= this->spawnInterval)
     {
-        this->spawnEnemy();
+        this->spawnEnemy(playerPosition);
         this->spawnTimer = 0.f;
     }
 
     for (auto const &enemy : enemies)
         enemy->update(dt, playerPosition);
+
+    for (int i = 0 ; i < this->enemies.size(); i++) {
+        if (!enemies[i]->is_alive()) enemies.erase(enemies.begin() + i);
+    }
 
     for (size_t i = 0; i < enemies.size(); ++i) {
         for (size_t j = i + 1; j < enemies.size(); ++j) {
@@ -214,20 +216,16 @@ void Game::updateBullets(float dt) {
             continue;
         }
 
-        bool hit = false;
         auto bullet_bounds = this->bullets[i]->getGlobalBounds();
 
         for (int j = 0; j < this->enemies.size(); j++) {
             if (bullet_bounds.findIntersection(this->enemies[j]->getBounds())) {
-                this->enemies.erase(this->enemies.begin() + j);
-                hit = true;
+                enemies[j]->getAttack(player.ad, Weapons(player.weapon));
+
+                this->bullets.erase(this->bullets.begin() + i);
+                i--;
                 break;
             }
-        }
-
-        if (hit) {
-            this->bullets.erase(this->bullets.begin() + i);
-            i--;
         }
     }
 }
