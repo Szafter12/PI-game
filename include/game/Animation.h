@@ -5,6 +5,7 @@
 #include "SFML/System/Time.hpp"
 
 class Animation {
+public:
     int frameCount;
     int frame=0;
     int posX;
@@ -14,6 +15,7 @@ class Animation {
     int speed;
     sf::Sprite *sprite;
     sf::Clock time;
+    bool pause=false;
 
 public:
     Animation(sf::Sprite *sprite, int frame_count, int pos_x, int pos_y, int frame_w, int frame_h, int speed)
@@ -26,19 +28,24 @@ public:
           speed(speed) { sprite->setTextureRect(sf::IntRect({posX,posY},{frameW,frameH}));
     }
 
-    void play() {
+    void update() {
         if (frameCount>1) {
-            if (!time.isRunning()) time.start();
-            if(time.getElapsedTime().asSeconds()>=speed) {
-                time.restart();
-                frame++;
-                sprite->setTextureRect(sf::IntRect({posX+(frameW*frame),posY+(frameH*frame)},
-                    {frameW,frameH}));
-                if (frame>=frameCount-1) frame=0;
+            if (!pause) {
+                if (!time.isRunning()) time.start();
+                if(time.getElapsedTime().asSeconds()>=speed) {
+                    time.restart();
+                    sprite->setTextureRect(sf::IntRect({posX+(frameW*frame),posY},
+                        {frameW,frameH}));
+                    frame++;
+                    if (frame==frameCount) frame=0;
+                }
             }
         }
+        else sprite->setTextureRect(sf::IntRect({posX,posY},{frameW,frameH}));
     }
-
+    void reset() {
+        sprite->setTextureRect(sf::IntRect({posX,posY},{frameW,frameH}));
+    }
 
 };
 
