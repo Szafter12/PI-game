@@ -230,10 +230,4 @@ void Game::updateBullets(float dt) {
         }
     }
 }
-
-
-
-
-
-
 // ******************* Other Methods End *******************
