@@ -18,6 +18,13 @@ FetchContent_Declare(
         EXCLUDE_FROM_ALL
 )
 
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.12.0
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
 set(SFML_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(SFML)
@@ -33,3 +40,4 @@ target_include_directories(Game_PI PRIVATE include)
 
 # Linking SFML
 target_link_libraries(Game_PI PRIVATE sfml-graphics sfml-window sfml-system)
+target_link_libraries(Game_PI PRIVATE nlohmann_json::nlohmann_json)

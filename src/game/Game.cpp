@@ -15,6 +15,9 @@ void Game::initVariables() {
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
     this->view = sf::View({this->player.position.x, this->player.position.y}, {400.f, 300.f});
+
+    hills.loadFromJsonLayer("../../assets/map/map.json", "Hills", "../../assets/map/spritesheet.png");
+    ground.loadFromJsonLayer("../../assets/map/map.json", "Ground", "../../assets/map/spritesheet.png");
 }
 
 void Game::initWindow() {
@@ -107,7 +110,8 @@ void Game::render() {
     */
 
     this->window->clear();
-
+  this->window->draw(this->ground);
+  this->window->draw(this->hills);
     // Draw game objects
     for (auto const &enemy : enemies) {
         enemy->render(this->window);
