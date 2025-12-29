@@ -9,7 +9,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "Enemy.h"
-
+#include "TileMap.h"
 #include "Player.h"
 #include "Bullet.h"
 
@@ -29,6 +29,8 @@ class Game final {
     // Game logic
     int maxEnemies {};
     float spawnInterval {};
+    TileMap hills;
+    TileMap ground;
     float spawnTimer {0.f};
 
     // Game objects
