@@ -1,16 +1,8 @@
 #include "../../include/game/Player.h"
 
 Player::Player(sf::Vector2f position) {
-    this->texture[0].loadFromFile("../../assets/images/HeroIdleUp.png");
-    this->texture[1].loadFromFile("../../assets/images/HeroIdleUpR.png");
-    this->texture[2].loadFromFile("../../assets/images/HeroIdleR.png");
-    this->texture[3].loadFromFile("../../assets/images/HeroIdleDownR.png");
-    this->texture[4].loadFromFile("../../assets/images/HeroBase.png");
-    this->texture[5].loadFromFile("../../assets/images/HeroIdleDownL.png");
-    this->texture[6].loadFromFile("../../assets/images/HeroIdleL.png");
-    this->texture[7].loadFromFile("../../assets/images/HeroIdleUpL.png");
     this->position = position;
-    this->sprite.setTexture(this->texture[0]);
+    this->sprite.setTexture(this->texture);
     this->sprite.setPosition(this->position);
     this->sprite.setOrigin(sf::Vector2f(32.f/2.f, 32.f/2.f));
 }
@@ -32,22 +24,70 @@ void Player::update(sf::RenderWindow &window) {
     position = sprite.getPosition();
     sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-    if (mousePos.y > position.y &&
-        mousePos.y < (position.y+sprite.getTexture().getSize().y)) {
-        if (mousePos.x < position.x) sprite.setTexture(texture[6]);
-        else sprite.setTexture(texture[2]);
+    if (mousePos.y > position.y-16 &&
+        mousePos.y < (position.y+16)) {
+        if (mousePos.x < position.x) {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mLeft.pause=false;mLeft.update();}
+            else{ mLeft.pause=true;mLeft.reset();}
         }
-    else if (mousePos.y < position.y) {
-        if (mousePos.x < position.x) sprite.setTexture(texture[7]);
-        else if (mousePos.x > position.x &&
-            mousePos.x < (position.x+sprite.getTexture().getSize().x)) sprite.setTexture(texture[0]);
-        else sprite.setTexture(texture[1]);
+        else {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mRight.pause=false;mRight.update();}
+            else{ mRight.pause=true;mRight.reset();}
+        }
+        }
+    else if (mousePos.y < position.y-16) {
+        if (mousePos.x < position.x-16) {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mUpL.pause=false;mUpL.update();}
+            else{ mUpL.pause=true;mUpL.reset();}
+        }
+        else if (mousePos.x > position.x-16 &&
+            mousePos.x < (position.x+16)) {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mUp.pause=false;mUp.update();}
+            else{ mUp.pause=true;mUp.reset();}
+        }
+        else {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mUpR.pause=false;mUpR.update();}
+            else{ mUpR.pause=true;mUpR.reset();}
+        }
     }
     else {
-        if (mousePos.x < position.x) sprite.setTexture(texture[5]);
-        else if (mousePos.x > position.x &&
-            mousePos.x < (position.x+sprite.getTexture().getSize().x)) sprite.setTexture(texture[4]);
-        else sprite.setTexture(texture[3]);
+        if (mousePos.x < position.x-16) {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mDownL.pause=false;mDownL.update();}
+            else{ mDownL.pause=true;mDownL.reset();}
+        }
+        else if (mousePos.x > position.x-16 &&
+            mousePos.x < (position.x+16)) {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mDown.pause=false;mDown.update();}
+            else{ mDown.pause=true;mDown.reset();}
+        }
+        else {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mDownR.pause=false;mDownR.update();}
+            else{ mDownR.pause=true;mDownR.reset();}
+        }
     }
 
     // this->initHitBoxOutline();
