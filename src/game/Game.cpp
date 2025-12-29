@@ -10,7 +10,7 @@ void Game::initVariables() {
     this->window = nullptr;
 
     // objects variables
-    this->maxEnemies = 1;
+    this->maxEnemies = 100;
     this->spawnInterval = 1.f;
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
@@ -225,10 +225,4 @@ void Game::updateBullets(float dt) {
         }
     }
 }
-
-
-
-
-
-
 // ******************* Other Methods End *******************
