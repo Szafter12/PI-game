@@ -32,7 +32,7 @@ class Game final {
     int maxEnemies {};
     float spawnInterval {};
     float spawnTimer;
-    Map map;
+    TileMap map;
     // Game objects
     std::vector<sf::Vector2f> spawnPositions;
     std::shared_ptr<sf::Texture> enemyTexture;

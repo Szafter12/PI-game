@@ -7,9 +7,6 @@ void Game::initVariables() {
        - Initialize all game variables
     */
 
-    map.loadFromTiledJSON("../../assets/tiledmap/mapka.json");
-
-
     this->window = nullptr;
 
     // objects variables
@@ -18,6 +15,22 @@ void Game::initVariables() {
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
     this->view = sf::View({this->player.position.x, this->player.position.y}, {400.f, 300.f});
+
+    constexpr std::array level = {
+        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0,
+        1, 1, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3,
+        0, 1, 0, 0, 2, 0, 3, 3, 3, 0, 1, 1, 1, 0, 0, 0,
+        0, 1, 1, 0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 2, 0, 0,
+        0, 0, 1, 0, 3, 0, 2, 2, 0, 0, 1, 1, 1, 1, 2, 0,
+        2, 0, 1, 0, 3, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1,
+        0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1,
+    };
+
+    // create the tilemap from the level definition
+
+    if (!map.load("tileset.png", {32, 32}, level.data(), 16, 8))
+    {std::cout<<"error loading tileset.png"<<std::endl;}
 }
 
 void Game::initWindow() {
