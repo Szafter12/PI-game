@@ -18,6 +18,13 @@ FetchContent_Declare(
         EXCLUDE_FROM_ALL
 )
 
+
+# CMakeLists.txt
+#find_package(nlohmann_json 3.12.0 REQUIRED)
+#
+#add_library(foo ...)
+
+#target_link_libraries(foo PRIVATE nlohmann_json::nlohmann_json)
 set(SFML_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(SFML)

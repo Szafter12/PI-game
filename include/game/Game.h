@@ -8,7 +8,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "Enemy.h"
-
+#include "map.h"
 #include "Player.h"
 
 #ifndef GAME_PI_GAME_H
@@ -31,7 +31,7 @@ class Game final {
     int maxEnemies {};
     float spawnInterval {};
     float spawnTimer;
-
+    Map map;
     // Game objects
     std::vector<sf::Vector2f> spawnPositions;
     std::shared_ptr<sf::Texture> enemyTexture;

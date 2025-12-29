@@ -1,4 +1,4 @@
-``#include "../../include/game/Game.h"
+#include "../../include/game/Game.h"
 
 // ******************* Initialization Methods Start *******************
 void Game::initVariables() {
@@ -6,6 +6,9 @@ void Game::initVariables() {
        @return void
        - Initialize all game variables
     */
+
+    map.loadFromTiledJSON("../../assets/tiledmap/mapka.json");
+
 
     this->window = nullptr;
 
@@ -26,6 +29,7 @@ void Game::initWindow() {
     this->window = new sf::RenderWindow (sf::VideoMode({640,480}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
     this->window->setFramerateLimit(60);
     this->screenSize = this->window->getSize();
+
 }
 
 void Game::initEnemies()
@@ -118,7 +122,7 @@ void Game::render() {
     */
 
     this->window->clear();
-
+  this->window->draw(map);
     // Draw game objects
     for (auto const &enemy : enemies) {
         enemy->render(this->window);
