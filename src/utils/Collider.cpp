@@ -1,4 +1,9 @@
 #include "../../include/utils/Collider.h"
+#include "../../include/game/Player.h"
+#include "../../include/game/Enemy.h"
+
+#include <SFML/Graphics.hpp>
+#include <cmath>
 
 void Collider::calculatePosition(Enemy &enemy1, Enemy &enemy2, float dt) {
     sf::Vector2f delta = enemy2.position - enemy1.position;

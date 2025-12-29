@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_PI_GAME_H
+#define GAME_PI_GAME_H
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -11,9 +12,6 @@
 
 #include "Player.h"
 #include "Bullet.h"
-
-#ifndef GAME_PI_GAME_H
-#define GAME_PI_GAME_H
 
 /*
 Class that acts as the game engine
@@ -31,7 +29,7 @@ class Game final {
     // Game logic
     int maxEnemies {};
     float spawnInterval {};
-    float spawnTimer;
+    float spawnTimer {0.f};
 
     // Game objects
     std::vector<sf::Vector2f> spawnPositions;
@@ -50,8 +48,6 @@ class Game final {
     // Private functions:
     void initVariables();
     void initWindow();
-    void initEnemies();
-    void updateRectPos(float dt);
     void updateBullets(float dt);
 
 public:
@@ -68,7 +64,7 @@ public:
     void render();
 
     // Objects Methods
-    void spawnEnemy();
+    void spawnEnemy(const sf::Vector2f playerPos);
     void updateEnemies(float dt, sf::Vector2f playerPosition);
 };
 

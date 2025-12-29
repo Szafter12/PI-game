@@ -1,8 +1,8 @@
 #ifndef GAME_PI_COLLIDER_H
 #define GAME_PI_COLLIDER_H
 
-#include <SFML/Graphics.hpp>
-#include "../game/Enemy.h"
+class Enemy;
+class Player;
 
 class Collider {
     public:

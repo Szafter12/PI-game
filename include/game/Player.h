@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Weapons.h"
+
 
 #include "Animation.h"
 
@@ -16,6 +18,8 @@ class Player {
     sf::Texture texture = sf::Texture("../../assets/images/Player.png");
     sf::Sprite sprite = sf::Sprite(texture);
     sf::Vector2f position {};
+    int ad {};
+    WeaponType weapon {WeaponType::BasicGun};
     Animation mDown = Animation(&sprite,2,0,0,32,32,1),
     mDownL = Animation(&sprite,2,0,32,32,32,1),
     mLeft = Animation(&sprite,2,0,64,32,32,1),
