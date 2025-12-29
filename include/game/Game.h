@@ -8,7 +8,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "Enemy.h"
-#include "map.h"
+#include "TileMap.h"
 #include "Player.h"
 #include "Bullet.h"
 
@@ -32,7 +32,8 @@ class Game final {
     int maxEnemies {};
     float spawnInterval {};
     float spawnTimer;
-    TileMap map;
+    TileMap hills;
+    TileMap ground;
     // Game objects
     std::vector<sf::Vector2f> spawnPositions;
     std::shared_ptr<sf::Texture> enemyTexture;
