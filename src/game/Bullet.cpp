@@ -6,15 +6,15 @@
 
 
 Bullet::Bullet(sf::Vector2f start_position, sf::Vector2f target_position){
-    this->shape.setRadius(5.f);
+    this->shape.setRadius(2.f);
     this->shape.setFillColor(sf::Color::White);
 
-    this->shape.setOrigin({5.f, 5.f});
+    this->shape.setOrigin({2.f, 2.f});
     this->shape.setPosition(start_position);
 
     this->life_time = 0.f;
-    this->max_life_time = 3.f;
-    float speed = 500.f;
+    this->max_life_time = 0.4f;
+    float speed = 200.f;
 
     sf::Vector2f direction = target_position - start_position;
 

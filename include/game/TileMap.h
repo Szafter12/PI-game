@@ -54,6 +54,11 @@ public:
             }
         }
 
+        float mapWidthPx  = width  * tileSize.x;
+        float mapHeightPx = height * tileSize.y;
+
+        this->setOrigin(sf::Vector2f(mapWidthPx / 2.f, mapHeightPx / 2.f));
+
         return true;
     }
 
