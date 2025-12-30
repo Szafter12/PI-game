@@ -12,13 +12,13 @@ public:
     int posY;
     int frameW;
     int frameH;
-    int speed;
+    float speed;
     sf::Sprite *sprite;
     sf::Clock time;
     bool pause=false;
 
 public:
-    Animation(sf::Sprite *sprite, int frame_count, int pos_x, int pos_y, int frame_w, int frame_h, int speed)
+    Animation(sf::Sprite *sprite, int frame_count, int pos_x, int pos_y, int frame_w, int frame_h, float speed)
         : sprite(sprite),
           frameCount(frame_count),
           posX(pos_x),

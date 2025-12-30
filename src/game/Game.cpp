@@ -10,14 +10,20 @@ void Game::initVariables() {
     this->window = nullptr;
 
     // objects variables
-    this->maxEnemies = 100;
+    this->maxEnemies = 10;
     this->spawnInterval = 1.f;
+
+    this->pauseText.setString("Pause");
+    pauseText.setCharacterSize(50);
+    pauseText.setFillColor(sf::Color::White);
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
     this->view = sf::View({this->player.position.x, this->player.position.y}, {400.f, 300.f});
 
     hills.loadFromJsonLayer("../../assets/map/map.json", "Hills", "../../assets/map/spritesheet.png");
     ground.loadFromJsonLayer("../../assets/map/map.json", "Ground", "../../assets/map/spritesheet.png");
+    water.loadFromJsonLayer("../../assets/map/map.json", "Water", "../../assets/map/spritesheet.png");
+    border.loadFromJsonLayer("../../assets/map/map.json", "Border", "../../assets/map/spritesheet.png");
 }
 
 void Game::initWindow() {
@@ -27,15 +33,14 @@ void Game::initWindow() {
        - Adding default options
    */
 
-    this->settings.antiAliasingLevel = 8;
-    this->window = new sf::RenderWindow (sf::VideoMode({640,480}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
+    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Fullscreen, settings);
     this->window->setFramerateLimit(60);
     this->screenSize = this->window->getSize();
 }
 // ******************* Initialization Methods End *******************
 
 // ******************* Constructor/Destructor Start *******************
-Game::Game()
+Game::Game(const sf::Font &font_) : font(font_), pauseText(font)
 {
     this->initVariables();
     this->initWindow();
@@ -71,6 +76,14 @@ void Game::pollEvents() {
     while (const std::optional event = this->window->pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
             this->window->close();
+        } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+            if (keyPressed->scancode == sf::Keyboard::Scancode::P) {
+                if (this->isStopped) {
+                    this->isStopped = false;
+                } else {
+                    this->isStopped = true;
+                }
+            }
         }
     }
 }
@@ -84,18 +97,23 @@ void Game::update(float dt) {
 
     this->pollEvents();
 
-    // Update enemies
-    sf::Vector2f playerPosition = this->player.position;
-    this->updateEnemies(dt, playerPosition);
+    if (!this->isStopped) {
+        // Update enemies
+        sf::Vector2f playerPosition = this->player.position;
+        this->updateEnemies(dt, playerPosition);
 
-    // Update bullets
-    this->updateBullets(dt);
-    this->player.update(*this->window);
+        // Update bullets
+        this->updateBullets(dt);
+        this->player.update(*this->window);
 
-    for (auto &enemy: this->enemies) {
-        enemy->collideWithPlayer(player, dt);
+        for (auto &enemy: this->enemies) {
+            enemy->collideWithPlayer(player, dt);
+        }
     }
 
+    pauseText.setPosition(sf::Vector2f(this->player.position.x, this->player.position.y));
+    sf::FloatRect pauseBounds = pauseText.getGlobalBounds();
+    pauseText.setOrigin(sf::Vector2f(pauseBounds.size.x / 2, pauseBounds.size.y / 2));
     this->view.setCenter({player.position.x, player.position.y});
     this->window->setView(view);
 }
@@ -110,8 +128,10 @@ void Game::render() {
     */
 
     this->window->clear();
-  this->window->draw(this->ground);
-  this->window->draw(this->hills);
+    this->window->draw(this->water);
+    this->window->draw(this->border);
+    this->window->draw(this->ground);
+    this->window->draw(this->hills);
     // Draw game objects
     for (auto const &enemy : enemies) {
         enemy->render(this->window);
@@ -120,6 +140,10 @@ void Game::render() {
         bullet->render(*this->window);
     }
     this->player.draw(*this->window);
+
+    if (this->isStopped) {
+        this->window->draw(this->pauseText);
+    }
 
     this->window->display();
 }
@@ -229,4 +253,9 @@ void Game::updateBullets(float dt) {
         }
     }
 }
+
+void Game::stopGame() {
+    this->isStopped = true;
+}
+
 // ******************* Other Methods End *******************

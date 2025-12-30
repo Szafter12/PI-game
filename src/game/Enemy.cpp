@@ -25,7 +25,7 @@ Enemy::Enemy(EnemyType type, sf::Vector2f position_)
     // Set sprite basic settings
     this->sprite.setPosition(this->position);
     this->sprite.setTextureRect(sf::IntRect({0,0},{192/4,192/4}));
-    this->scale = {2.f};
+    this->scale = {0.9};
 }
 
 void Enemy::update(float dt, sf::Vector2f playerPosition) {
@@ -229,9 +229,9 @@ void Enemy::resetAnimation() {
 }
 
 void Enemy::drawHpBar() {
-    constexpr float fullBar = 30;
+    constexpr float fullBar = 15;
     float hpRatio = this->hp / this->maxHp;
-    this->hpBar.setSize(sf::Vector2f(fullBar * hpRatio, 2.f));
+    this->hpBar.setSize(sf::Vector2f(fullBar * hpRatio, 1.f));
 
     if (hpRatio > 0.75) {
         this->hpBar.setFillColor(sf::Color::Green);
@@ -242,7 +242,7 @@ void Enemy::drawHpBar() {
     }
 
     this->hpBar.setOrigin(sf::Vector2f(this->hpBar.getSize().x / 2.f, this->hpBar.getSize().y / 2.f));
-    this->hpBar.setPosition(sf::Vector2f(this->position.x, this->position.y - 20.f));
+    this->hpBar.setPosition(sf::Vector2f(this->position.x, this->position.y - 10.f));
 }
 
 void Enemy::setState(EnemyState newState) {

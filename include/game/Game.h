@@ -21,6 +21,9 @@ Wrapper class
 class Game final {
     // Variables:
     sf::ContextSettings settings;
+    sf::Font font;
+
+    sf::Text pauseText;
 
     // Window
     sf::RenderWindow* window {};
@@ -31,7 +34,10 @@ class Game final {
     float spawnInterval {};
     TileMap hills;
     TileMap ground;
+    TileMap water;
+    TileMap border;
     float spawnTimer {0.f};
+    bool isStopped {false};
 
     // Game objects
     std::vector<sf::Vector2f> spawnPositions;
@@ -51,10 +57,11 @@ class Game final {
     void initVariables();
     void initWindow();
     void updateBullets(float dt);
+    void stopGame();
 
 public:
     // Constructor / Destructor
-    Game ();
+    Game (const sf::Font &font_);
     ~Game ();
 
     // Accessors

@@ -54,6 +54,11 @@ public:
             }
         }
 
+        float mapWidthPx  = width  * tileSize.x;
+        float mapHeightPx = height * tileSize.y;
+
+        this->setOrigin(sf::Vector2f(mapWidthPx / 2.f, mapHeightPx / 2.f));
+
         return true;
     }
 
@@ -96,7 +101,6 @@ public:
                 int id = -1;
                 try
                 {
-                    // id jako string – zostaje jak w JSON
                     id = std::stoi(tile.at("id").get<std::string>());
                 }
                 catch (...)
@@ -104,12 +108,11 @@ public:
                     continue;
                 }
 
-                // 👉 Jeśli mapa się rwie, zamień osie:
                 tiles[x + y * width] = id;
                 // tiles[y + x * height] = id;
             }
 
-            break; // mamy warstwę, nie szukamy dalej
+            break;
         }
 
         if (!layerFound)
