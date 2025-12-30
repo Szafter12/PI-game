@@ -9,7 +9,7 @@ Player::Player(sf::Vector2f position) {
     this->sprite.setScale(sf::Vector2f(0.7, 0.7));
 }
 
-void Player::update(sf::RenderWindow &window) {
+void Player::update(const sf::RenderWindow &window) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A)) {
         sprite.move({-1,0});
     }

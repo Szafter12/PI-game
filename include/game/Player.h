@@ -28,7 +28,7 @@ class Player {
 
     Player(sf::Vector2f position);
 
-    void update(sf::RenderWindow &window);
+    void update(const sf::RenderWindow &window);
     void draw(sf::RenderWindow &window);
 
     sf::FloatRect getBounds() const;
