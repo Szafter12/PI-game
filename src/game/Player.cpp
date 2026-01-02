@@ -1,12 +1,16 @@
 #include "../../include/game/Player.h"
 
-Player::Player(sf::Vector2f position) {
+Player::Player(const sf::Vector2f position) {
     this->position = position;
     this->sprite.setTexture(this->texture);
     this->sprite.setPosition(this->position);
     this->sprite.setOrigin(sf::Vector2f(48.f/2.f, 64.f/2.f));
-    this->ad = 20;
+    this->ad = {20};
     this->sprite.setScale(sf::Vector2f(0.7, 0.7));
+    this->lvl = {1};
+    this->armor = {10};
+    this->currentXp = {0};
+    this->nextLvlCap = {100};
 }
 
 void Player::update(const sf::RenderWindow &window) {
@@ -91,7 +95,6 @@ void Player::update(const sf::RenderWindow &window) {
             else{ mDown.pause=true;mDown.reset();}
         }
     }
-
     // this->initHitBoxOutline();
 }
 
@@ -118,6 +121,14 @@ void Player::initHitBoxOutline() {
     this->hitBox.setFillColor(sf::Color::Transparent);
     this->hitBox.setOutlineColor(sf::Color::Red);
     this->hitBox.setOutlineThickness(1.f);
+}
+
+void Player::lvlUp() {
+    if (this->currentXp >= this->nextLvlCap) {
+        ++this->lvl;
+        this->nextLvlCap += 100;
+        this->currentXp = {0};
+    }
 }
 
 void Player::getAttack() {

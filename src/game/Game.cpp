@@ -204,7 +204,12 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
         enemy->update(dt, playerPosition);
 
     for (int i = 0 ; i < this->enemies.size(); i++) {
-        if (!enemies[i]->is_alive()) enemies.erase(enemies.begin() + i);
+        if (!enemies[i]->is_alive()) {
+            player.currentXp += enemies[i]->xp;
+            enemies.erase(enemies.begin() + i);
+            player.lvlUp();
+            this->maxEnemies += 10;
+        }
     }
 
     for (size_t i = 0; i < enemies.size(); ++i) {
@@ -245,7 +250,6 @@ void Game::updateBullets(float dt) {
         for (int j = 0; j < this->enemies.size(); j++) {
             if (bullet_bounds.findIntersection(this->enemies[j]->getBounds())) {
                 enemies[j]->getAttack(player.ad, Weapons(player.weapon));
-
                 this->bullets.erase(this->bullets.begin() + i);
                 i--;
                 break;

@@ -7,11 +7,11 @@
 
 
 #include "Animation.h"
+#include "Enemy.h"
 
 class Player {
     private:
     sf::RectangleShape hitBox;
-
     void getAttack();
 
     public:
@@ -19,6 +19,12 @@ class Player {
     sf::Sprite sprite = sf::Sprite(texture);
     sf::Vector2f position {};
     int ad {};
+    int armor {};
+    int lvl {};
+    int hp {};
+    int maxHP {};
+    int nextLvlCap {};
+    int currentXp {};
     WeaponType weapon {WeaponType::BasicGun};
     Animation
         mDown = Animation(&sprite,8,0,0,48,64,0.1),
@@ -33,6 +39,7 @@ class Player {
 
     sf::FloatRect getBounds() const;
     void initHitBoxOutline();
+    void lvlUp();
 };
 
 #endif //GAME_PI_PLAYER_H
