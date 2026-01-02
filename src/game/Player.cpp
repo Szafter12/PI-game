@@ -1,4 +1,5 @@
 #include "../../include/game/Player.h"
+#include <cmath>
 
 Player::Player(const sf::Vector2f position) {
     this->position = position;
@@ -11,21 +12,29 @@ Player::Player(const sf::Vector2f position) {
     this->armor = {10};
     this->currentXp = {0};
     this->nextLvlCap = {100};
+    this->speed = {70};
 }
 
-void Player::update(const sf::RenderWindow &window) {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A)) {
-        sprite.move({-1,0});
+void Player::update(const sf::RenderWindow &window, const float dt) {
+    sf::Vector2f velocity(0.f, 0.f);
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
+        velocity.x -= speed;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D))
+        velocity.x += speed;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W))
+        velocity.y -= speed;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S))
+        velocity.y += speed;
+
+    if (velocity.x != 0.f || velocity.y != 0.f) {
+        float len = std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+        velocity /= len;
+        velocity *= speed;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D)) {
-        sprite.move({1,0});
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)) {
-        sprite.move({0,-1});
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S)) {
-        sprite.move({0,1});
-    }
+
+    position += velocity * dt;
+    sprite.setPosition(position);
 
     position = sprite.getPosition();
     sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));

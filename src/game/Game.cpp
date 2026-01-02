@@ -10,12 +10,8 @@ void Game::initVariables() {
     this->window = nullptr;
 
     // objects variables
-    this->maxEnemies = 0;
+    this->maxEnemies = 10;
     this->spawnInterval = 1.f;
-
-    this->pauseText.setString("Pause");
-    pauseText.setCharacterSize(50);
-    pauseText.setFillColor(sf::Color::White);
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
 
@@ -33,12 +29,11 @@ void Game::initWindow() {
    */
     this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Fullscreen, settings);
     this->window->setFramerateLimit(60);
-
     this->screenSize.x = this->window->getSize().x;
     this->screenSize.y = this->window->getSize().y;
 
     this->view = sf::View({this->player.position.x, this->player.position.y}, {this->screenSize.x, this->screenSize.y});
-    this->view.zoom(580.f / 1920.f);
+    this->view.zoom(0.25);
 }
 // ******************* Initialization Methods End *******************
 
@@ -66,6 +61,7 @@ void Game::run() {
     sf::Clock clock;
     while (this->window->isOpen()) {
         float dt = clock.restart().asSeconds();
+        dt = std::min(dt, 0.05f);
         update(dt);
         render();
     }
@@ -102,22 +98,24 @@ void Game::update(float dt) {
     this->pollEvents();
 
     sf::Vector2f playerPosition = this->player.position;
-    if (!this->isStopped) {
+    if (!this->isStopped && !this->isLvlUp) {
         // Update enemies
         this->updateEnemies(dt, playerPosition);
 
         // Update bullets
         this->updateBullets(dt);
-        this->player.update(*this->window);
+        this->player.update(*this->window, dt);
 
-        for (auto &enemy: this->enemies) {
+        for (const auto &enemy: this->enemies) {
             enemy->collideWithPlayer(player, dt);
         }
     }
-    this->upgradeState.setPosition(playerPosition);
+
+    if (this->isLvlUp) this->upgradeState.update(dt, playerPosition);
     if (this->isStopped) this->updatePauseText();
 
-    this->view.setCenter({player.position.x, player.position.y});
+    view.setCenter(view.getCenter() +
+    (playerPosition - view.getCenter()) * 10.f * dt);
     this->window->setView(view);
 }
 
@@ -131,11 +129,12 @@ void Game::render() {
     */
 
     this->window->clear();
+    // Draw game objects
     this->window->draw(this->water);
     this->window->draw(this->border);
     this->window->draw(this->ground);
     this->window->draw(this->hills);
-    // Draw game objects
+
     for (auto const &enemy : enemies) {
         enemy->render(this->window);
     }
@@ -144,7 +143,10 @@ void Game::render() {
     }
 
     this->player.draw(*this->window);
-    this->upgradeState.draw(*this->window);
+
+    if (this->isLvlUp) {
+        this->upgradeState.draw(*this->window);
+    }
 
     if (this->isStopped) {
         this->window->draw(this->pauseText);
@@ -273,9 +275,12 @@ void Game::stopGame() {
 }
 
 void Game::updatePauseText() {
-    pauseText.setPosition(sf::Vector2f(this->player.position.x, this->player.position.y));
+    this->pauseText.setString("Pause");
+    pauseText.setCharacterSize(68);
     sf::FloatRect pauseBounds = pauseText.getGlobalBounds();
     pauseText.setOrigin(sf::Vector2f(pauseBounds.size.x / 2, pauseBounds.size.y / 2));
+    pauseText.setPosition(sf::Vector2f(this->player.position.x, this->player.position.y - 50.f));
+    pauseText.setFillColor(sf::Color::Black);
 }
 
 // ******************* Other Methods End *******************

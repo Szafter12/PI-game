@@ -22,6 +22,7 @@ class Player {
     int armor {};
     int lvl {};
     int hp {};
+    float speed {};
     int maxHP {};
     int nextLvlCap {};
     int currentXp {};
@@ -34,7 +35,7 @@ class Player {
 
     Player(sf::Vector2f position);
 
-    void update(const sf::RenderWindow &window);
+    void update(const sf::RenderWindow &window, const float dt);
     void draw(sf::RenderWindow &window);
 
     sf::FloatRect getBounds() const;

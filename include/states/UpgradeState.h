@@ -16,10 +16,12 @@ class UpgradeState {
 
         std::vector<sf::Sprite> borders;
         void selectUpgrade();
+        void setText();
+        void setBorders();
     public:
         UpgradeState(sf::Font *font_);
         void draw(sf::RenderWindow &target);
-        void update(float dt);
+        void update(float dt, sf::Vector2f position);
         void setPosition(sf::Vector2f position);
 };
 

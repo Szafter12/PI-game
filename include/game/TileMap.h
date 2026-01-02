@@ -3,6 +3,7 @@
 #include <fstream>
 #include <SFML/Graphics.hpp>
 #include <nlohmann/json.hpp>
+#include <filesystem>
 
 using json = nlohmann::json;
 
@@ -10,47 +11,62 @@ class TileMap : public sf::Drawable, public sf::Transformable
 {
 public:
     bool load(const std::filesystem::path& tileset,
-          sf::Vector2u tileSize,
-          const std::vector<int>& tiles,
-          unsigned width,
-          unsigned height)
+              sf::Vector2u tileSize,
+              const std::vector<int>& tiles,
+              unsigned width,
+              unsigned height)
     {
-        // load the tileset texture
+        // Load the tileset texture
         if (!m_tileset.loadFromFile(tileset))
             return false;
 
-        // resize the vertex array to fit the level size
+        m_tileset.setSmooth(false);
+
+        // Resize vertex array
         m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
         m_vertices.resize(width * height * 6);
 
-        // populate the vertex array, with two triangles per tile
+        float tsx = static_cast<float>(tileSize.x);
+        float tsy = static_cast<float>(tileSize.y);
+
         for (unsigned int i = 0; i < width; ++i)
         {
             for (unsigned int j = 0; j < height; ++j)
             {
-                const int tileNumber = tiles[i + j * width];
-                if (tileNumber < 0)
-                    continue;
+                int tileNumber = tiles[i + j * width];
+                if (tileNumber < 0) continue;
 
-                const int tilesPerRow = m_tileset.getSize().x / tileSize.x;
-                const int tu = tileNumber % tilesPerRow;
-                const int tv = tileNumber / tilesPerRow;
+                int tilesPerRow = m_tileset.getSize().x / tileSize.x;
+                int tu = tileNumber % tilesPerRow;
+                int tv = tileNumber / tilesPerRow;
 
                 sf::Vertex* triangles = &m_vertices[(i + j * width) * 6];
 
-                triangles[0].position = { sf::Vector2f(i * tileSize.x,       j * tileSize.y)};
-                triangles[1].position = { sf::Vector2f((i + 1) * tileSize.x, j * tileSize.y)};
-                triangles[2].position = { sf::Vector2f(i * tileSize.x,       (j + 1) * tileSize.y)};
+                // Pixel-perfect positions
+                float x0 = static_cast<float>(i * tileSize.x);
+                float y0 = static_cast<float>(j * tileSize.y);
+                float x1 = static_cast<float>((i + 1) * tileSize.x);
+                float y1 = static_cast<float>((j + 1) * tileSize.y);
+
+                triangles[0].position = { x0, y0 };
+                triangles[1].position = { x1, y0 };
+                triangles[2].position = { x0, y1 };
                 triangles[3].position = triangles[2].position;
                 triangles[4].position = triangles[1].position;
-                triangles[5].position = { sf::Vector2f((i + 1) * tileSize.x, (j + 1) * tileSize.y)};
+                triangles[5].position = { x1, y1 };
 
-                triangles[0].texCoords = { sf::Vector2f(tu * tileSize.x,       tv * tileSize.y)};
-                triangles[1].texCoords = { sf::Vector2f((tu + 1) * tileSize.x, tv * tileSize.y)};
-                triangles[2].texCoords = { sf::Vector2f(tu * tileSize.x,       (tv + 1) * tileSize.y)};
+                // Half-pixel offset texCoords → usuwa bleeding
+                float u = tu * tsx + 0.5f;
+                float v = tv * tsy + 0.5f;
+                float u2 = u + tsx - 1.f;
+                float v2 = v + tsy - 1.f;
+
+                triangles[0].texCoords = { u,  v  };
+                triangles[1].texCoords = { u2, v  };
+                triangles[2].texCoords = { u,  v2 };
                 triangles[3].texCoords = triangles[2].texCoords;
                 triangles[4].texCoords = triangles[1].texCoords;
-                triangles[5].texCoords = { sf::Vector2f((tu + 1) * tileSize.x, (tv + 1) * tileSize.y)};
+                triangles[5].texCoords = { u2, v2 };
             }
         }
 
@@ -63,8 +79,8 @@ public:
     }
 
     bool loadFromJsonLayer(const std::filesystem::path& jsonPath,
-                                const std::string& layerName,
-                                const std::filesystem::path& tilesetPath)
+                           const std::string& layerName,
+                           const std::filesystem::path& tilesetPath)
     {
         std::ifstream file(jsonPath);
         if (!file.is_open())
@@ -73,11 +89,10 @@ public:
         nlohmann::json j;
         file >> j;
 
-        const unsigned tileSize = j.at("tileSize").get<unsigned>();
-        const unsigned width    = j.at("mapWidth").get<unsigned>();
-        const unsigned height   = j.at("mapHeight").get<unsigned>();
+        unsigned tileSize = j.at("tileSize").get<unsigned>();
+        unsigned width    = j.at("mapWidth").get<unsigned>();
+        unsigned height   = j.at("mapHeight").get<unsigned>();
 
-        // Pusta mapa
         std::vector<int> tiles(width * height, -1);
 
         bool layerFound = false;
@@ -109,7 +124,6 @@ public:
                 }
 
                 tiles[x + y * width] = id;
-                // tiles[y + x * height] = id;
             }
 
             break;
@@ -127,17 +141,11 @@ public:
         );
     }
 
-
 private:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override
     {
-        // apply the transform
         states.transform *= getTransform();
-
-        // apply the tileset texture
         states.texture = &m_tileset;
-
-        // draw the vertex array
         target.draw(m_vertices, states);
     }
 
