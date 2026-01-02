@@ -40,6 +40,7 @@ class Player {
     sf::FloatRect getBounds() const;
     void initHitBoxOutline();
     void lvlUp();
+    bool isLvlUp();
 };
 
 #endif //GAME_PI_PLAYER_H

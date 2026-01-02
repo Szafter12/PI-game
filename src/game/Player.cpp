@@ -124,12 +124,15 @@ void Player::initHitBoxOutline() {
 }
 
 void Player::lvlUp() {
-    if (this->currentXp >= this->nextLvlCap) {
-        ++this->lvl;
-        this->nextLvlCap += 100;
-        this->currentXp = {0};
-    }
+    ++this->lvl;
+    this->nextLvlCap += 100;
+    this->currentXp = {0};
 }
+
+bool Player::isLvlUp() {
+    return this->currentXp >= this->nextLvlCap;
+}
+
 
 void Player::getAttack() {
 

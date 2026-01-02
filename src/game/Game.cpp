@@ -10,7 +10,7 @@ void Game::initVariables() {
     this->window = nullptr;
 
     // objects variables
-    this->maxEnemies = 10;
+    this->maxEnemies = 0;
     this->spawnInterval = 1.f;
 
     this->pauseText.setString("Pause");
@@ -18,7 +18,6 @@ void Game::initVariables() {
     pauseText.setFillColor(sf::Color::White);
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
-    this->view = sf::View({this->player.position.x, this->player.position.y}, {400.f, 300.f});
 
     hills.loadFromJsonLayer("../../assets/map/map.json", "Hills", "../../assets/map/spritesheet.png");
     ground.loadFromJsonLayer("../../assets/map/map.json", "Ground", "../../assets/map/spritesheet.png");
@@ -32,15 +31,19 @@ void Game::initWindow() {
        - Initialize starting window
        - Adding default options
    */
-
     this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Fullscreen, settings);
     this->window->setFramerateLimit(60);
-    this->screenSize = this->window->getSize();
+
+    this->screenSize.x = this->window->getSize().x;
+    this->screenSize.y = this->window->getSize().y;
+
+    this->view = sf::View({this->player.position.x, this->player.position.y}, {this->screenSize.x, this->screenSize.y});
+    this->view.zoom(580.f / 1920.f);
 }
 // ******************* Initialization Methods End *******************
 
 // ******************* Constructor/Destructor Start *******************
-Game::Game(const sf::Font &font_) : font(font_), pauseText(font)
+Game::Game(const sf::Font &font_) : font(font_), pauseText(font), upgradeState(&this->font)
 {
     this->initVariables();
     this->initWindow();
@@ -59,6 +62,7 @@ void Game::run() {
        - initialize delta time to ensure game work same on diffrent fps
        - Call update and render functions every fps
    */
+
     sf::Clock clock;
     while (this->window->isOpen()) {
         float dt = clock.restart().asSeconds();
@@ -97,9 +101,9 @@ void Game::update(float dt) {
 
     this->pollEvents();
 
+    sf::Vector2f playerPosition = this->player.position;
     if (!this->isStopped) {
         // Update enemies
-        sf::Vector2f playerPosition = this->player.position;
         this->updateEnemies(dt, playerPosition);
 
         // Update bullets
@@ -110,10 +114,9 @@ void Game::update(float dt) {
             enemy->collideWithPlayer(player, dt);
         }
     }
+    this->upgradeState.setPosition(playerPosition);
+    if (this->isStopped) this->updatePauseText();
 
-    pauseText.setPosition(sf::Vector2f(this->player.position.x, this->player.position.y));
-    sf::FloatRect pauseBounds = pauseText.getGlobalBounds();
-    pauseText.setOrigin(sf::Vector2f(pauseBounds.size.x / 2, pauseBounds.size.y / 2));
     this->view.setCenter({player.position.x, player.position.y});
     this->window->setView(view);
 }
@@ -139,7 +142,9 @@ void Game::render() {
     for (auto const &bullet : bullets) {
         bullet->render(*this->window);
     }
+
     this->player.draw(*this->window);
+    this->upgradeState.draw(*this->window);
 
     if (this->isStopped) {
         this->window->draw(this->pauseText);
@@ -207,8 +212,13 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
         if (!enemies[i]->is_alive()) {
             player.currentXp += enemies[i]->xp;
             enemies.erase(enemies.begin() + i);
-            player.lvlUp();
-            this->maxEnemies += 10;
+            if (player.isLvlUp()) {
+                player.lvlUp();
+                this->isLvlUp = {true};
+                this->maxEnemies += 20;
+            } else {
+                this->isLvlUp = {false};
+            }
         }
     }
 
@@ -260,6 +270,12 @@ void Game::updateBullets(float dt) {
 
 void Game::stopGame() {
     this->isStopped = true;
+}
+
+void Game::updatePauseText() {
+    pauseText.setPosition(sf::Vector2f(this->player.position.x, this->player.position.y));
+    sf::FloatRect pauseBounds = pauseText.getGlobalBounds();
+    pauseText.setOrigin(sf::Vector2f(pauseBounds.size.x / 2, pauseBounds.size.y / 2));
 }
 
 // ******************* Other Methods End *******************
