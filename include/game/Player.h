@@ -7,6 +7,7 @@
 
 
 #include "Animation.h"
+#include "Enemy.h"
 
 class Player {
     private:
@@ -19,23 +20,27 @@ class Player {
     void getAttack();
 
     public:
-    sf::Texture texture = sf::Texture("assets/images/Player.png");
+    sf::Texture texture = sf::Texture("assets/images/walk.png");
     sf::Sprite sprite = sf::Sprite(texture);
     sf::Vector2f position {};
     int ad {};
+    int armor {};
+    int lvl {};
+    int hp {};
+    float speed {};
+    int maxHP {};
+    int nextLvlCap {};
+    int currentXp {};
     WeaponType weapon {WeaponType::Gun1};
-    Animation mDown = Animation(&sprite,2,0,0,32,32,1),
-    mDownL = Animation(&sprite,2,0,32,32,32,1),
-    mLeft = Animation(&sprite,2,0,64,32,32,1),
-    mUpL = Animation(&sprite,2,0,96,32,32,1),
-    mUp = Animation(&sprite,2,0,128,32,32,1),
-    mUpR = Animation(&sprite,2,0,160,32,32,1),
-    mRight = Animation(&sprite,2,0,192,32,32,1),
-    mDownR = Animation(&sprite,2,0,224,32,32,1);
+    Animation
+        mDown = Animation(&sprite,8,0,0,48,64,0.1),
+        mLeft = Animation(&sprite,8,0,64,48,64,0.1),
+        mUp = Animation(&sprite,8,0,192,48,64,0.1),
+        mRight = Animation(&sprite,8,0,320,48,64,0.1);
 
     Player(sf::Vector2f position);
 
-    void update(sf::RenderWindow &window);
+    void update(const sf::RenderWindow &window, const float dt);
     void draw(sf::RenderWindow &window);
 
     sf::FloatRect getBounds() const;
@@ -43,6 +48,8 @@ class Player {
 
     Weapon& get_current_weapon();
     void switch_weapon(int index);
+    void lvlUp();
+    bool isLvlUp();
 };
 
 #endif //GAME_PI_PLAYER_H

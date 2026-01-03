@@ -9,9 +9,10 @@
 #include <ctime>
 #include <cstdlib>
 #include "Enemy.h"
-
+#include "TileMap.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "states/UpgradeState.h"
 
 /*
 Class that acts as the game engine
@@ -21,25 +22,33 @@ Wrapper class
 class Game final {
     // Variables:
     sf::ContextSettings settings;
+    sf::Font font;
+
+    sf::Text pauseText;
 
     // Window
     sf::RenderWindow* window {};
-    sf::Vector2u screenSize {};
+    sf::Vector2f screenSize {};
 
     // Game logic
     int maxEnemies {};
     float spawnInterval {};
+    TileMap hills;
+    TileMap ground;
+    TileMap water;
+    TileMap border;
     float spawnTimer {0.f};
+    bool isStopped {false};
+    bool isLvlUp {false};
+    UpgradeState upgradeState;
 
     // Game objects
     std::vector<sf::Vector2f> spawnPositions;
     std::shared_ptr<sf::Texture> enemyTexture;
     std::vector<std::unique_ptr<Enemy>> enemies;
 
-    ////////////////////////////////Zmienne testowe
     Player player = Player({0,0});
     sf::View view {};
-    //////////////////////////////////
 
     // Bullets
     std::vector<std::unique_ptr<Bullet>> bullets;
@@ -51,10 +60,12 @@ class Game final {
     void initVariables();
     void initWindow();
     void updateBullets(float dt);
+    void stopGame();
+    void updatePauseText();
 
 public:
     // Constructor / Destructor
-    Game ();
+    Game (const sf::Font &font_);
     ~Game ();
 
     // Accessors
