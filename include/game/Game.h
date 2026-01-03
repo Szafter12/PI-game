@@ -12,6 +12,7 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "states/UpgradeState.h"
 
 /*
 Class that acts as the game engine
@@ -27,7 +28,7 @@ class Game final {
 
     // Window
     sf::RenderWindow* window {};
-    sf::Vector2u screenSize {};
+    sf::Vector2f screenSize {};
 
     // Game logic
     int maxEnemies {};
@@ -38,16 +39,16 @@ class Game final {
     TileMap border;
     float spawnTimer {0.f};
     bool isStopped {false};
+    bool isLvlUp {false};
+    UpgradeState upgradeState;
 
     // Game objects
     std::vector<sf::Vector2f> spawnPositions;
     std::shared_ptr<sf::Texture> enemyTexture;
     std::vector<std::unique_ptr<Enemy>> enemies;
 
-    ////////////////////////////////Zmienne testowe
     Player player = Player({0,0});
     sf::View view {};
-    //////////////////////////////////
 
     // Bullets
     std::vector<std::unique_ptr<Bullet>> bullets;
@@ -58,6 +59,7 @@ class Game final {
     void initWindow();
     void updateBullets(float dt);
     void stopGame();
+    void updatePauseText();
 
 public:
     // Constructor / Destructor

@@ -4,6 +4,7 @@
 class Player;
 class Collider;
 class DamageCalculator;
+
 #include <SFML/Graphics.hpp>
 #include "Weapons.h"
 
@@ -14,7 +15,6 @@ enum class EnemyType {
 };
 
 enum class EnemyState {
-    Idle,
     Run,
     Attack
 };
@@ -66,6 +66,7 @@ public:
     sf::Vector2f position{};
     float maxHp {};
     float hp {};
+    int xp {};
     sf::RectangleShape hpBar {};
     int armor {};
     int ad {};

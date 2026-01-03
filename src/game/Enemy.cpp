@@ -19,6 +19,7 @@ Enemy::Enemy(EnemyType type, sf::Vector2f position_)
             this->speed = 50.0f;
             this->ad = 20;
             this->armor = 10;
+            this->xp = 10;
             break;
     }
 
