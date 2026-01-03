@@ -15,6 +15,12 @@ void Game::initVariables() {
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
     this->view = sf::View({this->player.position.x, this->player.position.y}, {400.f, 300.f});
+
+    if (!this->bullet_texture.loadFromFile("assets/images/bullet.png")) {
+        sf::Image img;
+        img.resize({10, 10}, sf::Color::Red);
+        this->bullet_texture.loadFromImage(img);
+    }
 }
 
 void Game::initWindow() {
@@ -117,6 +123,11 @@ void Game::render() {
     }
     this->player.draw(*this->window);
 
+    this->window->setView(this->window->getDefaultView());
+    sf::Sprite weapon_icon = this->player.get_current_weapon().icon;
+    weapon_icon.setPosition({20.f, 20.f});
+    this->window->draw(weapon_icon);
+
     this->window->display();
 }
 // ******************* Core Methods End *******************
@@ -191,7 +202,9 @@ void Game::updateBullets(float dt) {
     static float shoot_timer = 0.f;
     shoot_timer += dt;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) && shoot_timer > 0.3f) {
+    Weapon& current_weapon = this->player.get_current_weapon();
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) && shoot_timer > current_weapon.fire_rate) {
         shoot_timer = 0.f;
 
         // Mouse position
@@ -199,7 +212,8 @@ void Game::updateBullets(float dt) {
 
         this->bullets.push_back(std::make_unique<Bullet>(
             this->player.position,
-            mouse_position
+            mouse_position,
+            this->bullet_texture
             ));
     }
 
@@ -216,7 +230,7 @@ void Game::updateBullets(float dt) {
 
         for (int j = 0; j < this->enemies.size(); j++) {
             if (bullet_bounds.findIntersection(this->enemies[j]->getBounds())) {
-                enemies[j]->getAttack(player.ad, Weapons(player.weapon));
+                this->enemies[j]->getAttack(current_weapon.damage, Weapons(current_weapon.type));
 
                 this->bullets.erase(this->bullets.begin() + i);
                 i--;

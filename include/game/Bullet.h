@@ -6,13 +6,13 @@
 
 class Bullet {
 private:
-    sf::CircleShape shape;
+    sf::Sprite sprite;
     sf::Vector2f velocity;
     float life_time;
     float max_life_time;
 public:
     // Start position
-    Bullet(sf::Vector2f start_position, sf::Vector2f target_position);
+    Bullet(sf::Vector2f start_position, sf::Vector2f target_position, const sf::Texture& texture);
     void update(float dt);
     void render(sf::RenderTarget& target);
 

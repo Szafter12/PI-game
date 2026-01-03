@@ -12,14 +12,18 @@ class Player {
     private:
     sf::RectangleShape hitBox;
 
+    std::vector<Weapon> arsenal;
+    int weapon_index = 0;
+    std::shared_ptr<sf::Texture> guns_texture;
+
     void getAttack();
 
     public:
-    sf::Texture texture = sf::Texture("../../assets/images/Player.png");
+    sf::Texture texture = sf::Texture("assets/images/Player.png");
     sf::Sprite sprite = sf::Sprite(texture);
     sf::Vector2f position {};
     int ad {};
-    WeaponType weapon {WeaponType::BasicGun};
+    WeaponType weapon {WeaponType::Gun1};
     Animation mDown = Animation(&sprite,2,0,0,32,32,1),
     mDownL = Animation(&sprite,2,0,32,32,32,1),
     mLeft = Animation(&sprite,2,0,64,32,32,1),
@@ -36,6 +40,9 @@ class Player {
 
     sf::FloatRect getBounds() const;
     void initHitBoxOutline();
+
+    Weapon& get_current_weapon();
+    void switch_weapon(int index);
 };
 
 #endif //GAME_PI_PLAYER_H

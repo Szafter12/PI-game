@@ -44,6 +44,8 @@ class Game final {
     // Bullets
     std::vector<std::unique_ptr<Bullet>> bullets;
 
+    sf::Texture bullet_texture;
+
 
     // Private functions:
     void initVariables();
