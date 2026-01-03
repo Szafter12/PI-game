@@ -43,8 +43,8 @@ public:
         }
         else sprite->setTextureRect(sf::IntRect({posX,posY},{frameW,frameH}));
     }
-    void reset() {
-        sprite->setTextureRect(sf::IntRect({posX,posY},{frameW,frameH}));
+    void set(sf::Vector2i position) {
+        sprite->setTextureRect(sf::IntRect({position.x,position.y},{frameW,frameH}));
     }
 
 };

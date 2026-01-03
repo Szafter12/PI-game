@@ -84,6 +84,9 @@ void Game::pollEvents() {
                     this->isStopped = true;
                 }
             }
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
+                this->window->close();
+            }
         }
     }
 }

@@ -2,7 +2,6 @@
 #define GAME_PI_PLAYER_H
 
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include "Weapons.h"
 
 
@@ -18,7 +17,13 @@ class Player {
     sf::Texture texture = sf::Texture("../../assets/images/walk.png");
     sf::Sprite sprite = sf::Sprite(texture);
     sf::Vector2f position {};
+    sf::RectangleShape hpBar {};
     int ad {};
+    //stats
+    int maxHp=100;
+    int hp=maxHp;
+    float speed=1;
+
     WeaponType weapon {WeaponType::BasicGun};
     Animation
         mDown = Animation(&sprite,8,0,0,48,64,0.1),
@@ -33,6 +38,7 @@ class Player {
 
     sf::FloatRect getBounds() const;
     void initHitBoxOutline();
+    void drawHpBar();
 };
 
 #endif //GAME_PI_PLAYER_H

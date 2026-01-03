@@ -182,6 +182,7 @@ void Enemy::collideWithPlayer (Player &player, float dt) {
 
     if (this->state != EnemyState::Attack) {
         this->startAttack();
+        player.hp-=10;
     }
 
     Collider::calculatePosition(player, *this, dt);
