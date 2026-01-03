@@ -2,10 +2,12 @@
 #define GAME_PI_PLAYER_H
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "Weapons.h"
 
 
 #include "Animation.h"
+#include "Enemy.h"
 
 class Player {
     private:
@@ -19,10 +21,14 @@ class Player {
     sf::Vector2f position {};
     sf::RectangleShape hpBar {};
     int ad {};
+    int armor {};
+    int lvl {};
+    float speed {};
+    int nextLvlCap {};
+    int currentXp {};
     //stats
     int maxHp=100;
     int hp=maxHp;
-    float speed=1;
 
     WeaponType weapon {WeaponType::BasicGun};
     Animation
@@ -33,11 +39,13 @@ class Player {
 
     Player(sf::Vector2f position);
 
-    void update(sf::RenderWindow &window);
+    void update(const sf::RenderWindow &window, const float dt);
     void draw(sf::RenderWindow &window);
 
     sf::FloatRect getBounds() const;
     void initHitBoxOutline();
+    void lvlUp();
+    bool isLvlUp();
     void drawHpBar();
 };
 
