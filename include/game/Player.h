@@ -12,20 +12,24 @@
 class Player {
     private:
     sf::RectangleShape hitBox;
+
     void getAttack();
 
     public:
     sf::Texture texture = sf::Texture("../../assets/images/walk.png");
     sf::Sprite sprite = sf::Sprite(texture);
     sf::Vector2f position {};
+    sf::RectangleShape hpBar {};
     int ad {};
     int armor {};
     int lvl {};
-    int hp {};
     float speed {};
-    int maxHP {};
     int nextLvlCap {};
     int currentXp {};
+    //stats
+    int maxHp=100;
+    int hp=maxHp;
+
     WeaponType weapon {WeaponType::BasicGun};
     Animation
         mDown = Animation(&sprite,8,0,0,48,64,0.1),
@@ -42,6 +46,7 @@ class Player {
     void initHitBoxOutline();
     void lvlUp();
     bool isLvlUp();
+    void drawHpBar();
 };
 
 #endif //GAME_PI_PLAYER_H

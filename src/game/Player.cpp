@@ -33,6 +33,8 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
         velocity *= speed;
     }
 
+    drawHpBar();
+
     position += velocity * dt;
     sprite.setPosition(position);
 
@@ -46,14 +48,14 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mLeft.pause=false;mLeft.update();}
-            else{ mLeft.pause=true;mLeft.reset();}
+            else{ mLeft.pause=true;mLeft.set({96,64});}
         }
         else {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mRight.pause=false;mRight.update();}
-            else{ mRight.pause=true;mRight.reset();}
+            else{ mRight.pause=true;mRight.set({96,320});}
         }
         }
     else if (mousePos.y < position.y-16) {
@@ -62,7 +64,7 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mUp.pause=false;mUp.update();}
-            else{ mUp.pause=true;mUp.reset();}
+            else{ mUp.pause=true;mUp.set({144,192});}
         }
         else if (mousePos.x > position.x-16 &&
             mousePos.x < (position.x+16)) {
@@ -70,14 +72,14 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mUp.pause=false;mUp.update();}
-            else{ mUp.pause=true;mUp.reset();}
+            else{ mUp.pause=true;mUp.set({144,192});}
         }
         else {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mUp.pause=false;mUp.update();}
-            else{ mUp.pause=true;mUp.reset();}
+            else{ mUp.pause=true;mUp.set({144,192});}
         }
     }
     else {
@@ -86,7 +88,7 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mDown.pause=false;mDown.update();}
-            else{ mDown.pause=true;mDown.reset();}
+            else{ mDown.pause=true;mDown.set({144,0});}
         }
         else if (mousePos.x > position.x-16 &&
             mousePos.x < (position.x+16)) {
@@ -94,21 +96,23 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mDown.pause=false;mDown.update();}
-            else{ mDown.pause=true;mDown.reset();}
+            else{ mDown.pause=true;mDown.set({144,0});}
         }
         else {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mDown.pause=false;mDown.update();}
-            else{ mDown.pause=true;mDown.reset();}
+            else{ mDown.pause=true;mDown.set({144,0});}
         }
     }
+
     // this->initHitBoxOutline();
 }
 
 void Player::draw(sf::RenderWindow &window) {
     window.draw(sprite);
+    window.draw(hpBar);
     // window.draw(hitBox);
 }
 
@@ -145,4 +149,21 @@ bool Player::isLvlUp() {
 
 void Player::getAttack() {
 
+}
+
+void Player::drawHpBar() {
+    constexpr float fullBar = 15;
+    float hpRatio = (float)this->hp / (float)maxHp;
+    this->hpBar.setSize(sf::Vector2f(fullBar * hpRatio, 2.f));
+
+    if (hpRatio > 0.75) {
+        this->hpBar.setFillColor(sf::Color::Green);
+    } else if (hpRatio > 0.30) {
+        this->hpBar.setFillColor(sf::Color::Yellow);
+    } else {
+        this->hpBar.setFillColor(sf::Color::Red);
+    }
+
+    this->hpBar.setOrigin(sf::Vector2f(this->hpBar.getSize().x / 2.f, this->hpBar.getSize().y / 2.f));
+    this->hpBar.setPosition(sf::Vector2f(this->position.x, this->position.y - 10.f));
 }

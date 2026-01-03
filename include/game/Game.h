@@ -53,7 +53,6 @@ class Game final {
     // Bullets
     std::vector<std::unique_ptr<Bullet>> bullets;
 
-
     // Private functions:
     void initVariables();
     void initWindow();
