@@ -40,6 +40,7 @@ public:
                     if (frame==frameCount) frame=0;
                 }
             }
+            else{time.restart();time.stop();frame=0;}
         }
         else sprite->setTextureRect(sf::IntRect({posX,posY},{frameW,frameH}));
     }
