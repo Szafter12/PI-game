@@ -33,10 +33,13 @@ class Game final {
     // Game logic
     int maxEnemies {};
     float spawnInterval {};
-    TileMap hills;
+    TileMap trees;
+    TileMap walls;
+    TileMap upupground;
+    TileMap upground;
     TileMap ground;
     TileMap water;
-    TileMap border;
+    TileMap bridges;
     float spawnTimer {0.f};
     bool isStopped {false};
     bool isLvlUp {false};
@@ -54,11 +57,8 @@ class Game final {
     std::vector<std::unique_ptr<Bullet>> bullets;
 
     sf::Texture bullet_texture;
-
-
     sf::Texture border_texture;
     sf::Sprite borderSprite;
-
 
     // Private functions:
     void initVariables();

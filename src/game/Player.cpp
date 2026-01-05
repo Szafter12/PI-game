@@ -3,7 +3,6 @@
 
 Player::Player(const sf::Vector2f position) {
     this->position = position;
-    this->sprite.setTexture(this->texture);
     this->sprite.setPosition(this->position);
     this->ad = 20;
 
@@ -29,6 +28,12 @@ Player::Player(const sf::Vector2f position) {
     this->currentXp = {0};
     this->nextLvlCap = {100};
     this->speed = {70};
+
+    plate.setFillColor(sf::Color(242, 158, 109,255));
+    plate.setSize({100,32});
+    plate.setOutlineColor(sf::Color(87, 46, 23,255));
+    plate.setOutlineThickness(2);
+    plate.setPosition({position.x-240,position.y+71});
 }
 
 
@@ -65,6 +70,8 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
     position += velocity * dt;
     sprite.setPosition(position);
 
+    drawHpBar(window.getView());
+
     position = sprite.getPosition();
     sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
@@ -74,15 +81,15 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mLeft.pause=false;mLeft.update();}
-            else{ mLeft.pause=true;mLeft.reset();}
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ pauseAnim(0);sprite.setTexture(walkTxt);mLeft.pause=false;mLeft.update();}
+            else{ mLeft.pause=true;pauseAnim(3);sprite.setTexture(idleTxt);IdleLeft.pause=false;IdleLeft.update();}
         }
         else {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mRight.pause=false;mRight.update();}
-            else{ mRight.pause=true;mRight.reset();}
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ pauseAnim(0);sprite.setTexture(walkTxt);mRight.pause=false;mRight.update();}
+            else{ mRight.pause=true;pauseAnim(4);sprite.setTexture(idleTxt);IdleRight.pause=false;IdleRight.update();}
         }
         }
     else if (mousePos.y < position.y-16) {
@@ -90,23 +97,23 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mUp.pause=false;mUp.update();}
-            else{ mUp.pause=true;mUp.reset();}
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ pauseAnim(0);sprite.setTexture(walkTxt);mUp.pause=false;mUp.update();}
+            else{ mUp.pause=true;pauseAnim(1);sprite.setTexture(idleTxt);IdleUp.pause=false;IdleUp.update();}
         }
         else if (mousePos.x > position.x-16 &&
             mousePos.x < (position.x+16)) {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mUp.pause=false;mUp.update();}
-            else{ mUp.pause=true;mUp.reset();}
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ pauseAnim(0);sprite.setTexture(walkTxt);mUp.pause=false;mUp.update();}
+            else{ mUp.pause=true;pauseAnim(1);sprite.setTexture(idleTxt);IdleUp.pause=false;IdleUp.update();}
         }
         else {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mUp.pause=false;mUp.update();}
-            else{ mUp.pause=true;mUp.reset();}
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ pauseAnim(0);sprite.setTexture(walkTxt);mUp.pause=false;mUp.update();}
+            else{ mUp.pause=true;pauseAnim(1);sprite.setTexture(idleTxt);IdleUp.pause=false;IdleUp.update();}
         }
     }
     else {
@@ -114,30 +121,33 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mDown.pause=false;mDown.update();}
-            else{ mDown.pause=true;mDown.reset();}
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ pauseAnim(0);sprite.setTexture(walkTxt);mDown.pause=false;mDown.update();}
+            else{ mDown.pause=true;pauseAnim(2);sprite.setTexture(idleTxt);IdleDown.pause=false;IdleDown.update();}
         }
         else if (mousePos.x > position.x-16 &&
             mousePos.x < (position.x+16)) {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mDown.pause=false;mDown.update();}
-            else{ mDown.pause=true;mDown.reset();}
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ pauseAnim(0);sprite.setTexture(walkTxt);mDown.pause=false;mDown.update();}
+            else{ mDown.pause=true;pauseAnim(2);sprite.setTexture(idleTxt);IdleDown.pause=false;IdleDown.update();}
         }
         else {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S) ||
-                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ mDown.pause=false;mDown.update();}
-            else{ mDown.pause=true;mDown.reset();}
+                sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)){ pauseAnim(0);sprite.setTexture(walkTxt);mDown.pause=false;mDown.update();}
+            else{ mDown.pause=true;pauseAnim(2);sprite.setTexture(idleTxt);IdleDown.pause=false;IdleDown.update();}
         }
     }
+
     // this->initHitBoxOutline();
 }
 
 void Player::draw(sf::RenderWindow &window) {
     window.draw(sprite);
+    window.draw(plate);
+    window.draw(hpBar);
     // window.draw(hitBox);
 }
 
@@ -191,3 +201,28 @@ void Player::switch_weapon(int index) {
 }
 
 
+void Player::drawHpBar(sf::View view) {
+    constexpr float fullBar = 15;
+    float hpRatio = (float)this->hp / (float)maxHp;
+    this->hpBar.setSize(sf::Vector2f(fullBar * hpRatio*6, 2.f*4));
+
+    if (hpRatio > 0.75) {
+        this->hpBar.setFillColor(sf::Color::Green);
+    } else if (hpRatio > 0.30) {
+        this->hpBar.setFillColor(sf::Color::Yellow);
+    } else {
+        this->hpBar.setFillColor(sf::Color::Red);
+    }
+
+    this->hpBar.setOrigin(sf::Vector2f(this->hpBar.getSize().x / 2.f, this->hpBar.getSize().y / 2.f));
+    plate.setPosition({view.getCenter().x-238,view.getCenter().y-135});
+    this->hpBar.setPosition(sf::Vector2f(plate.getPosition().x+50, plate.getPosition().y + 16.f));
+}
+
+void Player::pauseAnim(int a) {
+    if (a!=1) IdleUp.pause=true;
+    if (a!=2) IdleDown.pause=true;
+    if (a!=3) IdleLeft.pause=true;
+    if (a!=4) IdleRight.pause=true;
+
+}

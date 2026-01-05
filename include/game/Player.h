@@ -17,26 +17,36 @@ class Player {
     int weapon_index = 0;
     std::shared_ptr<sf::Texture> guns_texture;
 
+    public:
     void getAttack();
 
-    public:
-    sf::Texture texture = sf::Texture("assets/images/walk.png");
-    sf::Sprite sprite = sf::Sprite(texture);
+    sf::Texture walkTxt = sf::Texture("../../assets/images/walk.png");
+    sf::Texture idleTxt = sf::Texture("../../assets/images/Idle.png");
+    sf::Sprite sprite = sf::Sprite(idleTxt);
     sf::Vector2f position {};
+    sf::RectangleShape hpBar {};
+    sf::RectangleShape plate {};
     int ad {};
     int armor {};
     int lvl {};
-    int hp {};
     float speed {};
-    int maxHP {};
     int nextLvlCap {};
     int currentXp {};
     WeaponType weapon {WeaponType::Gun1};
+    //stats
+    int maxHp=100;
+    int hp=maxHp;
+
+    WeaponType weapon {WeaponType::BasicGun};
     Animation
         mDown = Animation(&sprite,8,0,0,48,64,0.1),
         mLeft = Animation(&sprite,8,0,64,48,64,0.1),
         mUp = Animation(&sprite,8,0,192,48,64,0.1),
-        mRight = Animation(&sprite,8,0,320,48,64,0.1);
+        mRight = Animation(&sprite,8,0,320,48,64,0.1),
+        IdleDown = Animation(&sprite,8,0,0,48,64,0.1),
+        IdleLeft = Animation(&sprite,8,0,64,48,64,0.1),
+        IdleUp = Animation(&sprite,8,0,192,48,64,0.1),
+        IdleRight = Animation(&sprite,8,0,320,48,64,0.1);
 
     Player(sf::Vector2f position);
 
@@ -50,6 +60,8 @@ class Player {
     void switch_weapon(int index);
     void lvlUp();
     bool isLvlUp();
+    void drawHpBar(sf::View view);
+    void pauseAnim(int a);
 };
 
 #endif //GAME_PI_PLAYER_H

@@ -40,11 +40,12 @@ public:
                     if (frame==frameCount) frame=0;
                 }
             }
+            else{time.restart();time.stop();frame=0;}
         }
         else sprite->setTextureRect(sf::IntRect({posX,posY},{frameW,frameH}));
     }
-    void reset() {
-        sprite->setTextureRect(sf::IntRect({posX,posY},{frameW,frameH}));
+    void set(sf::Vector2i position) {
+        sprite->setTextureRect(sf::IntRect({position.x,position.y},{frameW,frameH}));
     }
 
 };

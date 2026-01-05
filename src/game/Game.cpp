@@ -15,19 +15,21 @@ void Game::initVariables() {
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
 
-    hills.loadFromJsonLayer("assets/map/map.json", "Hills", "assets/map/spritesheet.png");
-    ground.loadFromJsonLayer("assets/map/map.json", "Ground", "assets/map/spritesheet.png");
-    water.loadFromJsonLayer("assets/map/map.json", "Water", "assets/map/spritesheet.png");
-    border.loadFromJsonLayer("assets/map/map.json", "Border", "assets/map/spritesheet.png");
+    this->bullet_texture.loadFromFile("../../assets/images/bullet.png");
 
-    this->bullet_texture.loadFromFile("assets/images/bullet.png");
-
-    this->border_texture.loadFromFile("assets/images/border.png");
+    this->border_texture.loadFromFile("../../assets/images/border.png");
     this->borderSprite.setTexture(this->border_texture);
     this->borderSprite.setTextureRect(sf::IntRect({0, 0}, {64, 64}));
     this->borderSprite.setScale({0.5, 0.5});
     this->borderSprite.setPosition({10.f, 40.f});
 
+    upupground.loadFromJsonLayer("../../assets/map/map.json", "upupground", "../../assets/map/spritesheet.png");
+    bridges.loadFromJsonLayer("../../assets/map/map.json", "bridges", "../../assets/map/spritesheet.png");
+    trees.loadFromJsonLayer("../../assets/map/map.json", "trees", "../../assets/map/spritesheet.png");
+    walls.loadFromJsonLayer("../../assets/map/map.json", "walls", "../../assets/map/spritesheet.png");
+    ground.loadFromJsonLayer("../../assets/map/map.json", "ground", "../../assets/map/spritesheet.png");
+    water.loadFromJsonLayer("../../assets/map/map.json", "water", "../../assets/map/spritesheet.png");
+    upground.loadFromJsonLayer("../../assets/map/map.json", "upground", "../../assets/map/spritesheet.png");
 }
 
 void Game::initWindow() {
@@ -36,7 +38,7 @@ void Game::initWindow() {
        - Initialize starting window
        - Adding default options
    */
-    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Fullscreen, settings);
+    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
     this->window->setFramerateLimit(60);
     this->screenSize.x = this->window->getSize().x;
     this->screenSize.y = this->window->getSize().y;
@@ -95,6 +97,9 @@ void Game::pollEvents() {
                     this->isStopped = true;
                 }
             }
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
+                this->window->close();
+            }
         }
     }
 }
@@ -115,6 +120,11 @@ void Game::update(float dt) {
 
         // Update bullets
         this->updateBullets(dt);
+
+        view.setCenter(view.getCenter() +
+        (playerPosition - view.getCenter()));
+        this->window->setView(view);
+
         this->player.update(*this->window, dt);
 
         for (const auto &enemy: this->enemies) {
@@ -144,10 +154,16 @@ void Game::render() {
 
     this->window->clear();
     // Draw game objects
-    this->window->draw(this->water);
-    this->window->draw(this->border);
     this->window->draw(this->ground);
-    this->window->draw(this->hills);
+    this->window->draw(this->upground);
+    this->window->draw(this->water);
+    this->window->draw(this->walls);
+    this->window->draw(this->upupground);
+    this->window->draw(this->trees);
+    this->window->draw(this->bridges);
+
+
+
 
     for (auto const &enemy : enemies) {
         enemy->render(this->window);
