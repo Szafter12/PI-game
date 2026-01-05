@@ -38,15 +38,13 @@ void Game::initWindow() {
        - Initialize starting window
        - Adding default options
    */
-    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
+    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Fullscreen, settings);
     this->window->setFramerateLimit(60);
     this->screenSize.x = this->window->getSize().x;
     this->screenSize.y = this->window->getSize().y;
 
     this->view = sf::View({this->player.position.x, this->player.position.y}, {this->screenSize.x, this->screenSize.y});
     this->view.zoom(0.25);
-
-
 
 }
 // ******************* Initialization Methods End *******************

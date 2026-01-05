@@ -37,7 +37,6 @@ class Player {
     int maxHp=100;
     int hp=maxHp;
 
-    WeaponType weapon {WeaponType::BasicGun};
     Animation
         mDown = Animation(&sprite,8,0,0,48,64,0.1),
         mLeft = Animation(&sprite,8,0,64,48,64,0.1),

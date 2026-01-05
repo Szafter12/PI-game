@@ -7,7 +7,7 @@ Player::Player(const sf::Vector2f position) {
     this->ad = 20;
 
     this->guns_texture = std::make_shared<sf::Texture>();
-    this->guns_texture->loadFromFile("assets/images/all_guns.png");
+    this->guns_texture->loadFromFile("../../assets/images/all_guns.png");
 
     this->arsenal.push_back(Weapon("Gun1", 0.5f, 20, 100.f, WeaponType::Gun1, this->guns_texture, sf::IntRect({0, 10}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun2", 0.4f, 25, 600.f, WeaponType::Gun2, this->guns_texture, sf::IntRect({30, 10}, {32, 16})));
@@ -35,9 +35,6 @@ Player::Player(const sf::Vector2f position) {
     plate.setOutlineThickness(2);
     plate.setPosition({position.x-240,position.y+71});
 }
-
-
-
 
 void Player::update(const sf::RenderWindow &window, const float dt) {
     sf::Vector2f velocity(0.f, 0.f);
@@ -181,11 +178,6 @@ bool Player::isLvlUp() {
     return this->currentXp >= this->nextLvlCap;
 }
 
-
-void Player::getAttack() {
-
-}
-
 Weapon &Player::get_current_weapon() {
     if (arsenal.empty()) {
         static auto fallback = Weapon("Null", 1.f, 0, 0.f, WeaponType::Gun1, std::make_shared<sf::Texture>(), sf::IntRect({0, 0}, {0, 0}));
@@ -224,5 +216,4 @@ void Player::pauseAnim(int a) {
     if (a!=2) IdleDown.pause=true;
     if (a!=3) IdleLeft.pause=true;
     if (a!=4) IdleRight.pause=true;
-
 }

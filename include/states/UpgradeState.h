@@ -6,7 +6,7 @@
 
 class UpgradeState {
     private:
-        sf::Texture borderTexture = {sf::Texture("assets/images/border.png")};
+        sf::Texture borderTexture = {sf::Texture("../../assets/images/border.png")};
         sf::Font *font;
         sf::Text levelUpText;
         sf::Text secondText;
