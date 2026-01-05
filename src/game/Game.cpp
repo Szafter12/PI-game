@@ -15,6 +15,14 @@ void Game::initVariables() {
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
 
+    this->bullet_texture.loadFromFile("../../assets/images/bullet.png");
+
+    this->border_texture.loadFromFile("../../assets/images/border.png");
+    this->borderSprite.setTexture(this->border_texture);
+    this->borderSprite.setTextureRect(sf::IntRect({0, 0}, {64, 64}));
+    this->borderSprite.setScale({0.5, 0.5});
+    this->borderSprite.setPosition({10.f, 40.f});
+
     upupground.loadFromJsonLayer("../../assets/map/map.json", "upupground", "../../assets/map/spritesheet.png");
     bridges.loadFromJsonLayer("../../assets/map/map.json", "bridges", "../../assets/map/spritesheet.png");
     trees.loadFromJsonLayer("../../assets/map/map.json", "trees", "../../assets/map/spritesheet.png");
@@ -37,12 +45,14 @@ void Game::initWindow() {
 
     this->view = sf::View({this->player.position.x, this->player.position.y}, {this->screenSize.x, this->screenSize.y});
     this->view.zoom(0.25);
+
+
+
 }
 // ******************* Initialization Methods End *******************
 
 // ******************* Constructor/Destructor Start *******************
-Game::Game(const sf::Font &font_) : font(font_), pauseText(font), upgradeState(&this->font)
-{
+Game::Game(const sf::Font &font_) : font(font_), pauseText(font), upgradeState(&this->font), borderSprite(this->border_texture) {
     this->initVariables();
     this->initWindow();
 }
@@ -125,6 +135,11 @@ void Game::update(float dt) {
     if (this->isLvlUp) this->upgradeState.update(dt, playerPosition);
     if (this->isStopped) this->updatePauseText();
 
+    view.setCenter(view.getCenter() +
+    (playerPosition - view.getCenter()) * 10.f * dt);
+    this->window->setView(view);
+
+    this->borderSprite.setPosition({view.getCenter().x - 250.f, view.getCenter().y + 100.f});
 
 }
 
@@ -157,6 +172,10 @@ void Game::render() {
         bullet->render(*this->window);
     }
 
+    // sf::Sprite weapon_icon = this->player.get_current_weapon().icon;
+    // weapon_icon.setPosition({20.f, 20.f});
+    // this->window->draw(weapon_icon);
+
     this->player.draw(*this->window);
 
     if (this->isLvlUp) {
@@ -166,6 +185,19 @@ void Game::render() {
     if (this->isStopped) {
         this->window->draw(this->pauseText);
     }
+
+    //this->window->setView(this->window->getDefaultView());
+    this->window->draw(this->borderSprite);
+    sf::Sprite weaponIcon = this->player.get_current_weapon().icon;
+    sf::FloatRect border_boudns = this->borderSprite.getGlobalBounds();
+    sf::FloatRect weapon_bounds = weaponIcon.getGlobalBounds();
+
+    float x = border_boudns.position.x + (border_boudns.size.x / 2.f) - (weapon_bounds.size.x / 2.f);
+    float y = border_boudns.position.y + (border_boudns.size.y / 2.f) - (weapon_bounds.size.y / 2.f);
+
+
+    weaponIcon.setPosition({x, y});
+    this->window->draw(weaponIcon);
 
     this->window->display();
 }
@@ -251,7 +283,9 @@ void Game::updateBullets(float dt) {
     static float shoot_timer = 0.f;
     shoot_timer += dt;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) && shoot_timer > 0.3f) {
+    Weapon& current_weapon = this->player.get_current_weapon();
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) && shoot_timer > current_weapon.fire_rate) {
         shoot_timer = 0.f;
 
         // Mouse position
@@ -259,7 +293,8 @@ void Game::updateBullets(float dt) {
 
         this->bullets.push_back(std::make_unique<Bullet>(
             this->player.position,
-            mouse_position
+            mouse_position,
+            this->bullet_texture
             ));
     }
 
@@ -276,7 +311,8 @@ void Game::updateBullets(float dt) {
 
         for (int j = 0; j < this->enemies.size(); j++) {
             if (bullet_bounds.findIntersection(this->enemies[j]->getBounds())) {
-                enemies[j]->getAttack(player.ad, Weapons(player.weapon));
+                this->enemies[j]->getAttack(current_weapon.damage);
+
                 this->bullets.erase(this->bullets.begin() + i);
                 i--;
                 break;

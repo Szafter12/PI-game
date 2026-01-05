@@ -13,9 +13,13 @@ class Player {
     private:
     sf::RectangleShape hitBox;
 
-    void getAttack();
+    std::vector<Weapon> arsenal;
+    int weapon_index = 0;
+    std::shared_ptr<sf::Texture> guns_texture;
 
     public:
+    void getAttack();
+
     sf::Texture walkTxt = sf::Texture("../../assets/images/walk.png");
     sf::Texture idleTxt = sf::Texture("../../assets/images/Idle.png");
     sf::Sprite sprite = sf::Sprite(idleTxt);
@@ -28,6 +32,7 @@ class Player {
     float speed {};
     int nextLvlCap {};
     int currentXp {};
+    WeaponType weapon {WeaponType::Gun1};
     //stats
     int maxHp=100;
     int hp=maxHp;
@@ -50,6 +55,9 @@ class Player {
 
     sf::FloatRect getBounds() const;
     void initHitBoxOutline();
+
+    Weapon& get_current_weapon();
+    void switch_weapon(int index);
     void lvlUp();
     bool isLvlUp();
     void drawHpBar(sf::View view);
