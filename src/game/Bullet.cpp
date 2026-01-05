@@ -21,8 +21,8 @@ Bullet::Bullet(sf::Vector2f start_position, sf::Vector2f target_position, const 
 
 
     this->life_time = 0.f;
-    this->max_life_time = 0.4f;
-    float speed = 200.f;
+    this->max_life_time = 3.0f;
+    float speed = 800.f;
 
     sf::Vector2f direction = target_position - start_position;
 

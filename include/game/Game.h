@@ -56,6 +56,10 @@ class Game final {
     sf::Texture bullet_texture;
 
 
+    sf::Texture border_texture;
+    sf::Sprite borderSprite;
+
+
     // Private functions:
     void initVariables();
     void initWindow();

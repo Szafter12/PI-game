@@ -8,13 +8,18 @@ Player::Player(const sf::Vector2f position) {
     this->ad = 20;
 
     this->guns_texture = std::make_shared<sf::Texture>();
-    if (!this->guns_texture->loadFromFile("assets/images/all_guns.png")) {
-        std::cout << "ERROR: Nie udalo sie zaladowac all_guns.png" << std::endl;
-    }
+    this->guns_texture->loadFromFile("assets/images/all_guns.png");
 
-    this->arsenal.push_back(Weapon("Gun1", 0.4f, 20, 500.f, WeaponType::Gun1, this->guns_texture, sf::IntRect({0, 5}, {32, 16})));
-    this->arsenal.push_back(Weapon("Gun2", 0.2f, 15, 700.f, WeaponType::Gun2, this->guns_texture, sf::IntRect({30, 5}, {32, 16})));
-    this->arsenal.push_back(Weapon("Gun3", 1.5f, 60, 300.f, WeaponType::Gun3, this->guns_texture, sf::IntRect({58, 5}, {32, 16})));
+    this->arsenal.push_back(Weapon("Gun1", 0.5f, 20, 500.f, WeaponType::Gun1, this->guns_texture, sf::IntRect({0, 10}, {32, 16})));
+    this->arsenal.push_back(Weapon("Gun2", 0.4f, 25, 600.f, WeaponType::Gun2, this->guns_texture, sf::IntRect({30, 10}, {32, 16})));
+    this->arsenal.push_back(Weapon("Gun3", 1.5f, 60, 300.f, WeaponType::Gun3, this->guns_texture, sf::IntRect({58, 10}, {32, 16})));
+    this->arsenal.push_back(Weapon("Gun4", 0.3f, 25, 600.f, WeaponType::Gun4, this->guns_texture, sf::IntRect({86, 10}, {32, 16})));
+    this->arsenal.push_back(Weapon("Gun5", 1.3f, 50, 400.f, WeaponType::Gun5, this->guns_texture, sf::IntRect({118, 12}, {32, 16})));
+    this->arsenal.push_back(Weapon("Gun6", 0.8f, 50, 250.f, WeaponType::Gun6, this->guns_texture, sf::IntRect({0, 28}, {32, 16})));
+    //this->arsenal.push_back(Weapon("Gun7", 1.5f, 60, 300.f, WeaponType::Gun7, this->guns_texture, sf::IntRect({30, 28}, {32, 16})));
+    //this->arsenal.push_back(Weapon("Gun8", 1.5f, 60, 300.f, WeaponType::Gun8, this->guns_texture, sf::IntRect({86, 10}, {32, 16})));
+    //this->arsenal.push_back(Weapon("Grenade", 1.5f, 60, 300.f, WeaponType::Grenade, this->guns_texture, sf::IntRect({0, 28}, {32, 16})));
+
     this->sprite.setOrigin(sf::Vector2f(48.f/2.f, 64.f/2.f));
     this->sprite.setScale(sf::Vector2f(0.7, 0.7));
     this->lvl = {1};
@@ -33,6 +38,12 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) switch_weapon(0);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num2)) switch_weapon(1);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num3)) switch_weapon(2);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num4)) switch_weapon(3);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num5)) switch_weapon(4);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num6)) switch_weapon(5);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num7)) switch_weapon(6);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num8)) switch_weapon(7);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num9)) switch_weapon(8);
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
         velocity.x -= speed;

@@ -90,6 +90,6 @@ public:
     sf::Vector2f getPosition() const;
     void collideWithPlayer(Player &player, float dt);
     bool is_alive() const;
-    void getAttack(int ad, Weapons weapon);
+    void getAttack(int ad);
 };
 #endif //GAME_PI_ENEMY_H

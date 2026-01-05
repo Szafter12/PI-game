@@ -19,6 +19,13 @@ void Game::initVariables() {
     ground.loadFromJsonLayer("assets/map/map.json", "Ground", "assets/map/spritesheet.png");
     water.loadFromJsonLayer("assets/map/map.json", "Water", "assets/map/spritesheet.png");
     border.loadFromJsonLayer("assets/map/map.json", "Border", "assets/map/spritesheet.png");
+
+    this->border_texture.loadFromFile("assets/images/border.png");
+    this->borderSprite.setTexture(this->border_texture);
+    this->borderSprite.setTextureRect(sf::IntRect({0, 0}, {64, 64}));
+    this->borderSprite.setScale({2.f, 2.f});
+    this->borderSprite.setPosition({10.f, 40.f});
+
 }
 
 void Game::initWindow() {
@@ -34,12 +41,14 @@ void Game::initWindow() {
 
     this->view = sf::View({this->player.position.x, this->player.position.y}, {this->screenSize.x, this->screenSize.y});
     this->view.zoom(0.25);
+
+
+    this->borderSprite.setPosition({10.f, static_cast<float>(this->screenSize.y - 150.f)});
 }
 // ******************* Initialization Methods End *******************
 
 // ******************* Constructor/Destructor Start *******************
-Game::Game(const sf::Font &font_) : font(font_), pauseText(font), upgradeState(&this->font)
-{
+Game::Game(const sf::Font &font_) : font(font_), pauseText(font), upgradeState(&this->font), borderSprite(this->border_texture) {
     this->initVariables();
     this->initWindow();
 }
@@ -142,9 +151,9 @@ void Game::render() {
         bullet->render(*this->window);
     }
 
-    sf::Sprite weapon_icon = this->player.get_current_weapon().icon;
-    weapon_icon.setPosition({20.f, 20.f});
-    this->window->draw(weapon_icon);
+    // sf::Sprite weapon_icon = this->player.get_current_weapon().icon;
+    // weapon_icon.setPosition({20.f, 20.f});
+    // this->window->draw(weapon_icon);
 
     this->player.draw(*this->window);
 
@@ -155,6 +164,19 @@ void Game::render() {
     if (this->isStopped) {
         this->window->draw(this->pauseText);
     }
+
+    this->window->setView(this->window->getDefaultView());
+    this->window->draw(this->borderSprite);
+    sf::Sprite weaponIcon = this->player.get_current_weapon().icon;
+    sf::FloatRect border_boudns = this->borderSprite.getGlobalBounds();
+    sf::FloatRect weapon_bounds = weaponIcon.getGlobalBounds();
+
+    float x = border_boudns.position.x + (border_boudns.size.x / 2.f) - (weapon_bounds.size.x / 2.f);
+    float y = border_boudns.position.y + (border_boudns.size.y / 2.f) - (weapon_bounds.size.y / 2.f);
+
+
+    weaponIcon.setPosition({x, y});
+    this->window->draw(weaponIcon);
 
     this->window->display();
 }
@@ -268,7 +290,7 @@ void Game::updateBullets(float dt) {
 
         for (int j = 0; j < this->enemies.size(); j++) {
             if (bullet_bounds.findIntersection(this->enemies[j]->getBounds())) {
-                this->enemies[j]->getAttack(current_weapon.damage, Weapons(current_weapon.type));
+                this->enemies[j]->getAttack(current_weapon.damage);
 
                 this->bullets.erase(this->bullets.begin() + i);
                 i--;

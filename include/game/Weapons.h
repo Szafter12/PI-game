@@ -9,6 +9,11 @@ enum class WeaponType {
     Gun1,
     Gun2,
     Gun3,
+    Gun4,
+    Gun5,
+    Gun6,
+    Gun7,
+    Gun8,
     Grenade
 };
 

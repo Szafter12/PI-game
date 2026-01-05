@@ -192,8 +192,8 @@ bool Enemy::is_alive() const {
     return this->hp > 0;
 }
 
-void Enemy::getAttack(const int ad, const Weapons weapon) {
-    this->hp -= DamageCalculator::calculateFlatDamage(ad, weapon, this->armor);
+void Enemy::getAttack(const int ad) {
+    this->hp -= DamageCalculator::calculateFlatDamage(ad, this->armor);
 }
 
 void Enemy::startAttack() {
