@@ -27,7 +27,7 @@ void Game::initWindow() {
        - Initialize starting window
        - Adding default options
    */
-    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Fullscreen, settings);
+    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
     this->window->setFramerateLimit(60);
     this->screenSize.x = this->window->getSize().x;
     this->screenSize.y = this->window->getSize().y;
@@ -107,6 +107,11 @@ void Game::update(float dt) {
 
         // Update bullets
         this->updateBullets(dt);
+
+        view.setCenter(view.getCenter() +
+        (playerPosition - view.getCenter()));
+        this->window->setView(view);
+
         this->player.update(*this->window, dt);
 
         for (const auto &enemy: this->enemies) {
@@ -117,9 +122,7 @@ void Game::update(float dt) {
     if (this->isLvlUp) this->upgradeState.update(dt, playerPosition);
     if (this->isStopped) this->updatePauseText();
 
-    view.setCenter(view.getCenter() +
-    (playerPosition - view.getCenter()) * 10.f * dt);
-    this->window->setView(view);
+
 }
 
 void Game::render() {
