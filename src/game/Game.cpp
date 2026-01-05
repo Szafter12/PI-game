@@ -15,10 +15,13 @@ void Game::initVariables() {
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
 
-    hills.loadFromJsonLayer("../../assets/map/map.json", "Hills", "../../assets/map/spritesheet.png");
-    ground.loadFromJsonLayer("../../assets/map/map.json", "Ground", "../../assets/map/spritesheet.png");
-    water.loadFromJsonLayer("../../assets/map/map.json", "Water", "../../assets/map/spritesheet.png");
-    border.loadFromJsonLayer("../../assets/map/map.json", "Border", "../../assets/map/spritesheet.png");
+    upupground.loadFromJsonLayer("../../assets/map/map.json", "upupground", "../../assets/map/spritesheet.png");
+    bridges.loadFromJsonLayer("../../assets/map/map.json", "bridges", "../../assets/map/spritesheet.png");
+    trees.loadFromJsonLayer("../../assets/map/map.json", "trees", "../../assets/map/spritesheet.png");
+    walls.loadFromJsonLayer("../../assets/map/map.json", "walls", "../../assets/map/spritesheet.png");
+    ground.loadFromJsonLayer("../../assets/map/map.json", "ground", "../../assets/map/spritesheet.png");
+    water.loadFromJsonLayer("../../assets/map/map.json", "water", "../../assets/map/spritesheet.png");
+    upground.loadFromJsonLayer("../../assets/map/map.json", "upground", "../../assets/map/spritesheet.png");
 }
 
 void Game::initWindow() {
@@ -133,10 +136,16 @@ void Game::render() {
 
     this->window->clear();
     // Draw game objects
-    this->window->draw(this->water);
-    this->window->draw(this->border);
     this->window->draw(this->ground);
-    this->window->draw(this->hills);
+    this->window->draw(this->upground);
+    this->window->draw(this->water);
+    this->window->draw(this->walls);
+    this->window->draw(this->upupground);
+    this->window->draw(this->trees);
+    this->window->draw(this->bridges);
+
+
+
 
     for (auto const &enemy : enemies) {
         enemy->render(this->window);
