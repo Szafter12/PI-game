@@ -10,7 +10,7 @@ Player::Player(const sf::Vector2f position) {
     this->guns_texture = std::make_shared<sf::Texture>();
     this->guns_texture->loadFromFile("assets/images/all_guns.png");
 
-    this->arsenal.push_back(Weapon("Gun1", 0.5f, 20, 500.f, WeaponType::Gun1, this->guns_texture, sf::IntRect({0, 10}, {32, 16})));
+    this->arsenal.push_back(Weapon("Gun1", 0.5f, 20, 100.f, WeaponType::Gun1, this->guns_texture, sf::IntRect({0, 10}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun2", 0.4f, 25, 600.f, WeaponType::Gun2, this->guns_texture, sf::IntRect({30, 10}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun3", 1.5f, 60, 300.f, WeaponType::Gun3, this->guns_texture, sf::IntRect({58, 10}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun4", 0.3f, 25, 600.f, WeaponType::Gun4, this->guns_texture, sf::IntRect({86, 10}, {32, 16})));

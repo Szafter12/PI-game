@@ -37,7 +37,7 @@ struct Weapon {
     texture(tex),
     icon(*tex) {
         this->icon.setTextureRect(rect);
-        this->icon.setScale({3.f, 3.f});
+        this->icon.setScale({1, 1});
     }
 
 };

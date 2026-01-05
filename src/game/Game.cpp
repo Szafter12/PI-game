@@ -20,10 +20,12 @@ void Game::initVariables() {
     water.loadFromJsonLayer("assets/map/map.json", "Water", "assets/map/spritesheet.png");
     border.loadFromJsonLayer("assets/map/map.json", "Border", "assets/map/spritesheet.png");
 
+    this->bullet_texture.loadFromFile("assets/images/bullet.png");
+
     this->border_texture.loadFromFile("assets/images/border.png");
     this->borderSprite.setTexture(this->border_texture);
     this->borderSprite.setTextureRect(sf::IntRect({0, 0}, {64, 64}));
-    this->borderSprite.setScale({2.f, 2.f});
+    this->borderSprite.setScale({0.5, 0.5});
     this->borderSprite.setPosition({10.f, 40.f});
 
 }
@@ -43,7 +45,7 @@ void Game::initWindow() {
     this->view.zoom(0.25);
 
 
-    this->borderSprite.setPosition({10.f, static_cast<float>(this->screenSize.y - 150.f)});
+
 }
 // ******************* Initialization Methods End *******************
 
@@ -126,6 +128,9 @@ void Game::update(float dt) {
     view.setCenter(view.getCenter() +
     (playerPosition - view.getCenter()) * 10.f * dt);
     this->window->setView(view);
+
+    this->borderSprite.setPosition({view.getCenter().x - 250.f, view.getCenter().y + 100.f});
+
 }
 
 void Game::render() {
@@ -165,7 +170,7 @@ void Game::render() {
         this->window->draw(this->pauseText);
     }
 
-    this->window->setView(this->window->getDefaultView());
+    //this->window->setView(this->window->getDefaultView());
     this->window->draw(this->borderSprite);
     sf::Sprite weaponIcon = this->player.get_current_weapon().icon;
     sf::FloatRect border_boudns = this->borderSprite.getGlobalBounds();

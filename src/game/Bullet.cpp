@@ -16,13 +16,13 @@ Bullet::Bullet(sf::Vector2f start_position, sf::Vector2f target_position, const 
     sf::Vector2u size = texture.getSize();
     this->sprite.setOrigin({static_cast<float>(size.x / 2.f), static_cast<float>(size.y / 2.f)});
     this->sprite.setPosition(start_position);
-    this->sprite.setScale({2.f, 2.f});
+    this->sprite.setScale({0.5, 0.5});
 
 
 
     this->life_time = 0.f;
     this->max_life_time = 3.0f;
-    float speed = 800.f;
+    float speed = 200.f;
 
     sf::Vector2f direction = target_position - start_position;
 
