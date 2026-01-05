@@ -23,6 +23,8 @@ Player::Player(const sf::Vector2f position) {
     this->sprite.setOrigin(sf::Vector2f(48.f/2.f, 64.f/2.f));
     this->sprite.setScale(sf::Vector2f(0.7, 0.7));
     this->lvl = {1};
+
+
     this->armor = {10};
     this->currentXp = {0};
     this->nextLvlCap = {100};
