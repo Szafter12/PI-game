@@ -114,7 +114,7 @@ void Game::update(float dt) {
 
     this->pollEvents();
 
-    sf::Vector2f playerPosition = this->player.position;
+    const sf::Vector2f playerPosition = this->player.position;
     if (!this->isStopped && !this->isLvlUp) {
         // Update enemies
         this->updateEnemies(dt, playerPosition);
@@ -140,7 +140,7 @@ void Game::update(float dt) {
     (playerPosition - view.getCenter()) * 10.f * dt);
     this->window->setView(view);
 
-    this->borderSprite.setPosition({view.getCenter().x - 250.f, view.getCenter().y + 100.f});
+    this->borderSprite.setPosition({view.getCenter().x - 230.f, view.getCenter().y + 100.f});
 
 }
 

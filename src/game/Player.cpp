@@ -17,9 +17,6 @@ Player::Player(const sf::Vector2f position) {
     this->arsenal.push_back(Weapon("Gun4", 0.3f, 25, 600.f, WeaponType::Gun4, this->guns_texture, sf::IntRect({86, 10}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun5", 1.3f, 50, 400.f, WeaponType::Gun5, this->guns_texture, sf::IntRect({118, 12}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun6", 0.8f, 50, 250.f, WeaponType::Gun6, this->guns_texture, sf::IntRect({0, 28}, {32, 16})));
-    //this->arsenal.push_back(Weapon("Gun7", 1.5f, 60, 300.f, WeaponType::Gun7, this->guns_texture, sf::IntRect({30, 28}, {32, 16})));
-    //this->arsenal.push_back(Weapon("Gun8", 1.5f, 60, 300.f, WeaponType::Gun8, this->guns_texture, sf::IntRect({86, 10}, {32, 16})));
-    //this->arsenal.push_back(Weapon("Grenade", 1.5f, 60, 300.f, WeaponType::Grenade, this->guns_texture, sf::IntRect({0, 28}, {32, 16})));
 
     this->sprite.setOrigin(sf::Vector2f(48.f/2.f, 64.f/2.f));
     this->sprite.setScale(sf::Vector2f(0.7, 0.7));
@@ -208,9 +205,10 @@ void Player::drawHpBar(const sf::View &view) {
         this->hpBar.setFillColor(sf::Color::Red);
     }
 
-    this->hpBar.setOrigin(sf::Vector2f(this->hpBar.getSize().x / 2.f, this->hpBar.getSize().y / 2.f));
-    plate.setPosition({view.getCenter().x-238,view.getCenter().y-135});
-    this->hpBar.setPosition(sf::Vector2f(plate.getPosition().x+50, plate.getPosition().y + 16.f));
+    this->plate.setOrigin(sf::Vector2f(plate.getGlobalBounds().size.x/2.f, plate.getGlobalBounds().size.x/2.f));
+    this->hpBar.setOrigin(sf::Vector2f(this->hpBar.getGlobalBounds().size.x/ 2.f, this->hpBar.getGlobalBounds().size.y / 2.f));
+    plate.setPosition({view.getCenter().x,view.getCenter().y+150});
+    this->hpBar.setPosition({view.getCenter().x-2.f,view.getCenter().y+115.f});
 }
 
 void Player::pauseAnim(int a) {
