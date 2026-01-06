@@ -37,12 +37,12 @@ Bullet::Bullet(sf::Vector2f start_position, sf::Vector2f target_position, const 
     this->velocity = direction * speed;
 }
 
-void Bullet::update(float dt) {
+void Bullet::update(const float dt) {
     this->sprite.move(this->velocity * dt);
     this->life_time += dt;
 }
 
-void Bullet::render(sf::RenderTarget& target) {
+void Bullet::render(sf::RenderTarget& target) const {
     target.draw(this->sprite);
 }
 

@@ -15,9 +15,12 @@ void Game::initVariables() {
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
 
-    this->bullet_texture.loadFromFile("../../assets/images/bullet.png");
-
-    this->border_texture.loadFromFile("../../assets/images/border.png");
+    if (!this->bullet_texture.loadFromFile("../../assets/images/bullet.png")) {
+        std::cout << "Failed to load bullet texture" << std::endl;
+    }
+    if (!this->border_texture.loadFromFile("../../assets/images/border.png")) {
+        std::cout << "Failed to load border texture" << std::endl;
+    }
     this->borderSprite.setTexture(this->border_texture);
     this->borderSprite.setTextureRect(sf::IntRect({0, 0}, {64, 64}));
     this->borderSprite.setScale({0.5, 0.5});

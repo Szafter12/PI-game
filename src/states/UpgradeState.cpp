@@ -1,5 +1,4 @@
 #include "../../include/states/UpgradeState.h"
-#include <iostream>
 
 UpgradeState::UpgradeState(sf::Font *font_)
     : font(font_), levelUpText(*this->font), secondText(*this->font), border1(this->borderTexture), border2(this->borderTexture), border3(this->borderTexture) {
@@ -7,7 +6,7 @@ UpgradeState::UpgradeState(sf::Font *font_)
     this->setText();
 }
 
-void UpgradeState::draw(sf::RenderWindow &target) {
+void UpgradeState::draw(sf::RenderWindow &target) const {
     target.draw(this->border1);
     target.draw(this->border2);
     target.draw(this->border3);
