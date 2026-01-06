@@ -18,7 +18,6 @@ class Player {
     std::shared_ptr<sf::Texture> guns_texture;
 
     public:
-    void getAttack();
 
     sf::Texture walkTxt = sf::Texture("../../assets/images/walk.png");
     sf::Texture idleTxt = sf::Texture("../../assets/images/Idle.png");
@@ -50,7 +49,7 @@ class Player {
     Player(sf::Vector2f position);
 
     void update(const sf::RenderWindow &window, const float dt);
-    void draw(sf::RenderWindow &window);
+    void draw(sf::RenderWindow &window) const;
 
     sf::FloatRect getBounds() const;
     void initHitBoxOutline();
@@ -58,8 +57,8 @@ class Player {
     Weapon& get_current_weapon();
     void switch_weapon(int index);
     void lvlUp();
-    bool isLvlUp();
-    void drawHpBar(sf::View view);
+    bool isLvlUp() const;
+    void drawHpBar(const sf::View &view);
     void pauseAnim(int a);
 };
 

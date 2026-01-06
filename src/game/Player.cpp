@@ -7,7 +7,9 @@ Player::Player(const sf::Vector2f position) {
     this->ad = 20;
 
     this->guns_texture = std::make_shared<sf::Texture>();
-    this->guns_texture->loadFromFile("../../assets/images/all_guns.png");
+    if (!this->guns_texture->loadFromFile("../../assets/images/all_guns.png")) {
+        std::cout << "Failed to load guns texture" << std::endl;
+    }
 
     this->arsenal.push_back(Weapon("Gun1", 0.5f, 20, 100.f, WeaponType::Gun1, this->guns_texture, sf::IntRect({0, 10}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun2", 0.4f, 25, 600.f, WeaponType::Gun2, this->guns_texture, sf::IntRect({30, 10}, {32, 16})));
@@ -141,7 +143,7 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
     // this->initHitBoxOutline();
 }
 
-void Player::draw(sf::RenderWindow &window) {
+void Player::draw(sf::RenderWindow &window) const {
     window.draw(sprite);
     window.draw(plate);
     window.draw(hpBar);
@@ -174,7 +176,7 @@ void Player::lvlUp() {
     this->currentXp = {0};
 }
 
-bool Player::isLvlUp() {
+bool Player::isLvlUp() const {
     return this->currentXp >= this->nextLvlCap;
 }
 
@@ -193,9 +195,9 @@ void Player::switch_weapon(int index) {
 }
 
 
-void Player::drawHpBar(sf::View view) {
+void Player::drawHpBar(const sf::View &view) {
     constexpr float fullBar = 15;
-    float hpRatio = (float)this->hp / (float)maxHp;
+    float hpRatio = static_cast<float>(this->hp) / static_cast<float>(maxHp);
     this->hpBar.setSize(sf::Vector2f(fullBar * hpRatio*6, 2.f*4));
 
     if (hpRatio > 0.75) {

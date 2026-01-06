@@ -20,7 +20,7 @@ class UpgradeState {
         void setBorders();
     public:
         UpgradeState(sf::Font *font_);
-        void draw(sf::RenderWindow &target);
+        void draw(sf::RenderWindow &target) const;
         void update(float dt, sf::Vector2f position);
         void setPosition(sf::Vector2f position);
 };
