@@ -20,8 +20,8 @@ class Player {
     public:
     void getAttack();
 
-    sf::Texture walkTxt = sf::Texture("../../assets/images/walk.png");
-    sf::Texture idleTxt = sf::Texture("../../assets/images/Idle.png");
+    sf::Texture walkTxt = sf::Texture("assets/images/walk.png");
+    sf::Texture idleTxt = sf::Texture("assets/images/Idle.png");
     sf::Sprite sprite = sf::Sprite(idleTxt);
     sf::Vector2f position {};
     sf::RectangleShape hpBar {};

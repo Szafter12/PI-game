@@ -15,21 +15,25 @@ void Game::initVariables() {
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
 
-    this->bullet_texture.loadFromFile("../../assets/images/bullet.png");
+    this->bullet_texture.loadFromFile("assets/images/bullet.png");
 
-    this->border_texture.loadFromFile("../../assets/images/border.png");
+    this->border_texture.loadFromFile("assets/images/border.png");
     this->borderSprite.setTexture(this->border_texture);
     this->borderSprite.setTextureRect(sf::IntRect({0, 0}, {64, 64}));
     this->borderSprite.setScale({0.5, 0.5});
     this->borderSprite.setPosition({10.f, 40.f});
 
-    upupground.loadFromJsonLayer("../../assets/map/map.json", "upupground", "../../assets/map/spritesheet.png");
-    bridges.loadFromJsonLayer("../../assets/map/map.json", "bridges", "../../assets/map/spritesheet.png");
-    trees.loadFromJsonLayer("../../assets/map/map.json", "trees", "../../assets/map/spritesheet.png");
-    walls.loadFromJsonLayer("../../assets/map/map.json", "walls", "../../assets/map/spritesheet.png");
-    ground.loadFromJsonLayer("../../assets/map/map.json", "ground", "../../assets/map/spritesheet.png");
-    water.loadFromJsonLayer("../../assets/map/map.json", "water", "../../assets/map/spritesheet.png");
-    upground.loadFromJsonLayer("../../assets/map/map.json", "upground", "../../assets/map/spritesheet.png");
+    upupground.loadFromJsonLayer("assets/map/map.json", "upupground", "assets/map/spritesheet.png");
+    bridges.loadFromJsonLayer("assets/map/map.json", "bridges", "assets/map/spritesheet.png");
+    trees.loadFromJsonLayer("assets/map/map.json", "trees", "assets/map/spritesheet.png");
+    walls.loadFromJsonLayer("assets/map/map.json", "walls", "assets/map/spritesheet.png");
+    ground.loadFromJsonLayer("assets/map/map.json", "ground", "assets/map/spritesheet.png");
+    water.loadFromJsonLayer("assets/map/map.json", "water", "assets/map/spritesheet.png");
+    upground.loadFromJsonLayer("assets/map/map.json", "upground", "assets/map/spritesheet.png");
+    ground.loadCollisionLayer("assets/map/map.json", "walls");
+    ground.loadCollisionLayer("assets/map/map.json", "water");
+    ground.loadCollisionLayer("assets/map/map.json", "trees");
+    ground.loadCollisionLayer("assets/map/map.json", "upupground");
 }
 
 void Game::initWindow() {
@@ -252,8 +256,33 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
         this->spawnTimer = 0.f;
     }
 
-    for (auto const &enemy : enemies)
+    for (auto const &enemy : enemies) {
         enemy->update(dt, playerPosition);
+
+        for (const auto& wallRect : this->ground.m_collisions) {
+            sf::FloatRect enemyBounds = enemy->getBounds();
+            sf::FloatRect wallBounds = this->ground.getTransform().transformRect(wallRect);
+
+            auto intersection = enemyBounds.findIntersection(wallBounds);
+            if (intersection) {
+                if (intersection->size.x < intersection->size.y) {
+                    if (enemyBounds.position.x < wallBounds.position.x)
+                        enemy->position.x -= intersection->size.x;
+                    else
+                        enemy->position.x += intersection->size.x;
+                }
+                else {
+                    if (enemyBounds.position.y < wallBounds.position.y)
+                        enemy->position.y -= intersection->size.y;
+                    else
+                        enemy->position.y += intersection->size.y;
+                }
+                enemy->sprite.setPosition(enemy->position);
+            }
+
+        }
+    }
+
 
     for (int i = 0 ; i < this->enemies.size(); i++) {
         if (!enemies[i]->is_alive()) {

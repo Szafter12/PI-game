@@ -10,6 +10,8 @@ using json = nlohmann::json;
 class TileMap : public sf::Drawable, public sf::Transformable
 {
 public:
+    std::vector<sf::FloatRect> m_collisions;
+
     bool load(const std::filesystem::path& tileset,
               sf::Vector2u tileSize,
               const std::vector<int>& tiles,
@@ -139,6 +141,40 @@ public:
             width,
             height
         );
+    }
+
+    void clearCollisions() {
+        m_collisions.clear();
+    }
+
+    bool loadCollisionLayer(const std::filesystem::path& jsonPath, const std::string& layerName) {
+        std::ifstream file(jsonPath);
+        if (!file.is_open())
+            return false;
+        nlohmann::json j;
+        file >> j;
+
+        unsigned tileSize = j.at("tileSize").get<unsigned>();
+        unsigned width    = j.at("mapWidth").get<unsigned>();
+        unsigned height   = j.at("mapHeight").get<unsigned>();
+
+        float offsetX = -(static_cast<float>(width * tileSize) / 2.f);
+        float offsetY = -(static_cast<float>(height * tileSize) / 2.f);
+
+
+        for (const auto& layer : j.at("layers")) {
+            if (layer.at("name").get<std::string>() != layerName)
+                continue;
+
+            for (const auto& tile : layer.at("tiles")) {
+                int x = tile.at("x").get<int>();
+                int y = tile.at("y").get<int>();
+                sf::FloatRect rect(sf::Vector2f(static_cast<float>(x * tileSize), static_cast<float>(y * tileSize)), sf::Vector2f(static_cast<float>(tileSize), static_cast<float>(tileSize)));
+                m_collisions.push_back(rect);
+            }
+            return true;
+        }
+        return false;
     }
 
 private:

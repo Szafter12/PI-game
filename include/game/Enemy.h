@@ -33,8 +33,8 @@ private:
     // Texture
     // sf::Texture textureRun = {sf::Texture("../../assets/images/test_enemy.png")};
     // sf::Texture textureAttack = {sf::Texture("../../assets/images/enemy_attack.png")};
-    sf::Texture textureRun = {sf::Texture("../../assets/images/test_enemy.png")};
-    sf::Texture textureAttack = {sf::Texture("../../assets/images/enemy_attack.png")};
+    sf::Texture textureRun = {sf::Texture("assets/images/test_enemy.png")};
+    sf::Texture textureAttack = {sf::Texture("assets/images/enemy_attack.png")};
 
     // Position
     float scale{};
