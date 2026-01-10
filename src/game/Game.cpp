@@ -13,27 +13,49 @@ void Game::initVariables() {
     titleSprite.setOrigin({titleSprite.getLocalBounds().size.x / 2, titleSprite.getLocalBounds().size.y / 2});
     titleSprite.setPosition({0,-60});
     // objects variables
-    this->maxEnemies = 10;
-    this->spawnInterval = 1.f;
+    this->maxEnemies = {10};
+    this->currentEnemies = {0};
+    this->spawnInterval = {1.f};
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
 
-    this->bullet_texture.loadFromFile("../../assets/images/bullet.png");
+    if (!this->bullet_texture.loadFromFile("../../assets/images/bullet.png")) {
+        std::cout << "Failed to load bullet texture" << std::endl;
+    }
+    if (!this->border_texture.loadFromFile("../../assets/images/border.png")) {
+        std::cout << "Failed to load border texture" << std::endl;
+    }
 
-    this->border_texture.loadFromFile("../../assets/images/border.png");
     this->borderSprite.setTexture(this->border_texture);
     this->borderSprite.setTextureRect(sf::IntRect({0, 0}, {64, 64}));
     this->borderSprite.setScale({0.5, 0.5});
     this->borderSprite.setPosition({10.f, 40.f});
 
-    upupground.loadFromJsonLayer("../../assets/map/map.json", "upupground", "../../assets/map/spritesheet.png");
     bridges.loadFromJsonLayer("../../assets/map/map.json", "bridges", "../../assets/map/spritesheet.png");
+    upupground.loadFromJsonLayer("../../assets/map/map.json", "upupground", "../../assets/map/spritesheet.png");
     trees.loadFromJsonLayer("../../assets/map/map.json", "trees", "../../assets/map/spritesheet.png");
+    borders.loadFromJsonLayer("../../assets/map/map.json", "borders", "../../assets/map/spritesheet.png");
     walls.loadFromJsonLayer("../../assets/map/map.json", "walls", "../../assets/map/spritesheet.png");
     ground.loadFromJsonLayer("../../assets/map/map.json", "ground", "../../assets/map/spritesheet.png");
     water.loadFromJsonLayer("../../assets/map/map.json", "water", "../../assets/map/spritesheet.png");
     upground.loadFromJsonLayer("../../assets/map/map.json", "upground", "../../assets/map/spritesheet.png");
+
+    std::set<std::string> blockingLayers = { "walls", "trees", "water", "upupground", "borders" };
+
+    // Lista rzeczy, które pozwalają chodzić NAWET jak pod spodem jest blokada (mosty)
+    std::set<std::string> walkableLayers = { "bridges" };
+
+    collisionMap.loadFromSpriteFusion(
+        "../../assets/map/map.json",
+        blockingLayers,
+        walkableLayers
+    );
+    sf::Vector2f mapSize = ground.getSize();
+    sf::Vector2f centerPos = { mapSize.x / 2.f, mapSize.y / 2.f };
+    this->player.position = centerPos;
+    this->player.sprite.setPosition(centerPos);
 }
+
 
 void Game::initWindow() {
     /*
@@ -101,6 +123,13 @@ void Game::pollEvents() {
             if (keyPressed->scancode == sf::Keyboard::Scancode::P) {
                 this->window->close();
             }
+        } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
+            if (mouse->button == sf::Mouse::Button::Left && isLvlUp) {
+                sf::Vector2f mousePos =
+                    window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+
+                upgradeState.handleClick(mousePos);
+            }
         }
     }
 }
@@ -129,14 +158,17 @@ void Game::update(float dt) {
         if (newB.isClicked) {
             isStopped=false;
             isGameOver=false;
-            player.position={0,0};
+            sf::Vector2f mapSize = ground.getSize();
+            sf::Vector2f centerPos = { mapSize.x / 2.f, mapSize.y / 2.f };
+            this->player.position = centerPos;
+            this->player.sprite.setPosition(centerPos);
             player.currentXp=0;
             player.lvl=1;
             player.maxHp=100;
             player.hp=player.maxHp;
             player.ad=20;
             player.armor = {10};
-            player.nextLvlCap = {100};
+            player.nextLvlCap = {30};
             player.speed = {70};
             player.switch_weapon(0);
 
@@ -168,12 +200,27 @@ void Game::update(float dt) {
 
                 this->player.update(*this->window, dt);
 
+                this->handlePlayerTileCollisions();
+
                 for (const auto &enemy: this->enemies) {
                     enemy->collideWithPlayer(player, dt);
                 }
             }
 
-            if (this->isLvlUp) this->upgradeState.update(dt, playerPosition);
+    if (isLvlUp) {
+        upgradeState.update(dt, player.position);
+
+        UpgradeChoice choice = upgradeState.getSelected();
+        if (choice != UpgradeChoice::None) {
+            Upgrade upgrade = upgradeState.getUpgrade(choice);
+            player.applyUpgrade(upgrade);
+
+            isLvlUp = false;
+            upgradeState.resetSelection();
+        }
+    }
+
+    if (this->isStopped) this->updatePauseText();
             if (this->isStopped) {
                 resumeB.update(*this->window);
                 if (resumeB.isClicked) isStopped=false;
@@ -189,7 +236,7 @@ void Game::update(float dt) {
             (playerPosition - view.getCenter()) * 10.f * dt);
             this->window->setView(view);
 
-            this->borderSprite.setPosition({view.getCenter().x - 250.f, view.getCenter().y + 100.f});
+            this->borderSprite.setPosition({view.getCenter().x - 220.f, view.getCenter().y + 100.f});
             if (player.hp<=0) isGameOver = true;
         }
         else {
@@ -265,8 +312,17 @@ void Game::render() {
         this->window->draw(this->trees);
         this->window->draw(this->bridges);
 
-
-
+    // sf::RectangleShape dbg;
+    // // dbg.setFillColor(sf::Color::Transparent);
+    // // // dbg.setOutlineColor(sf::Color::Red);
+    // dbg.setOutlineThickness(1.f);
+    //
+    // for (const auto& c : collisionMap.getColliders())
+    // {
+    //     dbg.setPosition({c.position.x, c.position.y});
+    //     dbg.setSize({c.size.x, c.size.y});
+    //     window->draw(dbg);
+    // }
 
         for (auto const &enemy : enemies) {
             enemy->render(this->window);
@@ -344,20 +400,20 @@ void Game::spawnEnemy(const sf::Vector2f playerPos) {
         { playerPos.x, playerPos.y + screenSize.y / 2.f }
     };
 
-    if (this->enemies.size() >= this->maxEnemies) return;
+    for (int i = 0; i < this->maxEnemies; i++) {
+        int randPosIdx = rand() % this->spawnPositions.size();
 
-    int randPosIdx = rand() % this->spawnPositions.size();
+        sf::Vector2f offset{
+            static_cast<float>((rand() % 50) - 10),
+            static_cast<float>((rand() % 50) - 10)
+        };
 
-    sf::Vector2f offset{
-        static_cast<float>((rand() % 50) - 10),
-        static_cast<float>((rand() % 50) - 10)
-    };
-
-    this->enemies.push_back(
+        this->enemies.push_back(
         std::make_unique<Enemy>(
             EnemyType::Basic,
             this->spawnPositions[randPosIdx] + offset)
-    );
+        );
+    }
 }
 
 void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
@@ -365,12 +421,10 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
         @return void
         - Add timer to spawning enemy with time interval
     */
-    this->spawnTimer += dt;
 
-    if (this->spawnTimer >= this->spawnInterval)
-    {
+    if (this->isWaveClear()) {
+        this->currentEnemies = this->maxEnemies;
         this->spawnEnemy(playerPosition);
-        this->spawnTimer = 0.f;
     }
 
     for (auto const &enemy : enemies)
@@ -380,10 +434,12 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
         if (!enemies[i]->is_alive()) {
             player.currentXp += enemies[i]->xp;
             enemies.erase(enemies.begin() + i);
+            this->currentEnemies--;
             if (player.isLvlUp()) {
                 player.lvlUp();
                 this->isLvlUp = {true};
                 this->maxEnemies += 20;
+                upgradeState.rollUpgrades();
             } else {
                 this->isLvlUp = {false};
             }
@@ -443,10 +499,27 @@ void Game::updateBullets(float dt) {
 void Game::stopGame() {
     this->isStopped = true;
 }
+void Game::handlePlayerTileCollisions()
+{
+    sf::FloatRect playerBounds = player.getBounds();
+
+    for (const auto& tile : collisionMap.getColliders())
+    {
+        if (playerBounds.findIntersection(tile))
+        {
+            player.revertPosition();
+            return;
+        }
+    }
+}
 
 void Game::gameOver() {
     this->pauseText.setString("Koniec gry");
     pauseText.setCharacterSize(68);
+}
+void Game::updatePauseText() {
+    this->pauseText.setString("Pause");
+    pauseText.setCharacterSize(48);
     sf::FloatRect pauseBounds = pauseText.getGlobalBounds();
     pauseText.setOrigin(sf::Vector2f(pauseBounds.size.x / 2, pauseBounds.size.y / 2));
     pauseText.setPosition(sf::Vector2f(this->player.position.x, this->player.position.y - 50.f));
@@ -503,6 +576,10 @@ void Game::saveGame() {
         MessageBox(NULL,"Zapisano gre", "",MB_OK);
     }
     file.close();
+}
+
+bool Game::isWaveClear() const {
+    return this->currentEnemies == 0;
 }
 
 // ******************* Other Methods End *******************

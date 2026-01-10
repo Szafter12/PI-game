@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Weapons.h"
+#include "Upgrade.h"
 
 
 #include "Animation.h"
@@ -12,14 +13,14 @@
 class Player {
     private:
     sf::RectangleShape hitBox;
+    sf::Vector2f lastPosition; // przechowuje poprzednią pozycję gracza
 
     std::vector<Weapon> arsenal;
     int weapon_index = 0;
     std::shared_ptr<sf::Texture> guns_texture= std::make_shared<sf::Texture>("../../assets/images/all_guns.png");;
 
     public:
-    void getAttack();
-
+    void applyUpgrade(const Upgrade& upgrade);
     sf::Texture walkTxt = sf::Texture("../../assets/images/walk.png");
     sf::Texture idleTxt = sf::Texture("../../assets/images/Idle.png");
     sf::Texture plateTxt = sf::Texture("../../assets/images/border.png");
@@ -60,9 +61,11 @@ class Player {
     Weapon& get_current_weapon();
     void switch_weapon(int index);
     void lvlUp();
-    bool isLvlUp();
-    void drawHpBar(sf::View view);
+    bool isLvlUp() const;
+    void drawHpBar(const sf::View &view);
     void pauseAnim(int a);
+    void revertPosition();
+
     void drawHP(sf::RenderWindow &window);
 };
 

@@ -14,25 +14,25 @@ Player::Player(const sf::Vector2f position) {
 
     //this->guns_texture = std::make_shared<sf::Texture>();
     //this->guns_texture->loadFromFile("../../assets/images/all_guns.png");
+    this->guns_texture = std::make_shared<sf::Texture>();
+    if (!this->guns_texture->loadFromFile("../../assets/images/all_guns.png")) {
+        std::cout << "Failed to load guns texture" << std::endl;
+    }
 
-    this->arsenal.push_back(Weapon("Gun1", 0.5f, 20, 100.f, WeaponType::Gun1, this->guns_texture, sf::IntRect({0, 10}, {32, 16})));
+    this->arsenal.push_back(Weapon("Gun1", 0.5f, 60, 100.f, WeaponType::Gun1, this->guns_texture, sf::IntRect({0, 10}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun2", 0.4f, 25, 600.f, WeaponType::Gun2, this->guns_texture, sf::IntRect({30, 10}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun3", 1.5f, 60, 300.f, WeaponType::Gun3, this->guns_texture, sf::IntRect({58, 10}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun4", 0.3f, 25, 600.f, WeaponType::Gun4, this->guns_texture, sf::IntRect({86, 10}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun5", 1.3f, 50, 400.f, WeaponType::Gun5, this->guns_texture, sf::IntRect({118, 12}, {32, 16})));
     this->arsenal.push_back(Weapon("Gun6", 0.8f, 50, 250.f, WeaponType::Gun6, this->guns_texture, sf::IntRect({0, 28}, {32, 16})));
-    //this->arsenal.push_back(Weapon("Gun7", 1.5f, 60, 300.f, WeaponType::Gun7, this->guns_texture, sf::IntRect({30, 28}, {32, 16})));
-    //this->arsenal.push_back(Weapon("Gun8", 1.5f, 60, 300.f, WeaponType::Gun8, this->guns_texture, sf::IntRect({86, 10}, {32, 16})));
-    //this->arsenal.push_back(Weapon("Grenade", 1.5f, 60, 300.f, WeaponType::Grenade, this->guns_texture, sf::IntRect({0, 28}, {32, 16})));
 
     this->sprite.setOrigin(sf::Vector2f(48.f/2.f, 64.f/2.f));
     this->sprite.setScale(sf::Vector2f(0.7, 0.7));
     this->lvl = {1};
 
-
     this->armor = {10};
     this->currentXp = {0};
-    this->nextLvlCap = {100};
+    this->nextLvlCap = {30};
     this->speed = {70};
 
     /*plate.setFillColor(sf::Color(242, 158, 109,255));
@@ -45,6 +45,8 @@ Player::Player(const sf::Vector2f position) {
 
 void Player::update(const sf::RenderWindow &window, const float dt) {
     sf::Vector2f velocity(0.f, 0.f);
+
+        lastPosition = position;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) switch_weapon(0);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num2)) switch_weapon(1);
@@ -164,6 +166,22 @@ sf::FloatRect Player::getBounds() const
     return bounds;
 }
 
+void Player::applyUpgrade(const Upgrade& upgrade) {
+    switch (upgrade.type) {
+        case UpgradeType::Speed:
+            this->speed += upgrade.value;
+            break;
+
+        case UpgradeType::MaxHp:
+            this->maxHp += static_cast<int>(upgrade.value);
+            this->hp += static_cast<int>(upgrade.value);
+            break;
+        case UpgradeType::Heal:
+            this->hp = this->maxHp;
+            break;
+    }
+}
+
 void Player::initHitBoxOutline() {
     sf::FloatRect bounds = this->getBounds();
 
@@ -176,11 +194,11 @@ void Player::initHitBoxOutline() {
 
 void Player::lvlUp() {
     ++this->lvl;
-    this->nextLvlCap += 100;
+    this->nextLvlCap += 30;
     this->currentXp = {0};
 }
 
-bool Player::isLvlUp() {
+bool Player::isLvlUp() const {
     return this->currentXp >= this->nextLvlCap;
 }
 
@@ -197,12 +215,16 @@ void Player::switch_weapon(int index) {
         this->weapon_index = index;
     }
 }
+void Player::revertPosition() {
+    position = lastPosition;
+    sprite.setPosition(position);
+}
 
 
-void Player::drawHpBar(sf::View view) {
+void Player::drawHpBar(const sf::View &view) {
     constexpr float fullBar = 15;
-    float hpRatio = (float)this->hp / (float)maxHp;
-    this->hpBar.setSize(sf::Vector2f(fullBar * hpRatio*8, 2.f*4));
+    float hpRatio = static_cast<float>(this->hp) / static_cast<float>(maxHp);
+    this->hpBar.setSize(sf::Vector2f(fullBar * hpRatio*6, 2.f*4));
 
     if (hpRatio > 0.75) {
         this->hpBar.setFillColor(sf::Color::Green);

@@ -6,6 +6,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <vector>
+#include "CollisionMap.h"
 #include <ctime>
 #include <cstdlib>
 #include "Enemy.h"
@@ -32,10 +33,17 @@ class Game final {
     sf::Vector2f screenSize {};
 
     int room=0;
+    CollisionMap collisionMap;
     // Game logic
+
+    // Enemies
     int maxEnemies {};
+    int currentEnemies {};
     float spawnInterval {};
+
+    // Game logic
     TileMap trees;
+    TileMap borders;
     TileMap walls;
     TileMap upupground;
     TileMap upground;
@@ -86,6 +94,9 @@ class Game final {
     void initWindow();
     void updateBullets(float dt);
     void stopGame();
+    void updatePauseText();
+    bool isWaveClear() const;
+    void handlePlayerTileCollisions();
     void gameOver();
 
 public:
