@@ -155,8 +155,6 @@ void Game::update(float dt) {
 
         loadB.update(*this->window);
         if (loadB.isClicked) {
-            enemies.clear();
-            bullets.clear();
             loadSave();
         }
 
@@ -177,6 +175,8 @@ void Game::update(float dt) {
             player.nextLvlCap = {30};
             player.speed = {70};
             player.switch_weapon(0);
+            maxEnemies=10;
+            currentEnemies=0;
 
             enemies.clear();
             bullets.clear();
@@ -252,8 +252,6 @@ void Game::update(float dt) {
 
             loadB.update(*this->window);
             if (loadB.isClicked) {
-                enemies.clear();
-                bullets.clear();
                 loadSave();
             }
         }
@@ -547,6 +545,9 @@ void Game::handlePlayerTileCollisions()
 void Game::gameOver() {
     this->pauseText.setString("Koniec gry");
     pauseText.setCharacterSize(68);
+    pauseText.setOrigin(sf::Vector2f(pauseText.getGlobalBounds().size.x / 2, pauseText.getGlobalBounds().size.y / 2));
+    pauseText.setPosition(sf::Vector2f(this->player.position.x, this->player.position.y - 50.f));
+    pauseText.setFillColor(sf::Color::Black);
 }
 void Game::updatePauseText() {
     this->pauseText.setString("Pause");
@@ -571,8 +572,12 @@ void Game::loadSave() {
         file>>player.nextLvlCap;
         file>>player.position.x;
         file>>player.position.y;
+        file>>maxEnemies;
         isGameOver=false;
         isStopped=false;
+        currentEnemies=0;
+        enemies.clear();
+        bullets.clear();
         room=1;
     }
     file.close();
@@ -600,6 +605,8 @@ void Game::saveGame() {
         file<<player.position.x;
         file<<" ";
         file<<player.position.y;
+        file<<" ";
+        file<<maxEnemies;
         /*file<<"\n";
         for (int i = 0; i < this->enemies.size(); i++) {
             file<<enemies[i]->position;
