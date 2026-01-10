@@ -12,6 +12,7 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Button.h"
 #include "states/UpgradeState.h"
 
 /*
@@ -30,6 +31,7 @@ class Game final {
     sf::RenderWindow* window {};
     sf::Vector2f screenSize {};
 
+    int room=0;
     // Game logic
     int maxEnemies {};
     float spawnInterval {};
@@ -42,7 +44,12 @@ class Game final {
     TileMap bridges;
     float spawnTimer {0.f};
     bool isStopped {false};
+    bool isGameOver {false};
     bool isLvlUp {false};
+
+    bool soundOn=true;
+    bool musicOn=true;
+
     UpgradeState upgradeState;
 
     // Game objects
@@ -60,12 +67,26 @@ class Game final {
     sf::Texture border_texture;
     sf::Sprite borderSprite;
 
+    sf::Texture titleTexture = sf::Texture("../../assets/images/tytul.png");
+    sf::Sprite titleSprite = sf::Sprite(titleTexture);
+
+    Button resumeB = Button("Wznow",{100,-100},{130,40}),
+    menuB = Button("Menu glowne",{100,60},{130,40}),
+    saveB = Button("Zapisz",{100,-20},{130,40}),
+    loadB = Button("Wczytaj gre",{-80,80},{130,40}),
+    newB = Button("Nowa gra",{-80,20},{130,40}),
+    settingsB = Button("Ustawienia",{80,20},{130,40}),
+    exitB = Button("Wyjdz",{80,80},{130,40}),
+    soundB = Button("Dzwiek:On",{0,-40},{130,40}),
+    musicB = Button("Muzyka:On",{0,20},{130,40}),
+    returnB = Button("Powrot",{0,80},{130,40});
+
     // Private functions:
     void initVariables();
     void initWindow();
     void updateBullets(float dt);
     void stopGame();
-    void updatePauseText();
+    void gameOver();
 
 public:
     // Constructor / Destructor
@@ -83,6 +104,9 @@ public:
     // Objects Methods
     void spawnEnemy(const sf::Vector2f playerPos);
     void updateEnemies(float dt, sf::Vector2f playerPosition);
+
+    void loadSave();
+    void saveGame();
 };
 
 #endif //GAME_PI_GAME_H

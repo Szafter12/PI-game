@@ -15,17 +15,19 @@ class Player {
 
     std::vector<Weapon> arsenal;
     int weapon_index = 0;
-    std::shared_ptr<sf::Texture> guns_texture;
+    std::shared_ptr<sf::Texture> guns_texture= std::make_shared<sf::Texture>("../../assets/images/all_guns.png");;
 
     public:
     void getAttack();
 
     sf::Texture walkTxt = sf::Texture("../../assets/images/walk.png");
     sf::Texture idleTxt = sf::Texture("../../assets/images/Idle.png");
+    sf::Texture plateTxt = sf::Texture("../../assets/images/border.png");
     sf::Sprite sprite = sf::Sprite(idleTxt);
     sf::Vector2f position {};
     sf::RectangleShape hpBar {};
-    sf::RectangleShape plate {};
+    sf::RectangleShape bBar;
+    sf::Sprite plate = sf::Sprite(plateTxt);
     int ad {};
     int armor {};
     int lvl {};
@@ -61,6 +63,7 @@ class Player {
     bool isLvlUp();
     void drawHpBar(sf::View view);
     void pauseAnim(int a);
+    void drawHP(sf::RenderWindow &window);
 };
 
 #endif //GAME_PI_PLAYER_H
