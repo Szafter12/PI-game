@@ -5,8 +5,7 @@ int main()
     // Init srand seed
     srand(static_cast<unsigned>(time(nullptr)));
 
-    const sf::Font font("../../assets/fonts/Cristone.ttf");
-
+    const sf::Font font("../../assets/fonts/alagard.ttf");
     // Init game engine
     Game game(font);
 
