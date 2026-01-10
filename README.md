@@ -15,7 +15,7 @@ Small, classic-style wave survival shooter in pixel-art aesthetics.
 - Increasing difficulty waves of enemies
 - Different enemy types (basic, fast)
 - Simple player upgrades / temporary power-ups
-- Score & wave counter
+- Save and load game
 - Death screen + restart option
 - Basic particle effects & hit feedback
 
