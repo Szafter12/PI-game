@@ -22,10 +22,9 @@ Player::Player(const sf::Vector2f position) {
     this->sprite.setScale(sf::Vector2f(0.7, 0.7));
     this->lvl = {1};
 
-
     this->armor = {10};
     this->currentXp = {0};
-    this->nextLvlCap = {100};
+    this->nextLvlCap = {30};
     this->speed = {70};
 
     plate.setFillColor(sf::Color(242, 158, 109,255));
@@ -157,6 +156,22 @@ sf::FloatRect Player::getBounds() const
     return bounds;
 }
 
+void Player::applyUpgrade(const Upgrade& upgrade) {
+    switch (upgrade.type) {
+        case UpgradeType::Speed:
+            this->speed += upgrade.value;
+            break;
+
+        case UpgradeType::MaxHp:
+            this->maxHp += static_cast<int>(upgrade.value);
+            this->hp += static_cast<int>(upgrade.value);
+            break;
+        case UpgradeType::Heal:
+            this->hp = this->maxHp;
+            break;
+    }
+}
+
 void Player::initHitBoxOutline() {
     sf::FloatRect bounds = this->getBounds();
 
@@ -169,7 +184,7 @@ void Player::initHitBoxOutline() {
 
 void Player::lvlUp() {
     ++this->lvl;
-    this->nextLvlCap += 100;
+    this->nextLvlCap += 30;
     this->currentXp = {0};
 }
 
