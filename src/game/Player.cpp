@@ -222,7 +222,7 @@ void Player::revertPosition() {
 
 
 void Player::drawHpBar(const sf::View &view) {
-    constexpr float fullBar = 15;
+    constexpr float fullBar = 20;
     float hpRatio = static_cast<float>(this->hp) / static_cast<float>(maxHp);
     this->hpBar.setSize(sf::Vector2f(fullBar * hpRatio*6, 2.f*4));
 
