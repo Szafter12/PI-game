@@ -10,8 +10,9 @@ void Game::initVariables() {
     this->window = nullptr;
 
     // objects variables
-    this->maxEnemies = 10;
-    this->spawnInterval = 1.f;
+    this->maxEnemies = {10};
+    this->currentEnemies = {0};
+    this->spawnInterval = {1.f};
 
     this->player.position = {this->screenSize.x / 2.f, this->screenSize.y / 2.f};
 
@@ -59,7 +60,7 @@ void Game::initWindow() {
        - Initialize starting window
        - Adding default options
    */
-    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Fullscreen, settings);
+    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
     this->window->setFramerateLimit(60);
     this->screenSize.x = this->window->getSize().x;
     this->screenSize.y = this->window->getSize().y;
@@ -119,6 +120,13 @@ void Game::pollEvents() {
             if (keyPressed->scancode == sf::Keyboard::Scancode::Escape) {
                 this->window->close();
             }
+        } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
+            if (mouse->button == sf::Mouse::Button::Left && isLvlUp) {
+                sf::Vector2f mousePos =
+                    window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+
+                upgradeState.handleClick(mousePos);
+            }
         }
     }
 }
@@ -132,7 +140,7 @@ void Game::update(float dt) {
 
     this->pollEvents();
 
-    sf::Vector2f playerPosition = this->player.position;
+    const sf::Vector2f playerPosition = this->player.position;
     if (!this->isStopped && !this->isLvlUp) {
         // Update enemies
         this->updateEnemies(dt, playerPosition);
@@ -152,14 +160,26 @@ void Game::update(float dt) {
         }
     }
 
-    if (this->isLvlUp) this->upgradeState.update(dt, playerPosition);
+    if (isLvlUp) {
+        upgradeState.update(dt, player.position);
+
+        UpgradeChoice choice = upgradeState.getSelected();
+        if (choice != UpgradeChoice::None) {
+            Upgrade upgrade = upgradeState.getUpgrade(choice);
+            player.applyUpgrade(upgrade);
+
+            isLvlUp = false;
+            upgradeState.resetSelection();
+        }
+    }
+
     if (this->isStopped) this->updatePauseText();
 
     view.setCenter(view.getCenter() +
     (playerPosition - view.getCenter()) * 10.f * dt);
     this->window->setView(view);
 
-    this->borderSprite.setPosition({view.getCenter().x - 250.f, view.getCenter().y + 100.f});
+    this->borderSprite.setPosition({view.getCenter().x - 230.f, view.getCenter().y + 100.f});
 
 }
 
@@ -172,7 +192,7 @@ void Game::render() {
         Renders the game objects
     */
 
-    this->window->clear();
+    this->window->clear(sf::Color::Cyan);
     // Draw game objects
     this->window->draw(this->ground);
     this->window->draw(this->upground);
@@ -201,10 +221,6 @@ void Game::render() {
     for (auto const &bullet : bullets) {
         bullet->render(*this->window);
     }
-
-    // sf::Sprite weapon_icon = this->player.get_current_weapon().icon;
-    // weapon_icon.setPosition({20.f, 20.f});
-    // this->window->draw(weapon_icon);
 
     this->player.draw(*this->window);
 
@@ -255,20 +271,20 @@ void Game::spawnEnemy(const sf::Vector2f playerPos) {
         { playerPos.x, playerPos.y + screenSize.y / 2.f }
     };
 
-    if (this->enemies.size() >= this->maxEnemies) return;
+    for (int i = 0; i < this->maxEnemies; i++) {
+        int randPosIdx = rand() % this->spawnPositions.size();
 
-    int randPosIdx = rand() % this->spawnPositions.size();
+        sf::Vector2f offset{
+            static_cast<float>((rand() % 50) - 10),
+            static_cast<float>((rand() % 50) - 10)
+        };
 
-    sf::Vector2f offset{
-        static_cast<float>((rand() % 50) - 10),
-        static_cast<float>((rand() % 50) - 10)
-    };
-
-    this->enemies.push_back(
+        this->enemies.push_back(
         std::make_unique<Enemy>(
             EnemyType::Basic,
             this->spawnPositions[randPosIdx] + offset)
-    );
+        );
+    }
 }
 
 void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
@@ -276,12 +292,10 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
         @return void
         - Add timer to spawning enemy with time interval
     */
-    this->spawnTimer += dt;
 
-    if (this->spawnTimer >= this->spawnInterval)
-    {
+    if (this->isWaveClear()) {
+        this->currentEnemies = this->maxEnemies;
         this->spawnEnemy(playerPosition);
-        this->spawnTimer = 0.f;
     }
 
     for (auto const &enemy : enemies)
@@ -291,10 +305,12 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
         if (!enemies[i]->is_alive()) {
             player.currentXp += enemies[i]->xp;
             enemies.erase(enemies.begin() + i);
+            this->currentEnemies--;
             if (player.isLvlUp()) {
                 player.lvlUp();
                 this->isLvlUp = {true};
                 this->maxEnemies += 20;
+                upgradeState.rollUpgrades();
             } else {
                 this->isLvlUp = {false};
             }
@@ -370,11 +386,15 @@ void Game::handlePlayerTileCollisions()
 
 void Game::updatePauseText() {
     this->pauseText.setString("Pause");
-    pauseText.setCharacterSize(68);
+    pauseText.setCharacterSize(48);
     sf::FloatRect pauseBounds = pauseText.getGlobalBounds();
     pauseText.setOrigin(sf::Vector2f(pauseBounds.size.x / 2, pauseBounds.size.y / 2));
     pauseText.setPosition(sf::Vector2f(this->player.position.x, this->player.position.y - 50.f));
     pauseText.setFillColor(sf::Color::Black);
+}
+
+bool Game::isWaveClear() const {
+    return this->currentEnemies == 0;
 }
 
 // ******************* Other Methods End *******************

@@ -32,8 +32,13 @@ class Game final {
     sf::Vector2f screenSize {};
     CollisionMap collisionMap;
     // Game logic
+
+    // Enemies
     int maxEnemies {};
+    int currentEnemies {};
     float spawnInterval {};
+
+    // Game logic
     TileMap trees;
     TileMap borders;
     TileMap walls;
@@ -68,6 +73,7 @@ class Game final {
     void updateBullets(float dt);
     void stopGame();
     void updatePauseText();
+    bool isWaveClear() const;
     void handlePlayerTileCollisions();
 
 public:

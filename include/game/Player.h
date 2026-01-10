@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Weapons.h"
+#include "Upgrade.h"
 
 
 #include "Animation.h"
@@ -19,7 +20,7 @@ class Player {
     std::shared_ptr<sf::Texture> guns_texture;
 
     public:
-
+    void applyUpgrade(const Upgrade& upgrade);
     sf::Texture walkTxt = sf::Texture("../../assets/images/walk.png");
     sf::Texture idleTxt = sf::Texture("../../assets/images/Idle.png");
     sf::Sprite sprite = sf::Sprite(idleTxt);
