@@ -34,6 +34,8 @@ void Game::initVariables() {
     ground.loadCollisionLayer("assets/map/map.json", "water");
     ground.loadCollisionLayer("assets/map/map.json", "trees");
     ground.loadCollisionLayer("assets/map/map.json", "upupground");
+
+    ground.removeCollisions("assets/map/map.json", "bridges");
 }
 
 void Game::initWindow() {

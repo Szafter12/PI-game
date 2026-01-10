@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <nlohmann/json.hpp>
 #include <filesystem>
+#include <set>
 
 using json = nlohmann::json;
 
@@ -175,6 +176,30 @@ public:
             return true;
         }
         return false;
+    }
+
+    void removeCollisions(const::std::filesystem::path& jsonPath, const std::string& layerName) {
+        std::ifstream file(jsonPath);
+        if (!file.is_open()) return;
+        nlohmann::json j;
+        file >> j;
+
+        unsigned tileSize = j.at("tileSize").get<unsigned>();
+
+        for (const auto& layer : j.at("layers")) {
+            if (layer.at("name").get<std::string>() != layerName)
+                continue;
+            for (const auto& tile : layer.at("tiles")) {
+                int x = tile.at("x").get<int>();
+                int y = tile.at("y").get<int>();
+                sf::FloatRect bridgeRect(sf::Vector2f(static_cast<float>(x * tileSize), static_cast<float>(y * tileSize)),sf::Vector2f(static_cast<float>(tileSize), static_cast<float>(tileSize)));
+                for (int i = m_collisions.size() - 1; i >= 0; i--) {
+                    if (m_collisions[i].findIntersection(bridgeRect)) {
+                        m_collisions.erase(m_collisions.begin() + i);
+                    }
+                }
+            }
+        }
     }
 
 private:
