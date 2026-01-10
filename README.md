@@ -72,8 +72,8 @@ cmake --build . --config Release --parallel
 
 ## Controls (default)
 
-Move,WASD
-Shoot,Space Button
-Aim,Mouse cursor
-Quit,P
-Menu,Esc
+- Move - WASD
+- Shoot - Space Button
+- Aim - Mouse cursor
+- Quit - P
+- Menu - Esc
