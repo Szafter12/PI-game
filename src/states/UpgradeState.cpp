@@ -22,10 +22,10 @@ void UpgradeState::setButtons() {
 
         txt.setFont(*font);
         txt.setString("Wybierz");
-        txt.setCharacterSize(18);
+        txt.setCharacterSize(24);
         sf::FloatRect bounds = txt.getGlobalBounds();
         txt.setOrigin(sf::Vector2f(bounds.size.x / 2.f, bounds.size.y / 2.f));
-        txt.setScale(sf::Vector2f(0.7f, 0.7f));
+        txt.setScale(sf::Vector2f(0.4f, 0.4f));
         txt.setFillColor(sf::Color::White);
     };
 
@@ -63,7 +63,7 @@ void UpgradeState::updateTexts() {
             txt.setString(upgradeToString(upg));
             sf::FloatRect b = txt.getGlobalBounds();
             txt.setOrigin(sf::Vector2f(b.size.x / 2.f, b.size.y / 2.f));
-            txt.setScale(sf::Vector2f(0.7f,0.7f));
+            txt.setScale(sf::Vector2f(0.4f,0.4f));
         };
 
         setupText(upgradeText1, upgrades[0]);
@@ -103,9 +103,9 @@ void UpgradeState::setPosition(sf::Vector2f position) {
     buttonText2.setPosition(button2.getPosition());
     buttonText3.setPosition(button3.getPosition());
 
-    upgradeText1.setPosition(sf::Vector2f(border1.getPosition().x - 10.f, border1.getPosition().y - 10.f));
-    upgradeText2.setPosition(sf::Vector2f(border2.getPosition().x - 10.f, border2.getPosition().y - 10.f));
-    upgradeText3.setPosition(sf::Vector2f(border3.getPosition().x - 10.f, border3.getPosition().y - 10.f));
+    upgradeText1.setPosition(sf::Vector2f(border1.getPosition().x - 19.f, border1.getPosition().y - 10.f));
+    upgradeText2.setPosition(sf::Vector2f(border2.getPosition().x - 19.f, border2.getPosition().y - 10.f));
+    upgradeText3.setPosition(sf::Vector2f(border3.getPosition().x - 19.f, border3.getPosition().y - 10.f));
 }
 
 void UpgradeState::setText() {
@@ -121,9 +121,9 @@ void UpgradeState::setText() {
     this->secondText.setOrigin(sf::Vector2f(this->secondText.getGlobalBounds().size.x/2.f, this->secondText.getGlobalBounds().size.y/2.f));
     this->secondText.setScale(sf::Vector2f(0.7,0.7));
 
-    upgradeText1.setCharacterSize(18);
-    upgradeText2.setCharacterSize(18);
-    upgradeText3.setCharacterSize(18);
+    upgradeText1.setCharacterSize(24);
+    upgradeText2.setCharacterSize(24);
+    upgradeText3.setCharacterSize(24);
 
     upgradeText1.setFillColor(sf::Color::White);
     upgradeText2.setFillColor(sf::Color::White);
