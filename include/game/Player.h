@@ -17,16 +17,18 @@ class Player {
 
     std::vector<Weapon> arsenal;
     int weapon_index = 0;
-    std::shared_ptr<sf::Texture> guns_texture;
+    std::shared_ptr<sf::Texture> guns_texture= std::make_shared<sf::Texture>("../../assets/images/all_guns.png");;
 
     public:
     void applyUpgrade(const Upgrade& upgrade);
     sf::Texture walkTxt = sf::Texture("../../assets/images/walk.png");
     sf::Texture idleTxt = sf::Texture("../../assets/images/Idle.png");
+    sf::Texture plateTxt = sf::Texture("../../assets/images/border.png");
     sf::Sprite sprite = sf::Sprite(idleTxt);
     sf::Vector2f position {};
     sf::RectangleShape hpBar {};
-    sf::RectangleShape plate {};
+    sf::RectangleShape bBar;
+    sf::Sprite plate = sf::Sprite(plateTxt);
     int ad {};
     int armor {};
     int lvl {};
@@ -51,7 +53,7 @@ class Player {
     Player(sf::Vector2f position);
 
     void update(const sf::RenderWindow &window, const float dt);
-    void draw(sf::RenderWindow &window) const;
+    void draw(sf::RenderWindow &window);
 
     sf::FloatRect getBounds() const;
     void initHitBoxOutline();
@@ -64,6 +66,7 @@ class Player {
     void pauseAnim(int a);
     void revertPosition();
 
+    void drawHP(sf::RenderWindow &window);
 };
 
 #endif //GAME_PI_PLAYER_H

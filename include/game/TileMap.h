@@ -71,11 +71,7 @@ public:
 
         float mapWidthPx  = width  * tileSize.x;
         float mapHeightPx = height * tileSize.y;
-        // JEDNO origin – MAPA WYŚRODKOWANA
- //        this->setOrigin(sf::Vector2f(
- //     mapWidthPx / 2.f,
- //     mapHeightPx / 2.f
- // ));
+
         m_mapSize = sf::Vector2f(mapWidthPx, mapHeightPx);
         return true;
     }

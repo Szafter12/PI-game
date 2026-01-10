@@ -5,7 +5,15 @@ Player::Player(const sf::Vector2f position) {
     this->position = position;
     this->sprite.setPosition(this->position);
     this->ad = 20;
+    maxHp=100;
+    hp=maxHp;
+    plate.setTextureRect(sf::IntRect({192, 0}, {64, 64}));
+    bBar.setSize(sf::Vector2f(120, 8));
+    bBar.setOrigin(sf::Vector2f(60, 4));
+    bBar.setFillColor(sf::Color::Black);
 
+    //this->guns_texture = std::make_shared<sf::Texture>();
+    //this->guns_texture->loadFromFile("../../assets/images/all_guns.png");
     this->guns_texture = std::make_shared<sf::Texture>();
     if (!this->guns_texture->loadFromFile("../../assets/images/all_guns.png")) {
         std::cout << "Failed to load guns texture" << std::endl;
@@ -27,11 +35,12 @@ Player::Player(const sf::Vector2f position) {
     this->nextLvlCap = {30};
     this->speed = {70};
 
-    plate.setFillColor(sf::Color(242, 158, 109,255));
+    /*plate.setFillColor(sf::Color(242, 158, 109,255));
     plate.setSize({100,32});
     plate.setOutlineColor(sf::Color(87, 46, 23,255));
-    plate.setOutlineThickness(2);
-    plate.setPosition({position.x-240,position.y+71});
+    plate.setOutlineThickness(2);*/
+    plate.setScale({2.5,0.3});
+    //plate.setPosition({position.x-240,position.y+71});
 }
 
 void Player::update(const sf::RenderWindow &window, const float dt) {
@@ -72,8 +81,8 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
     position = sprite.getPosition();
     sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-    if (mousePos.y > position.y-16 &&
-        mousePos.y < (position.y+16)) {
+    if (mousePos.y > position.y-28 &&
+        mousePos.y < (position.y+28)) {
         if (mousePos.x < position.x) {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
@@ -89,7 +98,7 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
             else{ mRight.pause=true;pauseAnim(4);sprite.setTexture(idleTxt);IdleRight.pause=false;IdleRight.update();}
         }
         }
-    else if (mousePos.y < position.y-16) {
+    else if (mousePos.y < position.y-28) {
         if (mousePos.x < position.x-16) {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) ||
                 sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) ||
@@ -141,10 +150,9 @@ void Player::update(const sf::RenderWindow &window, const float dt) {
     // this->initHitBoxOutline();
 }
 
-void Player::draw(sf::RenderWindow &window) const {
+void Player::draw(sf::RenderWindow &window) {
     window.draw(sprite);
-    window.draw(plate);
-    window.draw(hpBar);
+    drawHP(window);
     // window.draw(hitBox);
 }
 
@@ -226,10 +234,16 @@ void Player::drawHpBar(const sf::View &view) {
         this->hpBar.setFillColor(sf::Color::Red);
     }
 
-    this->plate.setOrigin(sf::Vector2f(plate.getGlobalBounds().size.x/2.f, plate.getGlobalBounds().size.x/2.f));
-    this->hpBar.setOrigin(sf::Vector2f(this->hpBar.getGlobalBounds().size.x/ 2.f, this->hpBar.getGlobalBounds().size.y / 2.f));
-    plate.setPosition({view.getCenter().x,view.getCenter().y+150});
-    this->hpBar.setPosition({view.getCenter().x-2.f,view.getCenter().y+115.f});
+    this->hpBar.setOrigin(sf::Vector2f(this->hpBar.getSize().x / 2.f, this->hpBar.getSize().y / 2.f));
+    plate.setPosition({view.getCenter().x-244,view.getCenter().y-135});
+    this->hpBar.setPosition(sf::Vector2f(plate.getPosition().x+80, plate.getPosition().y + 10.f));
+    bBar.setPosition(sf::Vector2f(plate.getPosition().x+80, plate.getPosition().y + 10.f));
+}
+
+void Player::drawHP(sf::RenderWindow &window) {
+    window.draw(plate);
+    window.draw(bBar);
+    if (hp>0) window.draw(hpBar);
 }
 
 void Player::pauseAnim(int a) {
