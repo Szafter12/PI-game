@@ -41,6 +41,8 @@ Player::Player(const sf::Vector2f position) {
 void Player::update(const sf::RenderWindow &window, const float dt) {
     sf::Vector2f velocity(0.f, 0.f);
 
+        lastPosition = position;
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) switch_weapon(0);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num2)) switch_weapon(1);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num3)) switch_weapon(2);
@@ -192,6 +194,10 @@ void Player::switch_weapon(int index) {
     if (index >= 0 && index < this->arsenal.size()) {
         this->weapon_index = index;
     }
+}
+void Player::revertPosition() {
+    position = lastPosition;
+    sprite.setPosition(position);
 }
 
 

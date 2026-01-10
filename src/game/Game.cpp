@@ -21,19 +21,37 @@ void Game::initVariables() {
     if (!this->border_texture.loadFromFile("../../assets/images/border.png")) {
         std::cout << "Failed to load border texture" << std::endl;
     }
+
     this->borderSprite.setTexture(this->border_texture);
     this->borderSprite.setTextureRect(sf::IntRect({0, 0}, {64, 64}));
     this->borderSprite.setScale({0.5, 0.5});
     this->borderSprite.setPosition({10.f, 40.f});
 
-    upupground.loadFromJsonLayer("../../assets/map/map.json", "upupground", "../../assets/map/spritesheet.png");
     bridges.loadFromJsonLayer("../../assets/map/map.json", "bridges", "../../assets/map/spritesheet.png");
+    upupground.loadFromJsonLayer("../../assets/map/map.json", "upupground", "../../assets/map/spritesheet.png");
     trees.loadFromJsonLayer("../../assets/map/map.json", "trees", "../../assets/map/spritesheet.png");
+    borders.loadFromJsonLayer("../../assets/map/map.json", "borders", "../../assets/map/spritesheet.png");
     walls.loadFromJsonLayer("../../assets/map/map.json", "walls", "../../assets/map/spritesheet.png");
     ground.loadFromJsonLayer("../../assets/map/map.json", "ground", "../../assets/map/spritesheet.png");
     water.loadFromJsonLayer("../../assets/map/map.json", "water", "../../assets/map/spritesheet.png");
     upground.loadFromJsonLayer("../../assets/map/map.json", "upground", "../../assets/map/spritesheet.png");
+
+    std::set<std::string> blockingLayers = { "walls", "trees", "water", "upupground", "borders" };
+
+    // Lista rzeczy, które pozwalają chodzić NAWET jak pod spodem jest blokada (mosty)
+    std::set<std::string> walkableLayers = { "bridges" };
+
+    collisionMap.loadFromSpriteFusion(
+        "../../assets/map/map.json",
+        blockingLayers,
+        walkableLayers
+    );
+    sf::Vector2f mapSize = ground.getSize();
+    sf::Vector2f centerPos = { mapSize.x / 2.f, mapSize.y / 2.f };
+    this->player.position = centerPos;
+    this->player.sprite.setPosition(centerPos);
 }
+
 
 void Game::initWindow() {
     /*
@@ -127,6 +145,7 @@ void Game::update(float dt) {
         this->window->setView(view);
 
         this->player.update(*this->window, dt);
+        this->handlePlayerTileCollisions();
 
         for (const auto &enemy: this->enemies) {
             enemy->collideWithPlayer(player, dt);
@@ -159,12 +178,22 @@ void Game::render() {
     this->window->draw(this->upground);
     this->window->draw(this->water);
     this->window->draw(this->walls);
+    this->window->draw(this->borders);
     this->window->draw(this->upupground);
     this->window->draw(this->trees);
     this->window->draw(this->bridges);
 
-
-
+    // sf::RectangleShape dbg;
+    // // dbg.setFillColor(sf::Color::Transparent);
+    // // // dbg.setOutlineColor(sf::Color::Red);
+    // dbg.setOutlineThickness(1.f);
+    //
+    // for (const auto& c : collisionMap.getColliders())
+    // {
+    //     dbg.setPosition({c.position.x, c.position.y});
+    //     dbg.setSize({c.size.x, c.size.y});
+    //     window->draw(dbg);
+    // }
 
     for (auto const &enemy : enemies) {
         enemy->render(this->window);
@@ -324,6 +353,19 @@ void Game::updateBullets(float dt) {
 
 void Game::stopGame() {
     this->isStopped = true;
+}
+void Game::handlePlayerTileCollisions()
+{
+    sf::FloatRect playerBounds = player.getBounds();
+
+    for (const auto& tile : collisionMap.getColliders())
+    {
+        if (playerBounds.findIntersection(tile))
+        {
+            player.revertPosition();
+            return;
+        }
+    }
 }
 
 void Game::updatePauseText() {

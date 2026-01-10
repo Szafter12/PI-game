@@ -12,6 +12,7 @@
 class Player {
     private:
     sf::RectangleShape hitBox;
+    sf::Vector2f lastPosition; // przechowuje poprzednią pozycję gracza
 
     std::vector<Weapon> arsenal;
     int weapon_index = 0;
@@ -60,6 +61,8 @@ class Player {
     bool isLvlUp() const;
     void drawHpBar(const sf::View &view);
     void pauseAnim(int a);
+    void revertPosition();
+
 };
 
 #endif //GAME_PI_PLAYER_H
