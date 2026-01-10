@@ -27,9 +27,6 @@ bool CollisionMap::loadFromSpriteFusion(
     // Tworzymy siatkę logiczną całej mapy (false = wolne, true = ściana)
     std::vector<bool> grid(width * height, false);
 
-    // -----------------------------------------------------------------
-    // PRZEBIEG 1: Nanosimy WSZYSTKIE kolizje (Woda, Ściany, Drzewa)
-    // -----------------------------------------------------------------
     for (const auto& layer : j.at("layers"))
     {
         const std::string name = layer.at("name").get<std::string>();
@@ -49,9 +46,6 @@ bool CollisionMap::loadFromSpriteFusion(
         }
     }
 
-    // -----------------------------------------------------------------
-    // PRZEBIEG 2: Nanosimy WSZYSTKIE wyjątki (Mosty) - to ma priorytet
-    // -----------------------------------------------------------------
     for (const auto& layer : j.at("layers"))
     {
         const std::string name = layer.at("name").get<std::string>();
@@ -71,9 +65,6 @@ bool CollisionMap::loadFromSpriteFusion(
         }
     }
 
-    // -----------------------------------------------------------------
-    // KROK 3: Generujemy prostokąty kolizji na podstawie siatki
-    // -----------------------------------------------------------------
     for (unsigned y = 0; y < height; ++y) {
         for (unsigned x = 0; x < width; ++x) {
             if (grid[x + y * width]) {
