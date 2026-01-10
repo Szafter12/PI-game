@@ -14,7 +14,7 @@ public:
     // Start position
     Bullet(sf::Vector2f start_position, sf::Vector2f target_position, const sf::Texture& texture);
     void update(float dt);
-    void render(sf::RenderTarget& target);
+    void render(sf::RenderTarget& target) const;
 
     sf::FloatRect getGlobalBounds() const;
     bool isDead() const;

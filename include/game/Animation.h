@@ -19,13 +19,13 @@ public:
 
 public:
     Animation(sf::Sprite *sprite, int frame_count, int pos_x, int pos_y, int frame_w, int frame_h, float speed)
-        : sprite(sprite),
-          frameCount(frame_count),
+        : frameCount(frame_count),
           posX(pos_x),
           posY(pos_y),
           frameW(frame_w),
           frameH(frame_h),
-          speed(speed) { sprite->setTextureRect(sf::IntRect({posX,posY},{frameW,frameH}));
+          speed(speed),
+          sprite(sprite) { sprite->setTextureRect(sf::IntRect({posX,posY},{frameW,frameH}));
     }
 
     void update() {

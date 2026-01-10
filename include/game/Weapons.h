@@ -27,8 +27,8 @@ struct Weapon {
     std::shared_ptr<sf::Texture> texture;
     sf::Sprite icon;
 
-    Weapon(std::string n, float rate, int dmg, float speed, WeaponType t,
-        std::shared_ptr<sf::Texture> tex, sf::IntRect rect):
+    Weapon(const std::string &n, float rate, int dmg, float speed, WeaponType t,
+        const std::shared_ptr<sf::Texture> &tex, sf::IntRect rect):
     name(n),
     fire_rate(rate),
     damage(dmg),
@@ -41,7 +41,6 @@ struct Weapon {
     }
 
 };
-
 
 class Weapons {
     WeaponType type {};
