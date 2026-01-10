@@ -4,11 +4,11 @@
 University project for "Introduction to Computer Science" course  
 Made with **C++17** + **SFML 3.0**
 
-![Game screenshot]()  
+![Game screenshot]("./ss1.png")  
 
 ## About the project
 
-Small, classic-style wave survival shooter in pixel-art aesthetics.
+Small, classic-style wave survival shooter in pixel-art aesthetics. We split task for our project team. Everyone has their own branch and at the end of the week we merge all changes to main, resolve conflits etc.
 
 **Main features:**
 - Top-down 2×2 perspective
@@ -20,6 +20,8 @@ Small, classic-style wave survival shooter in pixel-art aesthetics.
 - Basic particle effects & hit feedback
 
 The project was created mainly to learn:
+- OOP c++
+- SFML 
 - Game loop & time management
 - Basic collision detection
 - Sprite animation
@@ -46,8 +48,8 @@ The project was created mainly to learn:
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/YOUR_USERNAME/wave-survival.git
-cd wave-survival
+git clone https://github.com/Szafter12/PI-game
+cd PI-game
 
 # 2. Create build directory
 mkdir build && cd build
