@@ -4,7 +4,7 @@
 inline std::string upgradeToString(const Upgrade& u) {
     switch (u.type) {
         case UpgradeType::Speed:
-            return "Prędkośc + " + std::to_string(static_cast<int>(u.value));
+            return "Predkosc + " + std::to_string(static_cast<int>(u.value));
         case UpgradeType::MaxHp:
             return "Max HP + " + std::to_string(static_cast<int>(u.value));
         case UpgradeType::Heal:
