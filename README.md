@@ -4,7 +4,7 @@
 University project for "Introduction to Computer Science" course  
 Made with **C++17** + **SFML 3.0**
 
-![Game screenshot]("ss1.png")  
+![Game screenshot](ss1.png)  
 
 ## About the project
 
