@@ -41,7 +41,7 @@ void Game::initWindow() {
        - Initialize starting window
        - Adding default options
    */
-    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Fullscreen, settings);
+    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
     this->window->setFramerateLimit(60);
     this->screenSize.x = this->window->getSize().x;
     this->screenSize.y = this->window->getSize().y;
@@ -114,7 +114,7 @@ void Game::update(float dt) {
 
     this->pollEvents();
 
-    sf::Vector2f playerPosition = this->player.position;
+    const sf::Vector2f playerPosition = this->player.position;
     if (!this->isStopped && !this->isLvlUp) {
         // Update enemies
         this->updateEnemies(dt, playerPosition);
@@ -140,7 +140,7 @@ void Game::update(float dt) {
     (playerPosition - view.getCenter()) * 10.f * dt);
     this->window->setView(view);
 
-    this->borderSprite.setPosition({view.getCenter().x - 250.f, view.getCenter().y + 100.f});
+    this->borderSprite.setPosition({view.getCenter().x - 230.f, view.getCenter().y + 100.f});
 
 }
 
@@ -328,7 +328,7 @@ void Game::stopGame() {
 
 void Game::updatePauseText() {
     this->pauseText.setString("Pause");
-    pauseText.setCharacterSize(68);
+    pauseText.setCharacterSize(48);
     sf::FloatRect pauseBounds = pauseText.getGlobalBounds();
     pauseText.setOrigin(sf::Vector2f(pauseBounds.size.x / 2, pauseBounds.size.y / 2));
     pauseText.setPosition(sf::Vector2f(this->player.position.x, this->player.position.y - 50.f));
