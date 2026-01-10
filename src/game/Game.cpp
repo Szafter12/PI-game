@@ -39,6 +39,12 @@ void Game::initVariables() {
     ground.loadFromJsonLayer("../../assets/map/map.json", "ground", "../../assets/map/spritesheet.png");
     water.loadFromJsonLayer("../../assets/map/map.json", "water", "../../assets/map/spritesheet.png");
     upground.loadFromJsonLayer("../../assets/map/map.json", "upground", "../../assets/map/spritesheet.png");
+    ground.loadCollisionLayer("../../assets/map/map.json", "walls");
+    ground.loadCollisionLayer("../../assets/map/map.json", "water");
+    ground.loadCollisionLayer("../../assets/map/map.json", "trees");
+    ground.loadCollisionLayer("../../assets/map/map.json", "upupground");
+
+    ground.removeCollisions("../../assets/map/map.json", "bridges");
 
     std::set<std::string> blockingLayers = { "walls", "trees", "water", "upupground", "borders" };
 
@@ -427,8 +433,33 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
         this->spawnEnemy(playerPosition);
     }
 
-    for (auto const &enemy : enemies)
+    for (auto const &enemy : enemies) {
         enemy->update(dt, playerPosition);
+
+        for (const auto& wallRect : this->ground.m_collisions) {
+            sf::FloatRect enemyBounds = enemy->getBounds();
+            sf::FloatRect wallBounds = this->ground.getTransform().transformRect(wallRect);
+
+            auto intersection = enemyBounds.findIntersection(wallBounds);
+            if (intersection) {
+                if (intersection->size.x < intersection->size.y) {
+                    if (enemyBounds.position.x < wallBounds.position.x)
+                        enemy->position.x -= intersection->size.x;
+                    else
+                        enemy->position.x += intersection->size.x;
+                }
+                else {
+                    if (enemyBounds.position.y < wallBounds.position.y)
+                        enemy->position.y -= intersection->size.y;
+                    else
+                        enemy->position.y += intersection->size.y;
+                }
+                enemy->sprite.setPosition(enemy->position);
+            }
+
+        }
+    }
+
 
     for (int i = 0 ; i < this->enemies.size(); i++) {
         if (!enemies[i]->is_alive()) {
