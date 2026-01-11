@@ -141,6 +141,10 @@ void Game::pollEvents() {
                 if (inputBuffer == combo) {
                     this->player.hp = this->player.maxHp;
                 }
+                if (inputBuffer == aezakmi) {
+                    this->enemies.clear();
+                    this->currentEnemies = 0;
+                }
                 inputBuffer.clear();
             }
 
