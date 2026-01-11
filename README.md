@@ -44,25 +44,29 @@ The project was created mainly to learn:
 - CMake ≥ 3.28
 - C++17 capable compiler (MSVC 2019/2022, GCC 11+, Clang 14+)
 
-### Build instructions (all platforms)
+### Build instructions
 
 ```bash
 # 1. Clone repository
 git clone https://github.com/Szafter12/PI-game
 cd PI-game
 
-# 2. Create build directory
-mkdir build && cd build
+# 2. Build game
+cmake -S . -B build
 
 # 3. Configure
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Debug
 
-# 4. Build
-cmake --build . --config Release --parallel
+# 4. Copy assets to path
+cp assets .\build\assets -Recurse
 
-# 5. The executable should appear in:
-# Windows:    build/bin/Release/Game_PI.exe
-# Linux/macOS: build/bin/Game_PI
+# 5. Change directory to executable
+cd .\build\bin\Debug
+
+# 6. Open the game
+.\Game_PI.exe
+
+# 7. The executable should appear in build/bin/Debug/Game_PI.exe
 
 ```
 ### Windows – Visual Studio users (alternative way)
