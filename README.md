@@ -1,4 +1,4 @@
-# Wave Survival - Pixel Art Top-Down Shooter
+# Feline slayer - Pixel Art Top-Down Shooter
 
 **Simple 2D top-down wave survival game**  
 University project for "Introduction to Computer Science" course  
