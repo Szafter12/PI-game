@@ -25,7 +25,19 @@ class Game final {
     // Variables:
     sf::ContextSettings settings;
     sf::Font font;
+    std::vector<sf::Keyboard::Key> inputBuffer;
+    sf::Clock inputClock;
 
+    const float comboTime = 0.7f;
+    std::vector<sf::Keyboard::Key> combo = {
+        sf::Keyboard::Key::A,
+        sf::Keyboard::Key::E,
+        sf::Keyboard::Key::Z,
+        sf::Keyboard::Key::A,
+        sf::Keyboard::Key::K,
+        sf::Keyboard::Key::M,
+        sf::Keyboard::Key::I,
+    };
     sf::Text pauseText;
 
     // Window
