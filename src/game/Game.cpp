@@ -69,7 +69,7 @@ void Game::initWindow() {
        - Initialize starting window
        - Adding default options
    */
-    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Fullscreen, settings);
+    this->window = new sf::RenderWindow (sf::VideoMode({1920,1080}), "Gierka PI", sf::Style::Default, sf::State::Windowed, settings);
     this->window->setFramerateLimit(60);
     this->screenSize.x = this->window->getSize().x;
     this->screenSize.y = this->window->getSize().y;
@@ -129,6 +129,21 @@ void Game::pollEvents() {
             if (keyPressed->scancode == sf::Keyboard::Scancode::P) {
                 this->window->close();
             }
+
+            if (inputClock.getElapsedTime().asSeconds() > comboTime) {
+                inputBuffer.clear();
+            }
+
+            inputClock.restart();
+            inputBuffer.push_back(keyPressed->code);
+
+            if (inputBuffer.size() == combo.size()) {
+                if (inputBuffer == combo) {
+                    this->player.hp = this->player.maxHp;
+                }
+                inputBuffer.clear();
+            }
+
         } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
             if (mouse->button == sf::Mouse::Button::Left && isLvlUp) {
                 sf::Vector2f mousePos =
