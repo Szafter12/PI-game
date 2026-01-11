@@ -10,6 +10,16 @@ void Game::initVariables() {
 
     this->window = nullptr;
 
+    menuMusic.setLooping(true);
+    ambient.setLooping(true);
+    ambient.setVolume(30);
+    clickSnd.setVolume(35);
+    dmgSnd.setVolume(35);
+    levelUpSnd.setVolume(35);
+    gameOSnd.setVolume(35);
+    shotSnd.setVolume(35);
+    enmSnd.setVolume(35);
+
     titleSprite.setOrigin({titleSprite.getLocalBounds().size.x / 2, titleSprite.getLocalBounds().size.y / 2});
     titleSprite.setPosition({0,-60});
     // objects variables
@@ -167,18 +177,22 @@ void Game::update(float dt) {
     */
 
     this->pollEvents();
-
+    if (!musicOn){menuMusic.stop();}
     if (room==0) {
+        ambient.stop();
+        if (menuMusic.getStatus()!=sf::Music::Status::Playing && musicOn) menuMusic.play();
         this->window->setView(view);
         titleSprite.setPosition(window->getView().getCenter()+sf::Vector2f{0,-60});
 
         loadB.update(*this->window);
         if (loadB.isClicked) {
+            if (soundOn) clickSnd.play();
             loadSave();
         }
 
         newB.update(*this->window);
         if (newB.isClicked) {
+            if (soundOn) clickSnd.play();
             isStopped=false;
             isGameOver=false;
             sf::Vector2f mapSize = ground.getSize();
@@ -204,13 +218,22 @@ void Game::update(float dt) {
         }
 
         settingsB.update(*this->window);
-        if (settingsB.isClicked) {Sleep(100);room=2;}
+        if (settingsB.isClicked) {
+            if (soundOn) clickSnd.play();
+            Sleep(100);
+            room=2;
+        }
 
         exitB.update(*this->window);
-        if (exitB.isClicked) this->window->close();
+        if (exitB.isClicked) {
+            if (soundOn) clickSnd.play();
+            this->window->close();
+        }
     }
     else if (room==1) {
         if (!this->isGameOver) {
+            menuMusic.stop();
+            if (ambient.getStatus()!=sf::Music::Status::Playing && musicOn && !isStopped) ambient.play();
             sf::Vector2f playerPosition = this->player.position;
             if (!this->isStopped && !this->isLvlUp) {
                 // Update enemies
@@ -228,7 +251,7 @@ void Game::update(float dt) {
                 this->handlePlayerTileCollisions();
 
                 for (const auto &enemy: this->enemies) {
-                    enemy->collideWithPlayer(player, dt);
+                    enemy->collideWithPlayer(player, dt,soundOn,&dmgSnd);
                 }
             }
 
@@ -239,7 +262,7 @@ void Game::update(float dt) {
         if (choice != UpgradeChoice::None) {
             Upgrade upgrade = upgradeState.getUpgrade(choice);
             player.applyUpgrade(upgrade);
-
+            if (soundOn) levelUpSnd.play();
             isLvlUp = false;
             upgradeState.resetSelection();
         }
@@ -247,14 +270,25 @@ void Game::update(float dt) {
 
     if (this->isStopped) this->updatePauseText();
             if (this->isStopped) {
+                ambient.pause();
                 resumeB.update(*this->window);
-                if (resumeB.isClicked) isStopped=false;
+                if (resumeB.isClicked) {
+                    if (soundOn) clickSnd.play();
+                    isStopped=false;
+                }
 
                 menuB.update(*this->window);
-                if (menuB.isClicked) {Sleep(2000);room=0;}
+                if (menuB.isClicked) {
+                    if (soundOn) clickSnd.play();
+                    Sleep(2000);
+                    room=0;
+                }
 
                 saveB.update(*this->window);
-                if (saveB.isClicked) saveGame();
+                if (saveB.isClicked) {
+                    if (soundOn) clickSnd.play();
+                    saveGame();
+                }
             }
 
             view.setCenter(view.getCenter() +
@@ -262,15 +296,24 @@ void Game::update(float dt) {
             this->window->setView(view);
 
             this->borderSprite.setPosition({view.getCenter().x - 220.f, view.getCenter().y + 100.f});
-            if (player.hp<=0) isGameOver = true;
+            if (player.hp<=0) {
+                ambient.stop();
+                if (soundOn) gameOSnd.play();
+                isGameOver = true;
+            }
         }
         else {
             gameOver();
             menuB.update(*this->window);
-            if (menuB.isClicked) {Sleep(2000);room=0;}
+            if (menuB.isClicked) {
+                if (soundOn) clickSnd.play();
+                Sleep(2000);
+                room=0;
+            }
 
             loadB.update(*this->window);
             if (loadB.isClicked) {
+                if (soundOn) clickSnd.play();
                 loadSave();
             }
         }
@@ -279,30 +322,38 @@ void Game::update(float dt) {
         soundB.update(*this->window);
         if (soundB.isClicked) {
             if (soundOn) {
+                if (soundOn) clickSnd.play();
                 soundOn = false;
                 soundB.label="Dzwiek:Off";
             }
             else {
                 soundOn = true;
                 soundB.label="Dzwiek:On";
+                if (soundOn) clickSnd.play();
             }
             Sleep(100);
         }
 
         musicB.update(*this->window);
         if (musicB.isClicked) {
+            if (soundOn) clickSnd.play();
             if (musicOn) {
                 musicOn = false;
                 musicB.label="Muzyka:Off";
             }
             else {
-                 musicOn = true;
-                 musicB.label="Muzyka:On";
+                musicOn = true;
+                musicB.label="Muzyka:On";
+                if (menuMusic.getStatus()!=sf::Music::Status::Playing && musicOn) menuMusic.play();
             }
             Sleep(100);
         }
         returnB.update(*this->window);
-        if (returnB.isClicked) {room=0;Sleep(100);}
+        if (returnB.isClicked) {
+            if (soundOn) clickSnd.play();
+            room=0;
+            Sleep(100);
+        }
     }
 }
 
@@ -482,6 +533,7 @@ void Game::updateEnemies(const float dt, const sf::Vector2f playerPosition) {
         if (!enemies[i]->is_alive()) {
             player.currentXp += enemies[i]->xp;
             enemies.erase(enemies.begin() + i);
+            if (soundOn) enmSnd.play();
             this->currentEnemies--;
             if (player.isLvlUp()) {
                 player.lvlUp();
@@ -510,7 +562,7 @@ void Game::updateBullets(float dt) {
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) && shoot_timer > current_weapon.fire_rate) {
         shoot_timer = 0.f;
-
+        if (soundOn) shotSnd.play();
         // Mouse position
         sf::Vector2f mouse_position = this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window));
 
@@ -630,7 +682,8 @@ void Game::saveGame() {
         for (int i = 0; i < this->enemies.size(); i++) {
             file<<enemies[i]->position;
         }*/
-        MessageBox(NULL,"Zapisano gre", "",MB_OK);
+        //MessageBox(NULL,"Zapisano gre", "",MB_OK);
+
     }
     file.close();
 }

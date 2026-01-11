@@ -9,6 +9,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
+#include "SFML/Audio/Sound.hpp"
+
 Enemy::Enemy(EnemyType type, sf::Vector2f position_)
     : position(position_), sprite(this->textureRun) {
     // Switch between enemies types
@@ -172,7 +174,7 @@ void Enemy::checkCollisionWithOtherEnemies(Enemy &other, float dt) {
     Collider::calculatePosition(*this, other, dt);
 }
 
-void Enemy::collideWithPlayer (Player &player, float dt) {
+void Enemy::collideWithPlayer (Player &player, float dt, bool snd, sf::Sound *sound) {
     sf::FloatRect playerBounds = player.getBounds();
 
     if (!playerBounds.findIntersection(this->getBounds())) {
@@ -183,6 +185,7 @@ void Enemy::collideWithPlayer (Player &player, float dt) {
 
     if (this->state != EnemyState::Attack) {
         this->startAttack();
+        if (snd) sound->play();
         player.hp-=10;
     }
 
