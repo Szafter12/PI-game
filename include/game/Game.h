@@ -30,6 +30,16 @@ class Game final {
 
     const float comboTime = 0.7f;
     std::vector<sf::Keyboard::Key> combo = {
+        sf::Keyboard::Key::H,
+        sf::Keyboard::Key::E,
+        sf::Keyboard::Key::S,
+        sf::Keyboard::Key::O,
+        sf::Keyboard::Key::Y,
+        sf::Keyboard::Key::A,
+        sf::Keyboard::Key::M,
+    };
+
+    std::vector<sf::Keyboard::Key> aezakmi = {
         sf::Keyboard::Key::A,
         sf::Keyboard::Key::E,
         sf::Keyboard::Key::Z,
@@ -38,6 +48,7 @@ class Game final {
         sf::Keyboard::Key::M,
         sf::Keyboard::Key::I,
     };
+
     sf::Text pauseText;
 
     // Window
