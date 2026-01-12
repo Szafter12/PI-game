@@ -1,5 +1,6 @@
 #ifndef GAME_PI_ENEMY_H
 #define GAME_PI_ENEMY_H
+#include "SFML/Audio/Sound.hpp"
 
 class Player;
 class Collider;
@@ -88,7 +89,7 @@ public:
     sf::FloatRect getBounds() const;
     void checkCollisionWithOtherEnemies(Enemy &other, float dt);
     sf::Vector2f getPosition() const;
-    void collideWithPlayer(Player &player, float dt);
+    void collideWithPlayer(Player &player, float dt, bool snd, sf::Sound *sound);
     bool is_alive() const;
     void getAttack(int ad);
 };

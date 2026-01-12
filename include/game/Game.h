@@ -81,6 +81,23 @@ class Game final {
     bool soundOn=true;
     bool musicOn=true;
 
+    sf::Music menuMusic = sf::Music("../../assets/music/menuTheme.wav");
+    sf::Music ambient = sf::Music("../../assets/music/ambience.wav");
+
+    sf::SoundBuffer clickBuff = sf::SoundBuffer("../../assets/sounds/buttonClick.wav"),
+    dmgBuff = sf::SoundBuffer("../../assets/sounds/dmg.wav"),
+    enmDBuff = sf::SoundBuffer("../../assets/sounds/enemyDeath.wav"),
+    gameOBuff = sf::SoundBuffer("../../assets/sounds/gameOver.wav"),
+    levelUpBuff = sf::SoundBuffer("../../assets/sounds/levelUp.wav"),
+    shotBuff = sf::SoundBuffer("../../assets/sounds/shot.wav");
+
+    sf::Sound clickSnd = sf::Sound(clickBuff),
+    dmgSnd = sf::Sound(dmgBuff),
+    enmSnd = sf::Sound(enmDBuff),
+    gameOSnd = sf::Sound(gameOBuff),
+    levelUpSnd = sf::Sound(levelUpBuff),
+    shotSnd = sf::Sound(shotBuff);
+
     UpgradeState upgradeState;
 
     // Game objects

@@ -41,5 +41,5 @@ add_executable(Game_PI ${SOURCES}
 target_include_directories(Game_PI PRIVATE include)
 
 # Linking SFML
-target_link_libraries(Game_PI PRIVATE sfml-graphics sfml-window sfml-system)
+target_link_libraries(Game_PI PRIVATE sfml-graphics sfml-audio sfml-window sfml-system)
 target_link_libraries(Game_PI PRIVATE nlohmann_json::nlohmann_json)
